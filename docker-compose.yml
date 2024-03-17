@@ -6,3 +6,33 @@ services:
       context: ./frontend
     ports:
       - "${FRONT_PORT:-3000}:80"
+  backend:
+    build:
+      context: ./backend
+    environment:
+      SPRING_DATASOURCE_URL: "jdbc:postgresql://db:${POSTGRES_PORT:-5432}/${POSTGRES_DB:-cross_review}"
+    ports:
+      - "${BACK_PORT:-8080}:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+  db:
+    image: postgres:16.2-alpine3.19
+    environment:
+      POSTGRES_DB: "${POSTGRES_DB:-cross_review}"
+      POSTGRES_USER: "${POSTGRES_USER:-postgres}"
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD:-postgres_pass}"
+      PGDATA: "/var/lib/postgresql/data/pgdata"
+    volumes:
+       - postgres:/var/lib/postgresql/data
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+volumes:
+  postgres:

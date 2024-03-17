@@ -1,6 +1,7 @@
 ## Запуск
 
-### Через IDEA
+### Через Intellij IDEA Ultimate
+1. Запустить, используя конфигурацию BackendApplicationDev
 
 ### Через консоль
 1. Установить [Java JDK 21](https://www.oracle.com/cis/java/technologies/downloads/)
