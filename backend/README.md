@@ -1,7 +1,8 @@
 ## Запуск
 
 ### Через Intellij IDEA Ultimate
-1. Запустить, используя конфигурацию BackendApplicationDev
+1. Запустить конфигурацию ContainersDev (чтобы, запустились контейнеры с БД и фронтом)
+2. Запустить конфигурацию BackendApplication
 
 ### Через консоль
 1. Установить [Java JDK 21](https://www.oracle.com/cis/java/technologies/downloads/)
