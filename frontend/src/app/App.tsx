@@ -2,6 +2,8 @@ import { ThemeProvider, ToasterComponent, ToasterProvider } from '@gravity-ui/ui
 import './global.css';
 import { toaster } from '@gravity-ui/uikit/toaster-singleton-react-18';
 import { useEffect } from 'react';
+import { NavLink } from 'react-router-dom';
+import { RouterProvider } from './providers/RouterProvider/RouterProvider';
 
 export const App = () => {
   useEffect(() => {
@@ -16,7 +18,12 @@ export const App = () => {
   return (
     <ThemeProvider theme="light">
       <ToasterProvider>
-        {/* <RouterProvider /> */}
+        <div style={{ display: 'flex', gap: '10px' }}>
+          <NavLink to="/">Главная</NavLink>
+          <NavLink to="/auth">Авторизация</NavLink>
+          <NavLink to="/homeworks">Домашки</NavLink>
+        </div>
+        <RouterProvider />
         <ToasterComponent />
       </ToasterProvider>
     </ThemeProvider>

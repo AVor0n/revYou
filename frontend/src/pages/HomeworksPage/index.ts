@@ -1,0 +1,1 @@
+export { HomeworksPage } from './HomeworksPage';
