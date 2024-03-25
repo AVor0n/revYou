@@ -1,1 +1,7 @@
-export const AuthPage = () => <div>AuthPage</div>;
+import { AuthTab } from './components';
+
+export const AuthPage = () => (
+  <div>
+    <AuthTab />
+  </div>
+);
