@@ -11,10 +11,10 @@ import org.springframework.context.annotation.Configuration;
 @ApplicationPath("/")
 public class JerseyConfiguration extends ResourceConfig {
 
-    @PostConstruct
-    public void init() {
-        register(HelloResource.class);
-        register(GenericExceptionMapper.class);
-    }
+  @PostConstruct
+  public void init() {
+    register(HelloResource.class);
+    register(GenericExceptionMapper.class);
+  }
 
 }
