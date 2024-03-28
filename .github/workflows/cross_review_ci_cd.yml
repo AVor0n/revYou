@@ -27,14 +27,14 @@ jobs:
         with:
           push: true
           tags: semashkevichea/cross_review_front:latest
-          context: cross_review_front
+          context: cross_review
           file: frontend/dockerfile
       - name: Push backend to Docker Hub web
         uses: docker/build-push-action@v2
         with:
           push: true
           tags: semashkevichea/cross_review_back:latest
-          context: cross_review_back
+          context: cross_review
           file: backend/Dockerfile
 
   deploy:
