@@ -1,5 +1,16 @@
-import { type FC, type PropsWithChildren } from 'react';
+import { type PropsWithChildren } from 'react';
 import { Provider } from 'react-redux';
-import { store } from '../config/store';
+import { createReduxStore } from '../config/store';
+import { type StoreSchema } from '../config/StoreSchema';
 
-export const StoreProvider: FC<PropsWithChildren> = ({ children }) => <Provider store={store}>{children}</Provider>;
+interface StoreProviderProps extends PropsWithChildren {
+  initialState?: StoreSchema;
+}
+
+export const StoreProvider = (props: StoreProviderProps) => {
+  const { children, initialState } = props;
+
+  const store = createReduxStore(initialState);
+
+  return <Provider store={store}>{children}</Provider>;
+};

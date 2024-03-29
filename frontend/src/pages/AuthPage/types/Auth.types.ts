@@ -1,4 +1,4 @@
-export interface AuthState {
+export interface AuthSchema {
   login: string;
   password: string;
 }

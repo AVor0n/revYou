@@ -7,9 +7,9 @@ import { App, StoreProvider } from './app';
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <BrowserRouter>
-      <StoreProvider />
-      <App />
-      <StoreProvider />
+      <StoreProvider>
+        <App />
+      </StoreProvider>
     </BrowserRouter>
   </React.StrictMode>,
 );

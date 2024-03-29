@@ -1,7 +1,12 @@
-import { Button, TextInput } from '@gravity-ui/uikit';
+import { Button } from '@gravity-ui/uikit';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Controller, useForm } from 'react-hook-form';
+import { useSelector } from 'react-redux';
 import * as yup from 'yup';
+import { Input } from '@components/index';
+import { useAppDispatch } from 'hooks';
+import { getAuthLogin, getAuthPassword } from '../../selectors/getAuthData';
+import { authActions } from '../../slice/Auth.slice';
 import styles from './AuthTab.module.scss';
 
 const schema = yup
@@ -12,6 +17,8 @@ const schema = yup
   .required();
 
 export const AuthTab = () => {
+  const dispatch = useAppDispatch();
+
   const {
     control,
     handleSubmit,
@@ -19,7 +26,18 @@ export const AuthTab = () => {
   } = useForm({
     resolver: yupResolver(schema),
   });
-  // const onSubmit = handleSubmit(data => console.log(data));
+
+  const login = useSelector(getAuthLogin);
+  const password = useSelector(getAuthPassword);
+
+  const onLoginChange = (value: string) => {
+    dispatch(authActions.setAuthLogin(value));
+  };
+
+  const onPasswordChange = (value: string) => {
+    dispatch(authActions.setAuthPassword(value));
+  };
+
   const onSubmit = handleSubmit(() => {});
 
   return (
@@ -30,10 +48,12 @@ export const AuthTab = () => {
             name="login"
             control={control}
             render={({ field }) => (
-              <TextInput
+              <Input
                 {...field}
+                onChange={onLoginChange}
+                value={login}
                 label="Логин"
-                validationState={errors.login?.message ? 'invalid' : undefined}
+                hasError={!!errors.login?.message}
                 errorMessage={errors.login?.message}
               />
             )}
@@ -42,11 +62,13 @@ export const AuthTab = () => {
             name="password"
             control={control}
             render={({ field }) => (
-              <TextInput
+              <Input
                 {...field}
+                onChange={onPasswordChange}
+                value={password}
                 type="password"
                 label="Пароль"
-                validationState={errors.password?.message ? 'invalid' : undefined}
+                hasError={!!errors.password?.message}
                 errorMessage={errors.password?.message}
               />
             )}

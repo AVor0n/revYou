@@ -1,2 +1,2 @@
 export { App } from './App';
-export { StoreProvider } from './providers';
+export { StoreProvider, type AppDispatch, type StoreSchema } from './providers';
