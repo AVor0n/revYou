@@ -9,10 +9,10 @@ import org.springframework.stereotype.Component;
 @Path("/hello")
 public class HelloResource {
 
-    @GET
-    @Produces("text/plain")
-    public String getHello() {
-        return "Hello, World!";
-    }
+  @GET
+  @Produces("text/plain")
+  public String getHello() {
+    return "Hello, World!";
+  }
 
 }
