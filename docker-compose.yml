@@ -14,9 +14,6 @@ services:
     depends_on:
       db:
         condition: service_healthy
-    networks:
-      - gitlab
-
   db:
     image: postgres:16.2-alpine3.19
     environment:
@@ -34,8 +31,6 @@ services:
       timeout: 5s
       retries: 5
     restart: unless-stopped
-    networks:
-      - gitlab
   gitlab:
     image: "gitlab/gitlab-ce:latest"
     restart: always
