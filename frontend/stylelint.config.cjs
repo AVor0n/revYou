@@ -20,6 +20,7 @@ module.exports = {
     'plugin/declaration-block-no-ignored-properties': true,
     'order/properties-order': propertyOrdering,
     'selector-class-pattern': null,
+    'selector-pseudo-class-no-unknown': [true, { ignorePseudoClasses: ['global'] }],
   },
   customSyntax: 'postcss-scss',
   defaultSeverity: 'error',

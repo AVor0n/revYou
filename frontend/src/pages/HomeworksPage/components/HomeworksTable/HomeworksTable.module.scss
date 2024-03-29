@@ -1,0 +1,10 @@
+.table {
+  :global(.g-table__table) {
+    inline-size: 100%;
+  }
+
+  :global(.g-table__body .g-table__row):hover {
+    background-color: var(--g-color-base-simple-hover);
+    cursor: pointer;
+  }
+}

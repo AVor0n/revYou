@@ -25,3 +25,9 @@
   /* тень */
   --g-box-shadow: 0 6px 16px rgba(0, 0, 0, 20%);
 }
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}

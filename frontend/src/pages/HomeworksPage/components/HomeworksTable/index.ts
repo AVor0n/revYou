@@ -1,0 +1,1 @@
+export { HomeworksTable } from './HomeworksTable';
