@@ -38,7 +38,7 @@ services:
     container_name: gitlab-ce
     environment:
       GITLAB_OMNIBUS_CONFIG: |
-        external_url "https://${HOST:-158.160.88.104}"
+        external_url "https://${HOST:-158.160.88.104}/gitlab"
     ports:
       - "${GITLAB_PORT:-8081}:80"
       - "${GITLAB_HTTPS_PORT:-443}:443"
@@ -47,6 +47,24 @@ services:
       - '$GITLAB_HOME/config:/etc/gitlab'
       - '$GITLAB_HOME/logs:/var/log/gitlab'
       - '$GITLAB_HOME/data:/var/opt/gitlab'
+    networks:
+      - gitlab
+    links:
+      - db
+  nginx:
+    image: nginx:1.19.3
+    links:
+      - gitlab
+      - frontend
+      - backend
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    ports:
+      - "${NGINX_PORT:-80}:80"
+    depends_on:
+      - gitlab
+      - frontend
+      - backend
     networks:
       - gitlab
 
