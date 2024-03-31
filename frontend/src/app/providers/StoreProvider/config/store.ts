@@ -1,24 +1,26 @@
 import { type Reducer, configureStore, type ReducersMapObject, combineReducers } from '@reduxjs/toolkit';
-import { authReducer } from '@pages/AuthPage';
-import { type StoreSchema } from './StoreSchema';
+import { $api } from 'app/api';
+import { userReducer } from 'app/entities';
+import { type ThunkExtraArg, type StoreSchema } from './StoreSchema';
 
 export function createReduxStore(initialState?: StoreSchema) {
   const rootReducers: ReducersMapObject<StoreSchema> = {
-    auth: authReducer,
+    user: userReducer,
   };
 
-  // const extraArg: ThunkExtraArg = {
-  //     api: $api
-  // }
+  const extraArg: ThunkExtraArg = {
+    api: $api,
+  };
 
   const store = configureStore({
     reducer: combineReducers(rootReducers) as Reducer<StoreSchema>,
     preloadedState: initialState,
-    // middleware: (getDefaultMiddleware) => getDefaultMiddleware({
-    //     thunk: {
-    //         extraArgument: extraArg
-    //     }
-    // })
+    middleware: getDefaultMiddleware =>
+      getDefaultMiddleware({
+        thunk: {
+          extraArgument: extraArg,
+        },
+      }),
   });
 
   return store;

@@ -1,12 +1,11 @@
 import { Button } from '@gravity-ui/uikit';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Controller, useForm } from 'react-hook-form';
-import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
 import { Input } from '@components/index';
-import { useAppDispatch } from 'hooks';
-import { getAuthLogin, getAuthPassword } from '../../selectors/getAuthData';
-import { authActions } from '../../slice/Auth.slice';
+import { useAppDispatch } from 'app';
+import { loginUser } from 'app/entities';
 import styles from './AuthTab.module.scss';
 
 const schema = yup
@@ -18,6 +17,7 @@ const schema = yup
 
 export const AuthTab = () => {
   const dispatch = useAppDispatch();
+  const nav = useNavigate();
 
   const {
     control,
@@ -25,20 +25,15 @@ export const AuthTab = () => {
     formState: { errors },
   } = useForm({
     resolver: yupResolver(schema),
+    defaultValues: { login: '', password: '' },
   });
 
-  const login = useSelector(getAuthLogin);
-  const password = useSelector(getAuthPassword);
-
-  const onLoginChange = (value: string) => {
-    dispatch(authActions.setAuthLogin(value));
-  };
-
-  const onPasswordChange = (value: string) => {
-    dispatch(authActions.setAuthPassword(value));
-  };
-
-  const onSubmit = handleSubmit(() => {});
+  const onSubmit = handleSubmit(async data => {
+    const res = await dispatch(loginUser(data));
+    if (res.meta.requestStatus === 'fulfilled') {
+      nav('/');
+    }
+  });
 
   return (
     <div className={styles.root}>
@@ -48,14 +43,7 @@ export const AuthTab = () => {
             name="login"
             control={control}
             render={({ field }) => (
-              <Input
-                {...field}
-                onChange={onLoginChange}
-                value={login}
-                label="Логин"
-                hasError={!!errors.login?.message}
-                errorMessage={errors.login?.message}
-              />
+              <Input {...field} label="Логин" hasError={!!errors.login?.message} errorMessage={errors.login?.message} />
             )}
           />
           <Controller
@@ -64,8 +52,6 @@ export const AuthTab = () => {
             render={({ field }) => (
               <Input
                 {...field}
-                onChange={onPasswordChange}
-                value={password}
                 type="password"
                 label="Пароль"
                 hasError={!!errors.password?.message}

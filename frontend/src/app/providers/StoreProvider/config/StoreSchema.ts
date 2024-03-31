@@ -1,5 +1,16 @@
-import { type AuthSchema } from '@pages/AuthPage';
+import { type AxiosInstance } from 'axios';
+import { type UserSchema } from 'app/entities';
 
 export interface StoreSchema {
-  auth: AuthSchema;
+  user: UserSchema;
+}
+
+export interface ThunkExtraArg {
+  api: AxiosInstance;
+}
+
+export interface ThunkConfig<T> {
+  rejectValue: T;
+  extra: ThunkExtraArg;
+  state: StoreSchema;
 }

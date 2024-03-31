@@ -4,7 +4,7 @@ import { NavLink, Outlet } from 'react-router-dom';
 import styles from './Layout.module.scss';
 
 interface LayoutProps {
-  navLinks: { title: string; href: string }[];
+  navLinks: { title: string; href: string; isNeedAuth: boolean }[];
 }
 
 export const Layout = ({ navLinks }: LayoutProps) => (
