@@ -1,4 +1,4 @@
-package com.example.backend;
+package hh.crossreview;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

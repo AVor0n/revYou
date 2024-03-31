@@ -1,4 +1,4 @@
-package com.example.backend.configuration;
+package hh.crossreview.configuration;
 
 import java.io.IOException;
 import java.util.Properties;
@@ -25,7 +25,7 @@ public class HibernateConfiguration {
   @Value("${spring.datasource.driver-class-name}")
   private String driverClassName;
 
-  @Bean
+  @Bean("datasource")
   public DataSource getDatasource() {
 
     DriverManagerDataSource dataSource = new DriverManagerDataSource();
@@ -38,11 +38,11 @@ public class HibernateConfiguration {
 
   }
 
-  @Bean
+  @Bean("sessionFactory")
   public SessionFactory getSessionFactory() throws IOException {
 
     LocalSessionFactoryBean sessionFactoryBean = new LocalSessionFactoryBean();
-    sessionFactoryBean.setPackagesToScan("com.example.backend");
+    sessionFactoryBean.setPackagesToScan("hh.crossreview.entity");
 
     sessionFactoryBean.setHibernateProperties(getHibernateProperties());
     sessionFactoryBean.setDataSource(getDatasource());
@@ -51,7 +51,7 @@ public class HibernateConfiguration {
     return sessionFactoryBean.getObject();
   }
 
-  @Bean
+  @Bean("transactionManager")
   public HibernateTransactionManager getTransactionManager() throws IOException {
     HibernateTransactionManager transactionManager = new HibernateTransactionManager();
     transactionManager.setSessionFactory(getSessionFactory());

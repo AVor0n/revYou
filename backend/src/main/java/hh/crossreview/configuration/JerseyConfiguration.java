@@ -1,19 +1,21 @@
-package com.example.backend.configuration;
+package hh.crossreview.configuration;
 
-import com.example.backend.exceptionmappers.GenericExceptionMapper;
-import com.example.backend.resources.HelloResource;
+import hh.crossreview.exceptionmapper.GenericExceptionMapper;
+import hh.crossreview.resource.HelloResource;
+import hh.crossreview.resource.HomeworkResource;
 import jakarta.annotation.PostConstruct;
 import jakarta.ws.rs.ApplicationPath;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@ApplicationPath("/")
+@ApplicationPath("/api")
 public class JerseyConfiguration extends ResourceConfig {
 
   @PostConstruct
   public void init() {
     register(HelloResource.class);
+    register(HomeworkResource.class);
     register(GenericExceptionMapper.class);
   }
 

@@ -1,4 +1,4 @@
-package com.example.backend.exceptionmappers;
+package hh.crossreview.exceptionmapper;
 
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.ExceptionMapper;

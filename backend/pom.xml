@@ -8,8 +8,8 @@
         <version>3.2.3</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>com.example</groupId>
-    <artifactId>backend</artifactId>
+    <groupId>hh</groupId>
+    <artifactId>crossreview</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>backend</name>
     <description>Cross-review backend</description>
@@ -47,11 +47,6 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-orm</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.modelmapper</groupId>
-            <artifactId>modelmapper</artifactId>
-            <version>3.2.0</version>
         </dependency>
         <dependency>
             <groupId>jakarta.inject</groupId>
@@ -93,7 +88,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <mainClass>com.example.backend.BackendApplication</mainClass>
+                    <mainClass>hh.crossreview.BackendApplication</mainClass>
                     <layout>JAR</layout>
                 </configuration>
             </plugin>
