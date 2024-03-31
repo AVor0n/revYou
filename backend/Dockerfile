@@ -6,6 +6,7 @@ RUN sed -i 's/\r$//' mvnw
 RUN chmod +x ./mvnw
 RUN ./mvnw dependency:go-offline
 COPY ./src ./src
+COPY ./checkstyle ./checkstyle
 RUN ./mvnw clean install -Dmaven.test.skip
 
 FROM eclipse-temurin:21-jre-alpine

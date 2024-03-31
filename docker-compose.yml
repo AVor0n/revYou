@@ -20,9 +20,10 @@ services:
       POSTGRES_DB: "${POSTGRES_DB:-cross_review}"
       POSTGRES_USER: "${POSTGRES_USER:-postgres}"
       POSTGRES_PASSWORD: "${POSTGRES_PASSWORD:-postgres_pass}"
-      PGDATA: "/var/lib/postgresql/data/pgdata"
+      PGDATA: "${PGDATA:-/var/lib/postgresql/data/pgdata}"
     volumes:
-       - postgres:/var/lib/postgresql/data
+       - "postgres:/var/lib/postgresql/data"
+       - "./db/init.sql:/docker-entrypoint-initdb.d/init.sql"
     ports:
       - "${POSTGRES_PORT:-5432}:5432"
     healthcheck:
