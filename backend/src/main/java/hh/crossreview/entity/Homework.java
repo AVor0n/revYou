@@ -44,8 +44,39 @@ public class Homework {
   @JoinColumn(name = "lecture_id")
   private Lecture lecture;
 
+  public Integer getHomeworkId() {
+    return homeworkId;
+  }
+
+  public String getHomeworkLink() {
+    return homeworkLink;
+  }
+
+  public String getTitle() {
+    return title;
+  }
+
+  public String getTheme() {
+    return theme;
+  }
+
+  public String getDescription() {
+    return description;
+  }
+
+  public Date getCreationTimestamp() {
+    return creationTimestamp;
+  }
+
+  public Date getCompletionDeadline() {
+    return completionDeadline;
+  }
+
+  public Date getReviewDeadline() {
+    return reviewDeadline;
+  }
+
   public Lecture getLecture() {
     return lecture;
   }
-
 }

@@ -42,7 +42,7 @@ public class HibernateConfiguration {
   public SessionFactory getSessionFactory() throws IOException {
 
     LocalSessionFactoryBean sessionFactoryBean = new LocalSessionFactoryBean();
-    sessionFactoryBean.setPackagesToScan("com.example.backend.entity");
+    sessionFactoryBean.setPackagesToScan("hh.crossreview.entity");
 
     sessionFactoryBean.setHibernateProperties(getHibernateProperties());
     sessionFactoryBean.setDataSource(getDatasource());

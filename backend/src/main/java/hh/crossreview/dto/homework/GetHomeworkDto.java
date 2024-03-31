@@ -15,6 +15,8 @@ public class GetHomeworkDto {
   @JsonProperty("topic")
   private String theme;
 
+  private String description;
+
   @JsonProperty("departments")
   private List<String> departments;
 
@@ -29,76 +31,93 @@ public class GetHomeworkDto {
 
   private Date reviewDeadline;
 
-  public Integer getHomeworkId() {
-    return homeworkId;
+  public GetHomeworkDto setHomeworkId(Integer homeworkId) {
+    this.homeworkId = homeworkId;
+    return this;
   }
 
-  public void setHomeworkId(Integer homeworkId) {
-    this.homeworkId = homeworkId;
+  public GetHomeworkDto setTitle(String title) {
+    this.title = title;
+    return this;
+  }
+
+  public GetHomeworkDto setTheme(String theme) {
+    this.theme = theme;
+    return this;
+  }
+
+  public GetHomeworkDto setDescription(String description) {
+    this.description = description;
+    return this;
+  }
+
+  public GetHomeworkDto setDepartments(List<String> departments) {
+    this.departments = departments;
+    return this;
+  }
+
+  public GetHomeworkDto setAuthor(GetHomeworkAuthorDto author) {
+    this.author = author;
+    return this;
+  }
+
+  public GetHomeworkDto setHomeworkLink(String homeworkLink) {
+    this.homeworkLink = homeworkLink;
+    return this;
+  }
+
+  public GetHomeworkDto setCreationDate(Date creationDate) {
+    this.creationDate = creationDate;
+    return this;
+  }
+
+  public GetHomeworkDto setCompletionDeadline(Date completionDeadline) {
+    this.completionDeadline = completionDeadline;
+    return this;
+  }
+
+  public GetHomeworkDto setReviewDeadline(Date reviewDeadline) {
+    this.reviewDeadline = reviewDeadline;
+    return this;
+  }
+
+  public Integer getHomeworkId() {
+    return homeworkId;
   }
 
   public String getTitle() {
     return title;
   }
 
-  public void setTitle(String title) {
-    this.title = title;
-  }
-
   public String getTheme() {
     return theme;
   }
 
-  public void setTheme(String theme) {
-    this.theme = theme;
+  public String getDescription() {
+    return description;
   }
 
   public List<String> getDepartments() {
     return departments;
   }
 
-  public void setDepartments(List<String> departments) {
-    this.departments = departments;
-  }
-
   public GetHomeworkAuthorDto getAuthor() {
     return author;
-  }
-
-  public void setAuthor(GetHomeworkAuthorDto author) {
-    this.author = author;
   }
 
   public String getHomeworkLink() {
     return homeworkLink;
   }
 
-  public void setHomeworkLink(String homeworkLink) {
-    this.homeworkLink = homeworkLink;
-  }
-
   public Date getCreationDate() {
     return creationDate;
-  }
-
-  public void setCreationDate(Date creationDate) {
-    this.creationDate = creationDate;
   }
 
   public Date getCompletionDeadline() {
     return completionDeadline;
   }
 
-  public void setCompletionDeadline(Date completionDeadline) {
-    this.completionDeadline = completionDeadline;
-  }
-
   public Date getReviewDeadline() {
     return reviewDeadline;
   }
-
-  public void setReviewDeadline(Date reviewDeadline) {
-    this.reviewDeadline = reviewDeadline;
-  }
-
 }

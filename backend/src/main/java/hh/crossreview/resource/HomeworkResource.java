@@ -1,6 +1,6 @@
 package hh.crossreview.resource;
 
-import hh.crossreview.dto.homework.GetHomeworkDto;
+import hh.crossreview.dto.homework.GetAllHomeworksWrapper;
 import hh.crossreview.service.HomeworkService;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
@@ -9,7 +9,6 @@ import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
-import java.util.List;
 
 @Named
 @Path("/homeworks")
@@ -25,7 +24,7 @@ public class HomeworkResource {
 
   @GET
   @Produces(MediaType.APPLICATION_JSON)
-  public List<GetHomeworkDto> getHomeworks() {
+  public GetAllHomeworksWrapper getHomeworks() {
     return homeworkService.getHomeworks();
   }
 

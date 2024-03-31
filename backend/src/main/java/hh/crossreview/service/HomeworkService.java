@@ -2,7 +2,8 @@ package hh.crossreview.service;
 
 import hh.crossreview.converter.HomeworkConverter;
 import hh.crossreview.dao.HomeworkDao;
-import hh.crossreview.dto.homework.GetHomeworkDto;
+import hh.crossreview.dto.homework.GetAllHomeworksWrapper;
+import hh.crossreview.entity.Homework;
 import jakarta.inject.Named;
 import jakarta.inject.Singleton;
 import java.util.List;
@@ -21,11 +22,9 @@ public class HomeworkService {
   }
 
   @Transactional
-  public List<GetHomeworkDto> getHomeworks() {
-    return homeworkDao.getHomeworks()
-        .stream()
-        .map(homeworkConverter::homeworkToGetHomeworkDto)
-        .toList();
+  public GetAllHomeworksWrapper getHomeworks() {
+    List<Homework> homeworks = homeworkDao.getHomeworks();
+    return homeworkConverter.homeworksToGetAllHomeworksWrapper(homeworks);
   }
 
 }
