@@ -79,4 +79,45 @@ public class Homework {
   public Lecture getLecture() {
     return lecture;
   }
+
+  public Homework setHomeworkLink(String homeworkLink) {
+    this.homeworkLink = homeworkLink;
+    return this;
+  }
+
+  public Homework setTitle(String title) {
+    this.title = title;
+    return this;
+  }
+
+  public Homework setTheme(String theme) {
+    this.theme = theme;
+    return this;
+  }
+
+  public Homework setDescription(String description) {
+    this.description = description;
+    return this;
+  }
+
+  public Homework setCreationTimestamp(Date creationTimestamp) {
+    this.creationTimestamp = creationTimestamp;
+    return this;
+  }
+
+  public Homework setCompletionDeadline(Date completionDeadline) {
+    this.completionDeadline = completionDeadline;
+    return this;
+  }
+
+  public Homework setReviewDeadline(Date reviewDeadline) {
+    this.reviewDeadline = reviewDeadline;
+    return this;
+  }
+
+  public Homework setLecture(Lecture lecture) {
+    this.lecture = lecture;
+    return this;
+  }
+
 }

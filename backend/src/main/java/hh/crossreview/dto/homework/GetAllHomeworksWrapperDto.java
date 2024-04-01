@@ -2,10 +2,10 @@ package hh.crossreview.dto.homework;
 
 import java.util.List;
 
-public class GetAllHomeworksWrapper {
+public class GetAllHomeworksWrapperDto {
   private List<GetHomeworkDto> data;
 
-  public GetAllHomeworksWrapper(List<GetHomeworkDto> data) {
+  public GetAllHomeworksWrapperDto(List<GetHomeworkDto> data) {
     this.data = data;
   }
 

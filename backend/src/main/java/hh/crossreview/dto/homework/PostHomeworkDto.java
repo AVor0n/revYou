@@ -1,13 +1,11 @@
 package hh.crossreview.dto.homework;
 
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import java.util.Date;
 import java.util.List;
 
-@JsonPropertyOrder
-public class GetHomeworkDto {
+public class PostHomeworkDto {
 
-  private Integer id;
+  private Integer lectureId;
 
   private String name;
 
@@ -17,7 +15,7 @@ public class GetHomeworkDto {
 
   private List<String> departments;
 
-  private GetHomeworkAuthorDto author;
+  private Integer authorId;
 
   private String homeworkLink;
 
@@ -27,58 +25,44 @@ public class GetHomeworkDto {
 
   private Date reviewDeadline;
 
-  public GetHomeworkDto setId(Integer id) {
-    this.id = id;
-    return this;
+  public void setLectureId(Integer lectureId) {
+    this.lectureId = lectureId;
   }
 
-  public GetHomeworkDto setName(String name) {
+  public void setName(String name) {
     this.name = name;
-    return this;
   }
 
-  public GetHomeworkDto setTopic(String topic) {
+  public void setTopic(String topic) {
     this.topic = topic;
-    return this;
   }
 
-  public GetHomeworkDto setDescription(String description) {
+  public void setDescription(String description) {
     this.description = description;
-    return this;
   }
 
-  public GetHomeworkDto setDepartments(List<String> departments) {
+  public void setDepartments(List<String> departments) {
     this.departments = departments;
-    return this;
   }
 
-  public GetHomeworkDto setAuthor(GetHomeworkAuthorDto author) {
-    this.author = author;
-    return this;
+  public void setAuthorId(Integer authorId) {
+    this.authorId = authorId;
   }
 
-  public GetHomeworkDto setHomeworkLink(String homeworkLink) {
+  public void setHomeworkLink(String homeworkLink) {
     this.homeworkLink = homeworkLink;
-    return this;
   }
 
-  public GetHomeworkDto setStartDate(Date startDate) {
+  public void setStartDate(Date startDate) {
     this.startDate = startDate;
-    return this;
   }
 
-  public GetHomeworkDto setCompletionDeadline(Date completionDeadline) {
+  public void setCompletionDeadline(Date completionDeadline) {
     this.completionDeadline = completionDeadline;
-    return this;
   }
 
-  public GetHomeworkDto setReviewDeadline(Date reviewDeadline) {
+  public void setReviewDeadline(Date reviewDeadline) {
     this.reviewDeadline = reviewDeadline;
-    return this;
-  }
-
-  public Integer getId() {
-    return id;
   }
 
   public String getName() {
@@ -97,8 +81,8 @@ public class GetHomeworkDto {
     return departments;
   }
 
-  public GetHomeworkAuthorDto getAuthor() {
-    return author;
+  public Integer getAuthorId() {
+    return authorId;
   }
 
   public String getHomeworkLink() {
@@ -115,6 +99,10 @@ public class GetHomeworkDto {
 
   public Date getReviewDeadline() {
     return reviewDeadline;
+  }
+
+  public Integer getLectureId() {
+    return lectureId;
   }
 
 }

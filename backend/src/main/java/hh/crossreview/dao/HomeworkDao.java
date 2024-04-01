@@ -25,4 +25,8 @@ public class HomeworkDao extends GenericDao {
         .getResultList();
   }
 
+  public void createHomework(Homework homework) {
+    getSession().persist(homework);
+    getSession().flush();
+  }
 }
