@@ -10,9 +10,9 @@ import jakarta.ws.rs.ext.Provider;
 public class NotFoundExceptionMapper implements ExceptionMapper<NotFoundException> {
 
   @Override
-  public Response toResponse(NotFoundException e) {
+  public Response toResponse(NotFoundException exception) {
     return Response.status(Response.Status.NOT_FOUND)
-        .entity(new ErrorMessageDto(e))
+        .entity(new ErrorMessageDto(exception))
         .build();
   }
 

@@ -1,30 +1,26 @@
 package hh.crossreview.dao;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import java.io.Serializable;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 
 public class GenericDao {
 
-  private final SessionFactory sessionFactory;
-
-  public GenericDao(SessionFactory sessionFactory) {
-    this.sessionFactory = sessionFactory;
-  }
-
-  public <T> T get(Class<T> clazz, Serializable id) {
-    return getSession().get(clazz, id);
+  @PersistenceContext
+  private EntityManager entityManager;
+  public <T> T find(Class<T> clazz, Serializable id) {
+    return getEntityManager().find(clazz, id);
   }
 
   public void save(Object object) {
     if (object == null) {
       return;
     }
-    getSession().persist(object);
+    getEntityManager().persist(object);
   }
 
-  protected Session getSession() {
-    return sessionFactory.getCurrentSession();
+  protected EntityManager getEntityManager() {
+    return entityManager;
   }
 
 }

@@ -1,15 +1,16 @@
 package hh.crossreview.configuration;
 
-import java.io.IOException;
+import jakarta.persistence.EntityManagerFactory;
 import java.util.Properties;
 import javax.sql.DataSource;
-import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
-import org.springframework.orm.hibernate5.HibernateTransactionManager;
-import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
+import org.springframework.orm.jpa.JpaTransactionManager;
+import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
+import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Configuration
@@ -27,44 +28,36 @@ public class HibernateConfiguration {
 
   @Bean("datasource")
   public DataSource getDatasource() {
-
     DriverManagerDataSource dataSource = new DriverManagerDataSource();
     dataSource.setDriverClassName(driverClassName);
     dataSource.setUrl(url);
     dataSource.setUsername(username);
     dataSource.setPassword(password);
-
     return dataSource;
-
   }
 
-  @Bean("sessionFactory")
-  public SessionFactory getSessionFactory() throws IOException {
-
-    LocalSessionFactoryBean sessionFactoryBean = new LocalSessionFactoryBean();
-    sessionFactoryBean.setPackagesToScan("hh.crossreview.entity");
-
-    sessionFactoryBean.setHibernateProperties(getHibernateProperties());
-    sessionFactoryBean.setDataSource(getDatasource());
-    sessionFactoryBean.afterPropertiesSet();
-
-    return sessionFactoryBean.getObject();
+  @Bean("entityManagerFactory")
+  public EntityManagerFactory getEntityManagerFactory() {
+    LocalContainerEntityManagerFactoryBean entityManagerFactoryBean = new LocalContainerEntityManagerFactoryBean();
+    entityManagerFactoryBean.setPackagesToScan("hh.crossreview.entity");
+    entityManagerFactoryBean.setDataSource(getDatasource());
+    entityManagerFactoryBean.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
+    entityManagerFactoryBean.setJpaProperties(getJpaProperties());
+    entityManagerFactoryBean.afterPropertiesSet();
+    return entityManagerFactoryBean.getObject();
   }
 
-  @Bean("transactionManager")
-  public HibernateTransactionManager getTransactionManager() throws IOException {
-    HibernateTransactionManager transactionManager = new HibernateTransactionManager();
-    transactionManager.setSessionFactory(getSessionFactory());
-
+  @Bean
+  public PlatformTransactionManager getTransactionManager() {
+    JpaTransactionManager transactionManager = new JpaTransactionManager();
+    transactionManager.setEntityManagerFactory(getEntityManagerFactory());
     return transactionManager;
   }
 
 
-  private static Properties getHibernateProperties() {
-
-    Properties hibernateProperties = new Properties();
-    hibernateProperties.put("hibernate.show_sql", true);
-
-    return hibernateProperties;
+  private static Properties getJpaProperties() {
+    Properties jpaProperties = new Properties();
+    jpaProperties.put("hibernate.show_sql", true);
+    return jpaProperties;
   }
 }

@@ -1,13 +1,14 @@
 package hh.crossreview.converter;
 
-import hh.crossreview.dto.homework.GetAllHomeworksWrapperDto;
-import hh.crossreview.dto.homework.GetHomeworkAuthorDto;
-import hh.crossreview.dto.homework.GetHomeworkDto;
-import hh.crossreview.dto.homework.PostHomeworkDto;
+import hh.crossreview.dto.homework.AllHomeworksWrapperDto;
+import hh.crossreview.dto.homework.HomeworkAuthorDto;
+import hh.crossreview.dto.homework.HomeworkDto;
+import hh.crossreview.dto.homework.HomeworkLectureDto;
 import hh.crossreview.dto.homework.PostHomeworkResponseDto;
 import hh.crossreview.entity.Homework;
 import hh.crossreview.entity.Lecture;
 import hh.crossreview.entity.User;
+import hh.crossreview.entity.enums.ReviewDuration;
 import jakarta.inject.Named;
 import jakarta.inject.Singleton;
 import java.util.List;
@@ -16,30 +17,33 @@ import java.util.List;
 @Singleton
 public class HomeworkConverter {
 
-  public GetAllHomeworksWrapperDto homeworksToGetAllHomeworksWrapper(List<Homework> homeworks) {
-    List<GetHomeworkDto> getHomeworkDtoList = homeworks.stream()
-        .map(this::homeworkToGetHomeworkDto)
+  public AllHomeworksWrapperDto homeworksToGetAllHomeworksWrapper(List<Homework> homeworks) {
+    List<HomeworkDto> homeworkDtoList = homeworks.stream()
+        .map(this::homeworkToHomeworkDto)
         .toList();
-    return new GetAllHomeworksWrapperDto(getHomeworkDtoList);
+    return new AllHomeworksWrapperDto(homeworkDtoList);
   }
 
-  public GetHomeworkDto homeworkToGetHomeworkDto(Homework homework) {
+  public HomeworkDto homeworkToHomeworkDto(Homework homework) {
 
     List<String> studyDirections = homeworkToListStudyDirections(homework);
-    GetHomeworkAuthorDto getHomeworkAuthorDto = homeworkToGetHomeworkAuthorDto(homework);
+    HomeworkAuthorDto homeworkAuthorDto = homeworkToHomeworkAuthorDto(homework);
+    HomeworkLectureDto homeworkLectureDto = homeworkToHomeworkLectureDto(homework);
 
-    return new GetHomeworkDto()
+    return new HomeworkDto()
         .setId(homework.getHomeworkId())
         .setName(homework.getTitle())
         .setTopic(homework.getTheme())
         .setDescription(homework.getDescription())
         .setDepartments(studyDirections)
-        .setAuthor(getHomeworkAuthorDto)
-        .setHomeworkLink(homework.getHomeworkLink())
-        .setStartDate(homework.getCreationTimestamp())
+        .setAuthor(homeworkAuthorDto)
+        .setLecture(homeworkLectureDto)
+        .setRepositoryLink(homework.getHomeworkLink())
+        .setStartDate(homework.getStartTimestamp())
         .setCompletionDeadline(homework.getCompletionDeadline())
-        .setReviewDeadline(homework.getReviewDeadline());
+        .setReviewDuration(homework.getReviewDuration().getHours());
   }
+
 
   private List<String> homeworkToListStudyDirections(Homework homework) {
     return homework.getLecture()
@@ -49,26 +53,35 @@ public class HomeworkConverter {
         .toList();
   }
 
-  private GetHomeworkAuthorDto homeworkToGetHomeworkAuthorDto(Homework homework) {
+  private HomeworkAuthorDto homeworkToHomeworkAuthorDto(Homework homework) {
     User user = homework.getLecture().getTeacher();
 
-    return new GetHomeworkAuthorDto(
+    return new HomeworkAuthorDto(
         user.getUserId(),
         user.getName(),
         user.getSurname()
     );
   }
 
-  public Homework postHomeworkDtoToHomework(PostHomeworkDto postHomeworkDto, Lecture lecture) {
+  private HomeworkLectureDto homeworkToHomeworkLectureDto(Homework homework) {
+    Lecture lecture = homework.getLecture();
+
+    return new HomeworkLectureDto(
+        lecture.getLectureId(),
+        lecture.getTitle()
+    );
+  }
+
+  public Homework homeworkDtoToHomework(HomeworkDto homeworkDto, Lecture lecture) {
     return new Homework()
-        .setCreationTimestamp(postHomeworkDto.getStartDate())
-        .setTheme(postHomeworkDto.getTopic())
-        .setTitle(postHomeworkDto.getName())
-        .setHomeworkLink(postHomeworkDto.getHomeworkLink())
-        .setCompletionDeadline(postHomeworkDto.getCompletionDeadline())
-        .setReviewDeadline(postHomeworkDto.getReviewDeadline())
+        .setStartTimestamp(homeworkDto.getStartDate())
+        .setTheme(homeworkDto.getTopic())
+        .setTitle(homeworkDto.getName())
+        .setHomeworkLink(homeworkDto.getRepositoryLink())
+        .setCompletionDeadline(homeworkDto.getCompletionDeadline())
+        .setReviewDuration(ReviewDuration.ofHours(homeworkDto.getReviewDuration()))
         .setLecture(lecture)
-        .setDescription(postHomeworkDto.getDescription());
+        .setDescription(homeworkDto.getDescription());
   }
 
   public PostHomeworkResponseDto createPostHomeworkResponseDto(Integer homeworkId) {

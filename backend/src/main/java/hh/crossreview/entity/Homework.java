@@ -1,6 +1,9 @@
 package hh.crossreview.entity;
 
+import hh.crossreview.entity.enums.ReviewDuration;
+import hh.crossreview.entity.enums.converters.ReviewDurationAttributeConverter;
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -31,14 +34,15 @@ public class Homework {
   @Column
   private String description;
 
-  @Column(name = "creation_timestamp")
-  private Date creationTimestamp;
+  @Column(name = "start_timestamp")
+  private Date startTimestamp;
 
   @Column(name = "completion_deadline")
   private Date completionDeadline;
 
-  @Column(name = "review_deadline")
-  private Date reviewDeadline;
+  @Column(name = "review_duration")
+  @Convert(converter = ReviewDurationAttributeConverter.class)
+  private ReviewDuration reviewDuration;
 
   @ManyToOne
   @JoinColumn(name = "lecture_id")
@@ -64,16 +68,16 @@ public class Homework {
     return description;
   }
 
-  public Date getCreationTimestamp() {
-    return creationTimestamp;
+  public Date getStartTimestamp() {
+    return startTimestamp;
   }
 
   public Date getCompletionDeadline() {
     return completionDeadline;
   }
 
-  public Date getReviewDeadline() {
-    return reviewDeadline;
+  public ReviewDuration getReviewDuration() {
+    return reviewDuration;
   }
 
   public Lecture getLecture() {
@@ -100,8 +104,8 @@ public class Homework {
     return this;
   }
 
-  public Homework setCreationTimestamp(Date creationTimestamp) {
-    this.creationTimestamp = creationTimestamp;
+  public Homework setStartTimestamp(Date creationTimestamp) {
+    this.startTimestamp = creationTimestamp;
     return this;
   }
 
@@ -110,8 +114,8 @@ public class Homework {
     return this;
   }
 
-  public Homework setReviewDeadline(Date reviewDeadline) {
-    this.reviewDeadline = reviewDeadline;
+  public Homework setReviewDuration(ReviewDuration reviewDuration) {
+    this.reviewDuration = reviewDuration;
     return this;
   }
 

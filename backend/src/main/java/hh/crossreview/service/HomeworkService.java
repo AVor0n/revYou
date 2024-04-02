@@ -2,14 +2,13 @@ package hh.crossreview.service;
 
 import hh.crossreview.converter.HomeworkConverter;
 import hh.crossreview.dao.HomeworkDao;
-import hh.crossreview.dto.homework.GetAllHomeworksWrapperDto;
-import hh.crossreview.dto.homework.PostHomeworkDto;
+import hh.crossreview.dto.homework.AllHomeworksWrapperDto;
+import hh.crossreview.dto.homework.HomeworkDto;
 import hh.crossreview.dto.homework.PostHomeworkResponseDto;
 import hh.crossreview.entity.Homework;
 import hh.crossreview.entity.Lecture;
 import jakarta.inject.Named;
 import jakarta.inject.Singleton;
-import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.ForbiddenException;
 import java.util.List;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,36 +26,26 @@ public class HomeworkService extends GenericService {
   }
 
   @Transactional
-  public GetAllHomeworksWrapperDto getHomeworks() {
+  public AllHomeworksWrapperDto getHomeworks() {
     List<Homework> homeworks = homeworkDao.getHomeworks();
     return homeworkConverter.homeworksToGetAllHomeworksWrapper(homeworks);
   }
 
   @Transactional
-  public PostHomeworkResponseDto createHomework(PostHomeworkDto postHomeworkDto) {
-    Lecture lecture = homeworkDao.get(Lecture.class, postHomeworkDto.getLectureId());
-    checkEntityNotNull(lecture, String.format("Lecture with id %d was not found", postHomeworkDto.getLectureId()));
+  public PostHomeworkResponseDto createHomework(HomeworkDto homeworkDto) {
+    Integer lectureId = homeworkDto.getLecture().getId();
+    Integer authorId = homeworkDto.getAuthor().getId();
 
-    if (!postHomeworkDto.getAuthorId().equals(lecture.getTeacher().getUserId())) {
+    Lecture lecture = homeworkDao.find(Lecture.class, lectureId);
+    checkEntityNotNull(lecture, String.format("Lecture with id %d was not found", lectureId));
+
+    if (!authorId.equals(lecture.getTeacher().getUserId())) {
       throw new ForbiddenException("User doesn't have permissions for this action");
     }
 
-    if (!isPostHomeworkDtoValid(postHomeworkDto)) {
-      throw new BadRequestException("Field is null");
-    }
-
-    Homework homework = homeworkConverter.postHomeworkDtoToHomework(postHomeworkDto, lecture);
+    Homework homework = homeworkConverter.homeworkDtoToHomework(homeworkDto, lecture);
     homeworkDao.createHomework(homework);
     return homeworkConverter.createPostHomeworkResponseDto(homework.getHomeworkId());
   }
 
-  public boolean isPostHomeworkDtoValid(PostHomeworkDto postHomeworkDto) {
-    return postHomeworkDto.getName() != null &&
-        postHomeworkDto.getTopic() != null &&
-        postHomeworkDto.getLectureId() != null &&
-        postHomeworkDto.getAuthorId() != null &&
-        postHomeworkDto.getStartDate() != null &&
-        postHomeworkDto.getCompletionDeadline() != null &&
-        postHomeworkDto.getReviewDeadline() != null;
-  }
 }

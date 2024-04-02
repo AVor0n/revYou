@@ -1,5 +1,6 @@
 package hh.crossreview.exceptionmapper;
 
+import hh.crossreview.dto.exception.ErrorMessageDto;
 import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.ExceptionMapper;
@@ -11,7 +12,7 @@ public class BadRequestExceptionMapper implements ExceptionMapper<BadRequestExce
   @Override
   public Response toResponse(BadRequestException exception) {
     return Response.status(Response.Status.BAD_REQUEST)
-        .entity(exception.getMessage())
+        .entity(new ErrorMessageDto(exception))
         .build();
   }
 
