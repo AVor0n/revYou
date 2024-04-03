@@ -2,6 +2,7 @@ package hh.crossreview.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -11,6 +12,7 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.List;
 
@@ -35,6 +37,7 @@ public class Lecture {
   @Column(name = "presentation_link")
   private String presentationLink;
 
+  @NotNull(message = "Field 'teacherId' couldn't be empty")
   @ManyToOne
   @JoinColumn(name = "teacher_id")
   private User teacher;
@@ -42,13 +45,21 @@ public class Lecture {
   @OneToMany(mappedBy = "lecture")
   private List<Homework> homeworks;
 
-  @ManyToMany
+  @ManyToMany(fetch = FetchType.EAGER)
   @JoinTable(
       name = "lecture_cohort",
       joinColumns = { @JoinColumn(name = "lecture_id") },
       inverseJoinColumns = { @JoinColumn(name = "cohort_id") }
   )
   private List<Cohort> cohorts;
+
+  public Integer getLectureId() {
+    return lectureId;
+  }
+
+  public String getTitle() {
+    return title;
+  }
 
   public User getTeacher() {
     return teacher;
