@@ -6,6 +6,7 @@ import java.util.List;
 
 public class HomeworkDto {
 
+  @JsonProperty(access = JsonProperty.Access.READ_ONLY)
   private Integer id;
 
   private String name;
@@ -14,6 +15,7 @@ public class HomeworkDto {
 
   private String description;
 
+  @JsonProperty(access = JsonProperty.Access.READ_ONLY)
   private List<String> departments;
 
   @JsonProperty(access = JsonProperty.Access.READ_ONLY)

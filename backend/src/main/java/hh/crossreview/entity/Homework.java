@@ -25,7 +25,7 @@ public class Homework {
   private Integer homeworkId;
 
   @Column(name = "homework_link")
-  private String homeworkLink;
+  private String repositoryLink;
 
   @NotBlank(message = "Homework 'name' couldn't be empty")
   @Column(name = "title")
@@ -42,7 +42,7 @@ public class Homework {
   @Column(name = "start_timestamp")
   private Date startTimestamp;
 
-  @NotNull(message = "Homework 'complaetionDeadline' couldn't be empty")
+  @NotNull(message = "Homework 'completionDeadline' couldn't be empty")
   @Column(name = "completion_deadline")
   private Date completionDeadline;
 
@@ -60,8 +60,8 @@ public class Homework {
     return homeworkId;
   }
 
-  public String getHomeworkLink() {
-    return homeworkLink;
+  public String getRepositoryLink() {
+    return repositoryLink;
   }
 
   public String getName() {
@@ -92,8 +92,8 @@ public class Homework {
     return lecture;
   }
 
-  public Homework setHomeworkLink(String homeworkLink) {
-    this.homeworkLink = homeworkLink;
+  public Homework setRepositoryLink(String homeworkLink) {
+    this.repositoryLink = homeworkLink;
     return this;
   }
 

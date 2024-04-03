@@ -48,4 +48,26 @@ public class HomeworkService extends GenericService {
     return homeworkConverter.createPostHomeworkResponseDto(homework.getHomeworkId());
   }
 
+  @Transactional
+  public HomeworkDto getHomework(Integer homeworkId) {
+    Homework homework = homeworkDao.find(Homework.class, homeworkId);
+    checkEntityNotNull(homework, String.format("Homework with id %d was not found", homeworkId));
+    return homeworkConverter.homeworkToHomeworkDto(homework);
+  }
+
+  @Transactional
+  public void deleteHomework(Integer homeworkId) {
+    Homework homework = homeworkDao.find(Homework.class, homeworkId);
+    if (homework != null) {
+      homeworkDao.deleteHomework(homework);
+    }
+  }
+
+  @Transactional
+  public void updateHomework(Integer homeworkId, HomeworkDto homeworkDto) {
+    Homework homework = homeworkDao.find(Homework.class, homeworkId);
+    homeworkConverter.updateHomeworkFromHomeworkDto(homework, homeworkDto);
+    homeworkDao.save(homework);
+  }
+
 }

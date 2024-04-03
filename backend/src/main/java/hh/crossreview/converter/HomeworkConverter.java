@@ -38,7 +38,7 @@ public class HomeworkConverter {
         .setDepartments(studyDirections)
         .setAuthor(homeworkAuthorDto)
         .setLecture(homeworkLectureDto)
-        .setRepositoryLink(homework.getHomeworkLink())
+        .setRepositoryLink(homework.getRepositoryLink())
         .setStartDate(homework.getStartTimestamp())
         .setCompletionDeadline(homework.getCompletionDeadline())
         .setReviewDuration(homework.getReviewDuration().getHours());
@@ -77,7 +77,7 @@ public class HomeworkConverter {
         .setStartTimestamp(homeworkDto.getStartDate())
         .setTopic(homeworkDto.getTopic())
         .setName(homeworkDto.getName())
-        .setHomeworkLink(homeworkDto.getRepositoryLink())
+        .setRepositoryLink(homeworkDto.getRepositoryLink())
         .setCompletionDeadline(homeworkDto.getCompletionDeadline())
         .setReviewDuration(ReviewDuration.ofHours(homeworkDto.getReviewDuration()))
         .setLecture(lecture)
@@ -87,4 +87,29 @@ public class HomeworkConverter {
   public PostHomeworkResponseDto createPostHomeworkResponseDto(Integer homeworkId) {
     return new PostHomeworkResponseDto(homeworkId);
   }
+
+  public void updateHomeworkFromHomeworkDto(Homework homework, HomeworkDto homeworkDto) {
+    if (homeworkDto.getName() != null) {
+      homework.setName(homeworkDto.getName());
+    }
+    if (homeworkDto.getTopic() != null) {
+      homework.setTopic(homeworkDto.getTopic());
+    }
+    if (homeworkDto.getDescription() != null) {
+      homework.setDescription(homeworkDto.getDescription());
+    }
+    if (homeworkDto.getRepositoryLink() != null) {
+      homework.setRepositoryLink(homeworkDto.getRepositoryLink());
+    }
+    if (homeworkDto.getStartDate() != null) {
+      homework.setStartTimestamp(homeworkDto.getStartDate());
+    }
+    if (homeworkDto.getCompletionDeadline() != null) {
+      homework.setCompletionDeadline(homeworkDto.getCompletionDeadline());
+    }
+    if (homeworkDto.getReviewDuration() != null) {
+      homework.setReviewDuration(ReviewDuration.ofHours(homeworkDto.getReviewDuration()));
+    }
+  }
+
 }
