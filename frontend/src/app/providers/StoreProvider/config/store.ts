@@ -1,4 +1,4 @@
-import { type Reducer, configureStore, type ReducersMapObject, combineReducers } from '@reduxjs/toolkit';
+import { configureStore, type ReducersMapObject, combineReducers } from '@reduxjs/toolkit';
 import { $api } from 'app/api';
 import { userReducer } from 'app/entities';
 import { type ThunkExtraArg, type StoreSchema } from './StoreSchema';
@@ -13,7 +13,7 @@ export function createReduxStore(initialState?: StoreSchema) {
   };
 
   const store = configureStore({
-    reducer: combineReducers(rootReducers) as Reducer<StoreSchema>,
+    reducer: combineReducers(rootReducers),
     preloadedState: initialState,
     middleware: getDefaultMiddleware =>
       getDefaultMiddleware({

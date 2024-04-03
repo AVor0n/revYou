@@ -31,7 +31,7 @@ export const AuthTab = () => {
   const onSubmit = handleSubmit(async data => {
     const res = await dispatch(loginUser(data));
     if (res.meta.requestStatus === 'fulfilled') {
-      nav('/');
+      nav('/homeworks');
     }
   });
 
