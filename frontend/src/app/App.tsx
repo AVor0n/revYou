@@ -1,6 +1,6 @@
 import { settings } from '@gravity-ui/date-utils';
 import { ThemeProvider, ToasterComponent, ToasterProvider } from '@gravity-ui/uikit';
-import { RouterProvider } from './providers/RouterProvider/RouterProvider';
+import { RouterProvider } from './providers';
 import './global.css';
 
 settings.loadLocale('ru').then(() => {

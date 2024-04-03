@@ -4,7 +4,7 @@ import { NavLink, Outlet } from 'react-router-dom';
 import styles from './Layout.module.scss';
 
 interface LayoutProps {
-  navLinks: { title: string; href: string }[];
+  navLinks?: { title: string; href: string }[];
 }
 
 export const Layout = ({ navLinks }: LayoutProps) => (
@@ -16,13 +16,15 @@ export const Layout = ({ navLinks }: LayoutProps) => (
             <Icon className={styles.logo} data={Code} size={20} />
           </NavLink>
 
-          <nav className={styles.navLinks}>
-            {navLinks.map(({ title, href }) => (
-              <NavLink className={styles.navLink} to={href} key={href}>
-                {title}
-              </NavLink>
-            ))}
-          </nav>
+          {!!navLinks?.length && (
+            <nav className={styles.navLinks}>
+              {navLinks.map(({ title, href }) => (
+                <NavLink className={styles.navLink} to={href} key={href}>
+                  {title}
+                </NavLink>
+              ))}
+            </nav>
+          )}
         </div>
       </div>
     </div>
