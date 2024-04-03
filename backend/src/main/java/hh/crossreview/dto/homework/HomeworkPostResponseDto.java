@@ -1,6 +1,6 @@
 package hh.crossreview.dto.homework;
 
-public class PostHomeworkResponseDto {
+public class HomeworkPostResponseDto {
 
   private Integer id;
 
@@ -8,7 +8,7 @@ public class PostHomeworkResponseDto {
     return id;
   }
 
-  public PostHomeworkResponseDto(Integer id) {
+  public HomeworkPostResponseDto(Integer id) {
     this.id = id;
   }
 }

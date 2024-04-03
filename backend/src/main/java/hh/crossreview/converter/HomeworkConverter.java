@@ -1,10 +1,10 @@
 package hh.crossreview.converter;
 
-import hh.crossreview.dto.homework.AllHomeworksWrapperDto;
 import hh.crossreview.dto.homework.HomeworkAuthorDto;
 import hh.crossreview.dto.homework.HomeworkDto;
 import hh.crossreview.dto.homework.HomeworkLectureDto;
-import hh.crossreview.dto.homework.PostHomeworkResponseDto;
+import hh.crossreview.dto.homework.HomeworkPostResponseDto;
+import hh.crossreview.dto.homework.HomeworksWrapperDto;
 import hh.crossreview.entity.Homework;
 import hh.crossreview.entity.Lecture;
 import hh.crossreview.entity.User;
@@ -17,18 +17,18 @@ import java.util.List;
 @Singleton
 public class HomeworkConverter {
 
-  public AllHomeworksWrapperDto homeworksToGetAllHomeworksWrapper(List<Homework> homeworks) {
-    List<HomeworkDto> homeworkDtoList = homeworks.stream()
-        .map(this::homeworkToHomeworkDto)
+  public HomeworksWrapperDto convertToHomeworksWrapperDto(List<Homework> homeworks) {
+    List<HomeworkDto> homeworkDtoList = homeworks
+        .stream()
+        .map(this::convertToHomeworkDto)
         .toList();
-    return new AllHomeworksWrapperDto(homeworkDtoList);
+    return new HomeworksWrapperDto(homeworkDtoList);
   }
 
-  public HomeworkDto homeworkToHomeworkDto(Homework homework) {
-
-    List<String> studyDirections = homeworkToListStudyDirections(homework);
-    HomeworkAuthorDto homeworkAuthorDto = homeworkToHomeworkAuthorDto(homework);
-    HomeworkLectureDto homeworkLectureDto = homeworkToHomeworkLectureDto(homework);
+  public HomeworkDto convertToHomeworkDto(Homework homework) {
+    List<String> studyDirections = convertToStudyDirections(homework);
+    HomeworkAuthorDto homeworkAuthorDto = convertToHomeworkAuthorDto(homework);
+    HomeworkLectureDto homeworkLectureDto = convertToHomeworkLectureDto(homework);
 
     return new HomeworkDto()
         .setId(homework.getHomeworkId())
@@ -39,21 +39,22 @@ public class HomeworkConverter {
         .setAuthor(homeworkAuthorDto)
         .setLecture(homeworkLectureDto)
         .setRepositoryLink(homework.getRepositoryLink())
-        .setStartDate(homework.getStartTimestamp())
+        .setStartDate(homework.getStartDate())
         .setCompletionDeadline(homework.getCompletionDeadline())
         .setReviewDuration(homework.getReviewDuration().getHours());
   }
 
 
-  private List<String> homeworkToListStudyDirections(Homework homework) {
-    return homework.getLecture()
+  private List<String> convertToStudyDirections(Homework homework) {
+    return homework
+        .getLecture()
         .getCohorts()
         .stream()
         .map(cohort -> cohort.getStudyDirection().toString())
         .toList();
   }
 
-  private HomeworkAuthorDto homeworkToHomeworkAuthorDto(Homework homework) {
+  private HomeworkAuthorDto convertToHomeworkAuthorDto(Homework homework) {
     User user = homework.getLecture().getTeacher();
 
     return new HomeworkAuthorDto(
@@ -63,7 +64,7 @@ public class HomeworkConverter {
     );
   }
 
-  private HomeworkLectureDto homeworkToHomeworkLectureDto(Homework homework) {
+  private HomeworkLectureDto convertToHomeworkLectureDto(Homework homework) {
     Lecture lecture = homework.getLecture();
 
     return new HomeworkLectureDto(
@@ -72,9 +73,9 @@ public class HomeworkConverter {
     );
   }
 
-  public Homework homeworkDtoToHomework(HomeworkDto homeworkDto, Lecture lecture) {
+  public Homework convertToHomework(HomeworkDto homeworkDto, Lecture lecture) {
     return new Homework()
-        .setStartTimestamp(homeworkDto.getStartDate())
+        .setStartDate(homeworkDto.getStartDate())
         .setTopic(homeworkDto.getTopic())
         .setName(homeworkDto.getName())
         .setRepositoryLink(homeworkDto.getRepositoryLink())
@@ -84,11 +85,11 @@ public class HomeworkConverter {
         .setDescription(homeworkDto.getDescription());
   }
 
-  public PostHomeworkResponseDto createPostHomeworkResponseDto(Integer homeworkId) {
-    return new PostHomeworkResponseDto(homeworkId);
+  public HomeworkPostResponseDto convertToHomeworkPostResponseDto(Integer homeworkId) {
+    return new HomeworkPostResponseDto(homeworkId);
   }
 
-  public void updateHomeworkFromHomeworkDto(Homework homework, HomeworkDto homeworkDto) {
+  public void merge(Homework homework, HomeworkDto homeworkDto) {
     if (homeworkDto.getName() != null) {
       homework.setName(homeworkDto.getName());
     }
@@ -102,7 +103,7 @@ public class HomeworkConverter {
       homework.setRepositoryLink(homeworkDto.getRepositoryLink());
     }
     if (homeworkDto.getStartDate() != null) {
-      homework.setStartTimestamp(homeworkDto.getStartDate());
+      homework.setStartDate(homeworkDto.getStartDate());
     }
     if (homeworkDto.getCompletionDeadline() != null) {
       homework.setCompletionDeadline(homeworkDto.getCompletionDeadline());

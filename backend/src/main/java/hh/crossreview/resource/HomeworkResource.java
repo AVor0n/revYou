@@ -1,8 +1,8 @@
 package hh.crossreview.resource;
 
-import hh.crossreview.dto.homework.AllHomeworksWrapperDto;
 import hh.crossreview.dto.homework.HomeworkDto;
-import hh.crossreview.dto.homework.PostHomeworkResponseDto;
+import hh.crossreview.dto.homework.HomeworkPostResponseDto;
+import hh.crossreview.dto.homework.HomeworksWrapperDto;
 import hh.crossreview.service.HomeworkService;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
@@ -33,10 +33,10 @@ public class HomeworkResource {
   @GET
   @Produces(MediaType.APPLICATION_JSON)
   public Response getHomeworks() {
-    AllHomeworksWrapperDto allHomeworksWrapperDto = homeworkService.getHomeworks();
+    HomeworksWrapperDto homeworksWrapperDto = homeworkService.getHomeworks();
     return Response
         .status(Response.Status.OK)
-        .entity(allHomeworksWrapperDto)
+        .entity(homeworksWrapperDto)
         .build();
   }
 
@@ -44,10 +44,10 @@ public class HomeworkResource {
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   public Response createHomework(HomeworkDto homeworkDto) {
-    PostHomeworkResponseDto postHomeworkResponseDto = homeworkService.createHomework(homeworkDto);
+    HomeworkPostResponseDto homeworkPostResponseDto = homeworkService.createHomework(homeworkDto);
     return Response
         .status(Response.Status.CREATED)
-        .entity(postHomeworkResponseDto)
+        .entity(homeworkPostResponseDto)
         .build();
   }
 

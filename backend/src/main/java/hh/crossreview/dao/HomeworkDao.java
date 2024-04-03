@@ -17,10 +17,6 @@ public class HomeworkDao extends GenericDao {
         .getResultList();
   }
 
-  public void createHomework(Homework homework) {
-    getEntityManager().persist(homework);
-  }
-
   public void deleteHomework(Homework homework) {
     getEntityManager().remove(homework);
   }

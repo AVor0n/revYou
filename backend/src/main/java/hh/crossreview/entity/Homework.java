@@ -40,7 +40,7 @@ public class Homework {
 
   @NotNull(message = "Homework 'startDate' couldn't be empty")
   @Column(name = "start_timestamp")
-  private Date startTimestamp;
+  private Date startDate;
 
   @NotNull(message = "Homework 'completionDeadline' couldn't be empty")
   @Column(name = "completion_deadline")
@@ -76,8 +76,8 @@ public class Homework {
     return description;
   }
 
-  public Date getStartTimestamp() {
-    return startTimestamp;
+  public Date getStartDate() {
+    return startDate;
   }
 
   public Date getCompletionDeadline() {
@@ -112,8 +112,8 @@ public class Homework {
     return this;
   }
 
-  public Homework setStartTimestamp(Date creationTimestamp) {
-    this.startTimestamp = creationTimestamp;
+  public Homework setStartDate(Date creationTimestamp) {
+    this.startDate = creationTimestamp;
     return this;
   }
 

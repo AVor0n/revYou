@@ -4,9 +4,9 @@ import jakarta.ws.rs.NotFoundException;
 
 public class GenericService {
 
-  public void checkEntityNotNull(Object entity, String message) {
+  public void requireNotNull(Object entity, String errorMessage) {
     if (entity == null) {
-      throw new NotFoundException(message);
+      throw new NotFoundException(errorMessage);
     }
   }
 
