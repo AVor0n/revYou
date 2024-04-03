@@ -32,8 +32,8 @@ public class HomeworkConverter {
 
     return new HomeworkDto()
         .setId(homework.getHomeworkId())
-        .setName(homework.getTitle())
-        .setTopic(homework.getTheme())
+        .setName(homework.getName())
+        .setTopic(homework.getTopic())
         .setDescription(homework.getDescription())
         .setDepartments(studyDirections)
         .setAuthor(homeworkAuthorDto)
@@ -75,8 +75,8 @@ public class HomeworkConverter {
   public Homework homeworkDtoToHomework(HomeworkDto homeworkDto, Lecture lecture) {
     return new Homework()
         .setStartTimestamp(homeworkDto.getStartDate())
-        .setTheme(homeworkDto.getTopic())
-        .setTitle(homeworkDto.getName())
+        .setTopic(homeworkDto.getTopic())
+        .setName(homeworkDto.getName())
         .setHomeworkLink(homeworkDto.getRepositoryLink())
         .setCompletionDeadline(homeworkDto.getCompletionDeadline())
         .setReviewDuration(ReviewDuration.ofHours(homeworkDto.getReviewDuration()))

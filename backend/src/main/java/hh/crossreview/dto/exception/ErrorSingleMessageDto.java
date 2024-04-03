@@ -2,12 +2,12 @@ package hh.crossreview.dto.exception;
 
 import java.util.Date;
 
-public class ErrorMessageDto {
+public class ErrorSingleMessageDto {
 
   private String message;
   private Date timestamp;
 
-  public ErrorMessageDto(Exception e) {
+  public ErrorSingleMessageDto(Exception e) {
     this.message = e.getMessage();
     this.timestamp = new Date();
   }

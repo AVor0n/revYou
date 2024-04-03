@@ -16,6 +16,7 @@ public class HomeworkDto {
 
   private List<String> departments;
 
+  @JsonProperty(access = JsonProperty.Access.READ_ONLY)
   private HomeworkAuthorDto author;
   private HomeworkLectureDto lecture;
 

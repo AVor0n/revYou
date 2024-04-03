@@ -12,6 +12,7 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.List;
 
@@ -36,6 +37,7 @@ public class Lecture {
   @Column(name = "presentation_link")
   private String presentationLink;
 
+  @NotNull(message = "Field 'teacherId' couldn't be empty")
   @ManyToOne
   @JoinColumn(name = "teacher_id")
   private User teacher;

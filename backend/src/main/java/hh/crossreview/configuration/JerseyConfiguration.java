@@ -1,6 +1,7 @@
 package hh.crossreview.configuration;
 
 import hh.crossreview.exceptionmapper.BadRequestExceptionMapper;
+import hh.crossreview.exceptionmapper.ConstraintViolationExceptionMapper;
 import hh.crossreview.exceptionmapper.ForbiddenExceptionMapper;
 import hh.crossreview.exceptionmapper.GenericExceptionMapper;
 import hh.crossreview.exceptionmapper.NotFoundExceptionMapper;
@@ -23,6 +24,7 @@ public class JerseyConfiguration extends ResourceConfig {
     register(ForbiddenExceptionMapper.class);
     register(GenericExceptionMapper.class);
     register(NotFoundExceptionMapper.class);
+    register(ConstraintViolationExceptionMapper.class);
   }
 
 }

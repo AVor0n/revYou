@@ -11,6 +11,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import java.util.Date;
 
 @Entity
@@ -25,25 +27,31 @@ public class Homework {
   @Column(name = "homework_link")
   private String homeworkLink;
 
-  @Column
-  private String title;
+  @NotBlank(message = "Homework 'name' couldn't be empty")
+  @Column(name = "title")
+  private String name;
 
-  @Column
-  private String theme;
+  @NotBlank(message = "Homework 'topic' couldn't be empty")
+  @Column(name = "theme")
+  private String topic;
 
   @Column
   private String description;
 
+  @NotNull(message = "Homework 'startDate' couldn't be empty")
   @Column(name = "start_timestamp")
   private Date startTimestamp;
 
+  @NotNull(message = "Homework 'complaetionDeadline' couldn't be empty")
   @Column(name = "completion_deadline")
   private Date completionDeadline;
 
+  @NotNull(message = "Something wrong with 'reviewDuration': valid numbers is 24 and 48")
   @Column(name = "review_duration")
   @Convert(converter = ReviewDurationAttributeConverter.class)
   private ReviewDuration reviewDuration;
 
+  @NotNull(message = "Homework 'lectureId' couldn't be empty")
   @ManyToOne
   @JoinColumn(name = "lecture_id")
   private Lecture lecture;
@@ -56,12 +64,12 @@ public class Homework {
     return homeworkLink;
   }
 
-  public String getTitle() {
-    return title;
+  public String getName() {
+    return name;
   }
 
-  public String getTheme() {
-    return theme;
+  public String getTopic() {
+    return topic;
   }
 
   public String getDescription() {
@@ -89,13 +97,13 @@ public class Homework {
     return this;
   }
 
-  public Homework setTitle(String title) {
-    this.title = title;
+  public Homework setName(String title) {
+    this.name = title;
     return this;
   }
 
-  public Homework setTheme(String theme) {
-    this.theme = theme;
+  public Homework setTopic(String theme) {
+    this.topic = theme;
     return this;
   }
 
