@@ -5,6 +5,7 @@ import hh.crossreview.exceptionmapper.ConstraintViolationExceptionMapper;
 import hh.crossreview.exceptionmapper.ForbiddenExceptionMapper;
 import hh.crossreview.exceptionmapper.GenericExceptionMapper;
 import hh.crossreview.exceptionmapper.NotFoundExceptionMapper;
+import hh.crossreview.exceptionmapper.UnauthorizedExceptionMapper;
 import hh.crossreview.resource.AuthenticationResource;
 import hh.crossreview.resource.HelloResource;
 import hh.crossreview.resource.HomeworkResource;
@@ -27,6 +28,7 @@ public class JerseyConfiguration extends ResourceConfig {
     register(GenericExceptionMapper.class);
     register(NotFoundExceptionMapper.class);
     register(ConstraintViolationExceptionMapper.class);
+    register(UnauthorizedExceptionMapper.class);
   }
 
 }

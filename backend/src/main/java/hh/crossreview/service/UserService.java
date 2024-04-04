@@ -5,37 +5,32 @@ import hh.crossreview.dto.user.SignUpRequestDto;
 import hh.crossreview.entity.User;
 import hh.crossreview.entity.enums.UserRole;
 import hh.crossreview.entity.enums.UserStatus;
-import java.util.Arrays;
+import jakarta.inject.Named;
+import jakarta.inject.Singleton;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
-@Service
+@Named
+@Singleton
 public class UserService implements UserDetailsService {
 
-  private UserDao userDao;
-  private PasswordEncoder passwordEncoder;
+  private final UserDao userDao;
+  private final PasswordEncoder passwordEncoder;
 
-
-  @Autowired
-  public void setUserDao(UserDao userDao) {
+  public UserService(UserDao userDao, PasswordEncoder passwordEncoder) {
     this.userDao = userDao;
-  }
-
-  @Autowired
-  public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
     this.passwordEncoder = passwordEncoder;
   }
+
 
   public List<User> findByUsername(String username) throws UsernameNotFoundException {
     return userDao.findByUsername(username);
@@ -49,7 +44,7 @@ public class UserService implements UserDetailsService {
       throw new UsernameNotFoundException(String.format("Пользователь '%s' не найден", username));
     } else {
       User user = users.getFirst();
-      Collection<String> userRoles = Arrays.asList(user.getRole().name());
+      Collection<String> userRoles = List.of(user.getRole().name());
       List<GrantedAuthority> grantedAuthoritiesRoles = userRoles.stream()
               .map(SimpleGrantedAuthority::new)
               .collect(Collectors.toList());

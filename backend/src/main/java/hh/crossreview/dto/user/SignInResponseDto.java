@@ -1,17 +1,17 @@
 package hh.crossreview.dto.user;
 
 public class SignInResponseDto {
-  private String token;
+  private String accessToken;
 
   public SignInResponseDto(String token) {
-    this.token = token;
+    this.accessToken = token;
   }
 
-  public String getToken() {
-    return token;
+  public String getAccessToken() {
+    return accessToken;
   }
 
-  public void setToken(String token) {
-    this.token = token;
+  public void setAccessToken(String accessToken) {
+    this.accessToken = accessToken;
   }
 }

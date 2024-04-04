@@ -11,7 +11,7 @@ import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
-import org.springframework.http.ResponseEntity;
+import jakarta.ws.rs.core.Response;
 
 @Named
 @Path("/auth")
@@ -29,7 +29,7 @@ public class AuthenticationResource {
   @Path("/sign-up")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
-  public ResponseEntity<?> signUp(SignUpRequestDto request) {
+  public Response signUp(SignUpRequestDto request) {
     return authenticationService.createNewUser(request);
   }
 
@@ -37,7 +37,7 @@ public class AuthenticationResource {
   @Path("/sign-in")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
-  public ResponseEntity<?> signIn(SignInRequestDto request) {
+  public Response signIn(SignInRequestDto request) {
     return authenticationService.createAuthToken(request);
   }
 }
