@@ -11,6 +11,7 @@ CREATE TABLE IF NOT EXISTS cohort
 CREATE TABLE IF NOT EXISTS user_account
 (
     user_id     SERIAL PRIMARY KEY,
+    username        VARCHAR(50) NOT NULL UNIQUE,
     name        VARCHAR(50),
     surname     VARCHAR(50),
     email       VARCHAR(100) NOT NULL UNIQUE,
@@ -64,16 +65,16 @@ VALUES (1, '2023-09-01', '2024-06-30', 'https://mattermost.com/frontend1', 'FRON
        (2, '2023-09-15', '2024-07-15', 'https://mattermost.com/backend1', 'BACK');
 
 -- Вставка данных в таблицу user_account
-INSERT INTO user_account (name, surname, email, password, gitlab_link, mm_link, status, role, cohort_id)
-VALUES ('Иван', 'Иванов', 'ivanov@example.com', 'ivan@123', 'https://gitlab.com/ivanov', 'https://mattermost.com/ivanov',
+INSERT INTO user_account (username, name, surname, email, password, gitlab_link, mm_link, status, role, cohort_id)
+VALUES ('username_1', 'Иван', 'Иванов', 'ivanov@example.com', '$2a$04$Fx/SX9.BAvtPlMyIIqqFx.hLY2Xp8nnhpzvEEVINvVpwIPbA3v/.i', 'https://gitlab.com/ivanov', 'https://mattermost.com/ivanov',
         'ACTIVE', 'STUDENT', 1),
-       ('Мария', 'Петрова', 'petrova@example.com', 'maria@123', 'https://gitlab.com/petrova', 'https://mattermost.com/petrova',
+       ('username_2', 'Мария', 'Петрова', 'petrova@example.com', '$2a$04$Fx/SX9.BAvtPlMyIIqqFx.hLY2Xp8nnhpzvEEVINvVpwIPbA3v/.i', 'https://gitlab.com/petrova', 'https://mattermost.com/petrova',
         'DISABLED', 'STUDENT', 2),
-       ('Антон', 'Сидоров', 'sidorov@example.com', 'alex@123', 'https://gitlab.com/sidorov', 'https://mattermost.com/sidorov',
+       ('username_3', 'Антон', 'Сидоров', 'sidorov@example.com', '$2a$04$Fx/SX9.BAvtPlMyIIqqFx.hLY2Xp8nnhpzvEEVINvVpwIPbA3v/.i', 'https://gitlab.com/sidorov', 'https://mattermost.com/sidorov',
         'ACTIVE', 'TEACHER', NULL),
-       ('Елена', 'Козлова', 'kozlova@example.com', 'elena@123', 'https://gitlab.com/kozlova', 'https://mattermost.com/kozlova',
+       ('username_4', 'Елена', 'Козлова', 'kozlova@example.com', '$2a$04$Fx/SX9.BAvtPlMyIIqqFx.hLY2Xp8nnhpzvEEVINvVpwIPbA3v/.i', 'https://gitlab.com/kozlova', 'https://mattermost.com/kozlova',
         'ACTIVE', 'STUDENT', 1),
-       ('Генадий', 'Горин', 'gorin@example.com', 'sergey@123', 'https://gitlab.com/gorin', 'https://mattermost.com/gorin',
+       ('username_5', 'Генадий', 'Горин', 'gorin@example.com', '$2a$04$Fx/SX9.BAvtPlMyIIqqFx.hLY2Xp8nnhpzvEEVINvVpwIPbA3v/.i', 'https://gitlab.com/gorin', 'https://mattermost.com/gorin',
         'ACTIVE', 'TEACHER', 2);
 
 -- Вставка данных в таблицу lecture
