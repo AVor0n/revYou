@@ -1,7 +1,11 @@
-import { Button, TextInput } from '@gravity-ui/uikit';
+import { Button } from '@gravity-ui/uikit';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Controller, useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
+import { Input } from '@components/index';
+import { useAppDispatch } from 'app';
+import { loginUser } from 'app/entities';
 import styles from './AuthTab.module.scss';
 
 const schema = yup
@@ -12,15 +16,24 @@ const schema = yup
   .required();
 
 export const AuthTab = () => {
+  const dispatch = useAppDispatch();
+  const nav = useNavigate();
+
   const {
     control,
     handleSubmit,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(schema),
+    defaultValues: { login: '', password: '' },
   });
-  // const onSubmit = handleSubmit(data => console.log(data));
-  const onSubmit = handleSubmit(() => {});
+
+  const onSubmit = handleSubmit(async data => {
+    const res = await dispatch(loginUser(data));
+    if (res.meta.requestStatus === 'fulfilled') {
+      nav('/homeworks');
+    }
+  });
 
   return (
     <div className={styles.root}>
@@ -30,23 +43,18 @@ export const AuthTab = () => {
             name="login"
             control={control}
             render={({ field }) => (
-              <TextInput
-                {...field}
-                label="Логин"
-                validationState={errors.login?.message ? 'invalid' : undefined}
-                errorMessage={errors.login?.message}
-              />
+              <Input {...field} label="Логин" hasError={!!errors.login?.message} errorMessage={errors.login?.message} />
             )}
           />
           <Controller
             name="password"
             control={control}
             render={({ field }) => (
-              <TextInput
+              <Input
                 {...field}
                 type="password"
                 label="Пароль"
-                validationState={errors.password?.message ? 'invalid' : undefined}
+                hasError={!!errors.password?.message}
                 errorMessage={errors.password?.message}
               />
             )}

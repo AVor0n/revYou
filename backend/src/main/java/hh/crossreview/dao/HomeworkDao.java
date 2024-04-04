@@ -11,14 +11,10 @@ public class HomeworkDao extends GenericDao {
 
   public List<Homework> getHomeworks() {
     return getEntityManager()
-            .createQuery(
-                    "SELECT h FROM Homework h ",
-                    Homework.class)
-            .getResultList();
-  }
-
-  public void createHomework(Homework homework) {
-    getEntityManager().persist(homework);
+        .createQuery(
+            "SELECT h FROM Homework h ",
+            Homework.class)
+        .getResultList();
   }
 
   public void deleteHomework(Homework homework) {

@@ -1,14 +1,18 @@
 package hh.crossreview.dto.homework;
 
-public class GetHomeworkAuthorDto {
+public class HomeworkAuthorDto {
   private Integer id;
   private String firstName;
   private String lastName;
 
-  public GetHomeworkAuthorDto(Integer id, String firstName, String lastName) {
+  public HomeworkAuthorDto(Integer id, String firstName, String lastName) {
     this.id = id;
     this.firstName = firstName;
     this.lastName = lastName;
+  }
+
+  public HomeworkAuthorDto(Integer id) {
+    this.id = id;
   }
 
   public Integer getId() {

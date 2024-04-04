@@ -52,9 +52,9 @@ CREATE TABLE IF NOT EXISTS homework
     title               VARCHAR(100) NOT NULL,
     theme               VARCHAR(100) NOT NULL,
     description         VARCHAR(500),
-    creation_timestamp  TIMESTAMP    NOT NULL DEFAULT NOW(),
+    start_timestamp     TIMESTAMP    NOT NULL DEFAULT NOW(),
     completion_deadline TIMESTAMP    NOT NULL,
-    review_deadline     TIMESTAMP    NOT NULL,
+    review_duration     INTEGER      NOT NULL,
     lecture_id          INTEGER,
     FOREIGN KEY (lecture_id) REFERENCES lecture (lecture_id)
 );
@@ -91,10 +91,10 @@ VALUES (1, 1),
        (3, 2);
 
 -- Вставка данных в таблицу homework
-INSERT INTO homework (homework_link, title, theme, description, completion_deadline, review_deadline, lecture_id)
+INSERT INTO homework (homework_link, title, theme, description, completion_deadline, review_duration, lecture_id)
 VALUES ('https://gitlub.com/homework1', 'Домашка по гиту', 'Git',
-        'Создайте пул реквест в свой репозиторий и сделайте необходимые мерджи', '2023-10-12 23:59:59', '2023-10-15 23:59:59', 2),
+        'Создайте пул реквест в свой репозиторий и сделайте необходимые мерджи', '2023-10-12 23:59:59', 24, 2),
        ('https://gitlub.com/homework2', 'Домашка по реакту', 'React',
-        'Напишите компоненты, сделайте лендинг', '2023-10-17 23:59:59', '2023-10-20 23:59:59', 1),
+        'Напишите компоненты, сделайте лендинг', '2023-10-17 23:59:59', 48, 1),
        ('https://gitlub.com/homework3', 'Домашка по кафке', 'Kafka',
-        'Напишите реализацию AtLeastOnce', '2023-10-17 23:59:59', '2023-10-20 23:59:59', 3);
+        'Напишите реализацию AtLeastOnce', '2023-10-17 23:59:59', 48, 3);
