@@ -25,6 +25,8 @@ public class User {
   private Integer userId;
 
   @Column
+  private String username;
+  @Column
   private String name;
 
   @Column
@@ -69,4 +71,39 @@ public class User {
     return surname;
   }
 
+  public String getUsername() {
+    return username;
+  }
+
+  public String getPassword() {
+    return password;
+  }
+
+  public UserRole getRole() {
+    return role;
+  }
+
+  public String getEmail() {
+    return email;
+  }
+
+  public void setUsername(String username) {
+    this.username = username;
+  }
+
+  public void setEmail(String email) {
+    this.email = email;
+  }
+
+  public void setPassword(String password) {
+    this.password = password;
+  }
+
+  public void setRole(UserRole role) {
+    this.role = role;
+  }
+
+  public void setStatus(UserStatus status) {
+    this.status = status;
+  }
 }

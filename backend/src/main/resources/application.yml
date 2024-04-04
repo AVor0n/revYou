@@ -2,7 +2,7 @@ spring:
   application:
     name: backend
   datasource:
-    url: jdbc:postgresql://localhost:5432/cross_review
+    url: jdbc:postgresql://localhost:5433/cross_review
     username: ${POSTGRES_USER:postgres}
     password: ${POSTGRES_PASSWORD:postgres_pass}
     driver-class-name: org.postgresql.Driver
@@ -14,3 +14,6 @@ spring:
 server:
   port: 8080
   servlet.context-path: /
+jwt:
+  secret: 984hg493gh0439rthr0429uruj2309yh937gc763fe87t3f89723gf
+  lifetime: 30m

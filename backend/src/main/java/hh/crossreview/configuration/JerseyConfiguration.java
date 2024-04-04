@@ -1,6 +1,7 @@
 package hh.crossreview.configuration;
 
 import hh.crossreview.exceptionmapper.GenericExceptionMapper;
+import hh.crossreview.resource.AuthenticationResource;
 import hh.crossreview.resource.HelloResource;
 import hh.crossreview.resource.HomeworkResource;
 import jakarta.annotation.PostConstruct;
@@ -16,6 +17,7 @@ public class JerseyConfiguration extends ResourceConfig {
   public void init() {
     register(HelloResource.class);
     register(HomeworkResource.class);
+    register(AuthenticationResource.class);
     register(GenericExceptionMapper.class);
   }
 
