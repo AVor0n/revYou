@@ -1,6 +1,6 @@
 package hh.crossreview.exceptionmapper;
 
-import hh.crossreview.dto.exception.ErrorSingleMessageDto;
+import hh.crossreview.dto.exception.ExceptionDto;
 import jakarta.ws.rs.ForbiddenException;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.ExceptionMapper;
@@ -11,9 +11,14 @@ public class ForbiddenExceptionMapper implements ExceptionMapper<ForbiddenExcept
 
   @Override
   public Response toResponse(ForbiddenException exception) {
-    return Response.status(Response.Status.FORBIDDEN)
-        .entity(new ErrorSingleMessageDto(exception))
+    ExceptionDto exceptionDto = new ExceptionDto(
+        Response.Status.FORBIDDEN.getStatusCode(),
+        exception.getMessage()
+    );
+
+    return Response
+        .status(Response.Status.FORBIDDEN)
+        .entity(exceptionDto)
         .build();
   }
-
 }

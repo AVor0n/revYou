@@ -1,6 +1,6 @@
 package hh.crossreview.exceptionmapper;
 
-import hh.crossreview.dto.exception.ErrorSeveralMessagesDto;
+import hh.crossreview.dto.exception.ExceptionValidationDto;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.ws.rs.core.Response;
@@ -13,17 +13,24 @@ public class ConstraintViolationExceptionMapper implements ExceptionMapper<Const
 
   @Override
   public Response toResponse(ConstraintViolationException exception) {
-    return Response.status(Response.Status.BAD_REQUEST)
-        .entity(createEntity(exception))
+    ExceptionValidationDto exceptionValidationDto = new ExceptionValidationDto(
+        Response.Status.BAD_REQUEST.getStatusCode(),
+        "Some fields are invalid",
+        createMessages(exception)
+    );
+
+    return Response
+        .status(Response.Status.BAD_REQUEST)
+        .entity(exceptionValidationDto)
         .build();
   }
 
-  private ErrorSeveralMessagesDto createEntity(ConstraintViolationException exception) {
-    List<String> messages = exception.getConstraintViolations()
+  private List<String> createMessages(ConstraintViolationException exception) {
+    return exception
+        .getConstraintViolations()
         .stream()
         .map(ConstraintViolation::getMessage)
         .toList();
-    return new ErrorSeveralMessagesDto(messages);
   }
 
 }

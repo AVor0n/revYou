@@ -1,6 +1,6 @@
 package hh.crossreview.exceptionmapper;
 
-import hh.crossreview.dto.exception.ErrorSingleMessageDto;
+import hh.crossreview.dto.exception.ExceptionDto;
 import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.ExceptionMapper;
@@ -11,9 +11,14 @@ public class NotFoundExceptionMapper implements ExceptionMapper<NotFoundExceptio
 
   @Override
   public Response toResponse(NotFoundException exception) {
-    return Response.status(Response.Status.NOT_FOUND)
-        .entity(new ErrorSingleMessageDto(exception))
+    ExceptionDto exceptionDto = new ExceptionDto(
+        Response.Status.NOT_FOUND.getStatusCode(),
+        exception.getMessage()
+    );
+
+    return Response
+        .status(Response.Status.NOT_FOUND)
+        .entity(exceptionDto)
         .build();
   }
-
 }
