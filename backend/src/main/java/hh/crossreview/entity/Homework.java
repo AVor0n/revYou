@@ -24,22 +24,22 @@ public class Homework {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Integer homeworkId;
 
-  @Column(name = "homework_link")
+  @Column(name = "repository_link")
   private String repositoryLink;
 
   @NotBlank(message = "Homework 'name' couldn't be empty")
-  @Column(name = "title")
+  @Column
   private String name;
 
   @NotBlank(message = "Homework 'topic' couldn't be empty")
-  @Column(name = "theme")
+  @Column
   private String topic;
 
   @Column
   private String description;
 
   @NotNull(message = "Homework 'startDate' couldn't be empty")
-  @Column(name = "start_timestamp")
+  @Column(name = "start_date")
   private Date startDate;
 
   @NotNull(message = "Homework 'completionDeadline' couldn't be empty")
