@@ -5,6 +5,7 @@ import hh.crossreview.service.UserService;
 import java.util.List;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -44,6 +45,9 @@ public class SecurityConfig {
               return corsConfiguration;
             }))
             .authorizeRequests()
+            .requestMatchers(HttpMethod.POST, "/api/homeworks").hasAnyAuthority(UserRole.ADMIN.toString(), UserRole.TEACHER.toString())
+            .requestMatchers(HttpMethod.PATCH, "/api/homeworks").hasAnyAuthority(UserRole.ADMIN.toString(), UserRole.TEACHER.toString())
+            .requestMatchers(HttpMethod.DELETE, "/api/homeworks").hasAnyAuthority(UserRole.ADMIN.toString(), UserRole.TEACHER.toString())
             .requestMatchers("/api/homeworks/**").authenticated()
             .requestMatchers("/api/hello/**").hasAuthority(UserRole.ADMIN.toString())
             .anyRequest().permitAll()

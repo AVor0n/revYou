@@ -11,10 +11,6 @@ public class HomeworkAuthorDto {
     this.lastName = lastName;
   }
 
-  public HomeworkAuthorDto(Integer id) {
-    this.id = id;
-  }
-
   public Integer getId() {
     return id;
   }

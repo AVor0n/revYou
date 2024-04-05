@@ -60,11 +60,6 @@ public class HomeworkDto {
     return this;
   }
 
-  @JsonProperty("authorId")
-  public void setAuthorId(Integer id) {
-    this.author = new HomeworkAuthorDto(id);
-  }
-
   public HomeworkDto setLecture(HomeworkLectureDto lecture) {
     this.lecture = lecture;
     return this;

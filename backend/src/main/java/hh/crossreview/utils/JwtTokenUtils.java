@@ -4,6 +4,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import jakarta.inject.Named;
+import jakarta.ws.rs.core.SecurityContext;
 import java.time.Duration;
 import java.util.Date;
 import java.util.HashMap;
@@ -11,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -53,5 +55,9 @@ public class JwtTokenUtils {
             .setSigningKey(secret)
             .parseClaimsJws(token)
             .getBody();
+  }
+
+  public UsernamePasswordAuthenticationToken retrieveTokenFromContext(SecurityContext securityContext) {
+    return (UsernamePasswordAuthenticationToken) securityContext.getUserPrincipal();
   }
 }
