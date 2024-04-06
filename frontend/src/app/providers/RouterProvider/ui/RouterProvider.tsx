@@ -20,6 +20,8 @@ export const RouterProvider = () => (
               {navLinks.map(link => (
                 <Route key={link.href} element={link.element} path={link.href} />
               ))}
+              <Route element={<HomeworksPage />} path="/homeworks/create?" />
+              <Route element={<HomeworksPage />} path="/homeworks/:id/edit" />
               <Route element={<NotFoundPage />} path="/*" />
             </Routes>
           </AuthRequire>

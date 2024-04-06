@@ -1,0 +1,1 @@
+export { EditHomeworkWindow } from './EditHomeworkWindow';

@@ -7,7 +7,7 @@ const lectures = new Map(initialLectures.map(lecture => [lecture.id, lecture]));
 
 const authors = new Map(initialAuthors.map(author => [author.id, author]));
 
-const homeworksIdCounter = initialHomeworks.length;
+let homeworksIdCounter = initialHomeworks.length + 1;
 const homeworks = new Map(initialHomeworks.map(homework => [homework.id, homework]));
 
 const homeworkConverter = (homework: Homework): GetHomework => ({
@@ -19,25 +19,27 @@ const homeworkConverter = (homework: Homework): GetHomework => ({
   reviewDuraion: homework.reviewDuraion,
   startDate: homework.startDate,
   topic: homework.topic,
-  departments: ['frontend', 'backend'],
+  departments: homework.departments,
   author: authors.get(homework.authorId),
   lecture: lectures.get(homework.lectureId),
 });
 
 export const homeworksHandlers = [
   http.get<Record<string, never>, Record<string, never>, { data: GetHomework[] }>('/api/homeworks', async () => {
-    await delay(1000);
+    await delay(200);
     return HttpResponse.json({
       data: Array.from(homeworks.values()).map(homeworkConverter),
     });
   }),
   http.post<{ id: string }, PostHomework, number>('/api/homeworks', async ({ request }) => {
     const id = homeworksIdCounter;
+    homeworksIdCounter += 1;
     const body = await request.json();
 
     homeworks.set(id, {
       id,
       ...body,
+      departments: ['frontend', 'backend'],
       description: body.description ?? '',
       repositoryLink: body.repositoryLink ?? '',
       reviewDuraion: body.reviewDuraion,

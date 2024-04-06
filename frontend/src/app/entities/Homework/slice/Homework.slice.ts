@@ -4,6 +4,7 @@ import { loadHomeworks } from '../services';
 import { type HomeworkSchema } from '../types';
 
 const initialState: HomeworkSchema = {
+  homeworkForEdit: null,
   homeworks: null,
   error: '',
 };
@@ -11,7 +12,11 @@ const initialState: HomeworkSchema = {
 export const homeworkSlice = createSlice({
   name: 'Homework',
   initialState,
-  reducers: {},
+  reducers: {
+    setHomeworkForEdit(state, { payload }: PayloadAction<GetHomework | null>) {
+      state.homeworkForEdit = payload;
+    },
+  },
   extraReducers(builder) {
     builder.addCase(loadHomeworks.fulfilled, (state, { payload }: PayloadAction<GetHomework[]>) => {
       state.homeworks = payload;

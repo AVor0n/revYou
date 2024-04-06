@@ -2,6 +2,7 @@ import { Pencil, TrashBin } from '@gravity-ui/icons';
 import { Table, withTableSorting, withTableActions, Icon, DropdownMenu } from '@gravity-ui/uikit';
 import { useNavigate } from 'react-router-dom';
 import { type GetHomework } from '@domains/__generated__';
+import { deleteHomework, loadHomeworks, useAppDispatch } from 'app';
 import { homeworksColumns } from './HomeworksColumns';
 import styles from './HomeworksTable.module.scss';
 
@@ -14,6 +15,7 @@ const TableWithSort = withTableSorting<GetHomework>(Table);
 const TableWithSortAndActions = withTableActions<GetHomework>(TableWithSort);
 
 export const HomeworksTable = ({ data, onRowClick }: HomeworksTableProps) => {
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
   return (
@@ -37,7 +39,11 @@ export const HomeworksTable = ({ data, onRowClick }: HomeworksTableProps) => {
                 text: 'Удалить',
                 theme: 'danger',
                 icon: <Icon data={TrashBin} />,
-                action: () => alert(`Удаление элемента ${item.id}: ${item.name}`),
+                action: async () => {
+                  if (!item.id) return;
+                  await dispatch(deleteHomework(item.id));
+                  dispatch(loadHomeworks());
+                },
               },
             ]}
           />

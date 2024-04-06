@@ -1,0 +1,24 @@
+.window {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  min-inline-size: 600px;
+  padding: 20px;
+}
+
+.header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.content {
+  min-block-size: 100px;
+}
+
+.footer {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  justify-content: end;
+}

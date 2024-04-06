@@ -1,14 +1,15 @@
-import { Magnifier } from '@gravity-ui/icons';
-import { Icon, TextInput } from '@gravity-ui/uikit';
+import { Magnifier, Plus } from '@gravity-ui/icons';
+import { Button, Icon, TextInput } from '@gravity-ui/uikit';
 import styles from './HomeworksToolbar.module.scss';
 
 interface HomeworksToolbarProps {
   disabled?: boolean;
   search: string;
   onSearch: (search: string) => void;
+  onCreate: () => void;
 }
 
-export const HomeworksToolbar = ({ search, onSearch, disabled }: HomeworksToolbarProps) => (
+export const HomeworksToolbar = ({ search, onSearch, onCreate, disabled }: HomeworksToolbarProps) => (
   <div className={styles.toolbar}>
     <TextInput
       className={styles.search}
@@ -18,5 +19,9 @@ export const HomeworksToolbar = ({ search, onSearch, disabled }: HomeworksToolba
       startContent={<Icon data={Magnifier} />}
       disabled={disabled}
     />
+    <Button view="action" onClick={onCreate}>
+      <Icon data={Plus} />
+      Создать
+    </Button>
   </div>
 );
