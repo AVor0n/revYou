@@ -1,18 +1,19 @@
-import { configureStore, type ReducersMapObject, combineReducers } from '@reduxjs/toolkit';
+import { configureStore, combineReducers } from '@reduxjs/toolkit';
 import { $api } from 'app/api';
-import { userReducer } from 'app/entities';
+import { userReducer, homeworkReducer } from 'app/entities';
 import { type ThunkExtraArg, type StoreSchema } from './StoreSchema';
 
 export function createReduxStore(initialState?: StoreSchema) {
-  const rootReducers: ReducersMapObject<StoreSchema> = {
+  const rootReducers = {
     user: userReducer,
+    homework: homeworkReducer,
   };
 
   const extraArg: ThunkExtraArg = {
     api: $api,
   };
 
-  const store = configureStore({
+  return configureStore({
     reducer: combineReducers(rootReducers),
     preloadedState: initialState,
     middleware: getDefaultMiddleware =>
@@ -22,8 +23,6 @@ export function createReduxStore(initialState?: StoreSchema) {
         },
       }),
   });
-
-  return store;
 }
 
 export type AppDispatch = ReturnType<typeof createReduxStore>['dispatch'];

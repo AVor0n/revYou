@@ -18,7 +18,8 @@
     "paths": {
       "@components/*": ["./components/*"],
       "@pages/*": ["./pages/*"],
-      "@types/*": ["./types/*"]
+      "@types/*": ["./types/*"],
+      "@domains/*": ["./domains/*"]
     },
 
     /* Linting */
@@ -28,6 +29,6 @@
     "allowUnreachableCode": false,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src"],
+  "include": ["src", "env.d.ts"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

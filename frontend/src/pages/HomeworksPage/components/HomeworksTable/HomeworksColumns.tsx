@@ -3,14 +3,15 @@ import { type HomeworkTableColumn } from './types';
 
 export const homeworksColumns: HomeworkTableColumn[] = [
   {
-    id: 'title',
+    id: 'name',
     name: () => <span>Название</span>,
     meta: { sort: true },
   },
   {
-    id: 'department',
+    id: 'departments',
     name: () => <span>Направление</span>,
-    template: ({ department }) => department.join(', '),
+    template: ({ departments }) => departments?.join(', '),
+    placeholder: 'Не задано',
   },
   {
     id: 'topic',
@@ -20,18 +21,41 @@ export const homeworksColumns: HomeworkTableColumn[] = [
   {
     id: 'author',
     name: () => <span>Автор</span>,
+    template: ({ author }) => `${author?.firstName ?? ''} ${author?.lastName ?? ''}`,
+    meta: { sort: true },
+  },
+  {
+    id: 'lecture',
+    name: () => <span>Лекция</span>,
+    template: ({ lecture }) => lecture?.name,
+    meta: { sort: true },
+  },
+  {
+    id: 'repoLink',
+    name: () => <span>Ссылка на репозиторий</span>,
+    template: ({ repositoryLink }) => <a href={repositoryLink}>Репо</a>,
     meta: { sort: true },
   },
   {
     id: 'startDate',
     name: () => <span>Дата выдачи</span>,
-    template: ({ startDate }) => dateTimeParse(startDate)?.format('DD.MM.YYYY') ?? 'Некорректная дата',
+    template: ({ startDate }) => dateTimeParse(startDate)?.format('DD.MM.YYYY'),
+    placeholder: 'Некорректная дата',
     meta: { sort: true },
   },
   {
-    id: 'endDate',
-    name: () => <span>Дедлайн</span>,
-    template: ({ endDate }) => dateTimeParse(endDate)?.format('DD.MM.YYYY') ?? 'Некорректная дата',
+    id: 'completionDeadline',
+    name: () => <span>Дедлайн выполнения</span>,
+    template: ({ completionDeadline }) => dateTimeParse(completionDeadline)?.format('DD.MM.YYYY'),
+    placeholder: 'Некорректная дата',
+    meta: { sort: true },
+  },
+  {
+    // FIXME: #back
+    // опечатка в api reviewDuraion -> reviewDuration
+    id: 'reviewDuraion',
+    name: () => <span>Дедлайн проверки</span>,
+    template: ({ reviewDuraion }) => `${reviewDuraion} ч`,
     meta: { sort: true },
   },
 ];

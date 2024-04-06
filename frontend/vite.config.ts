@@ -8,6 +8,8 @@ export default defineConfig({
   server: {
     port: 3000,
   },
+  envPrefix: 'FRONT_',
+  envDir: '../',
   plugins: [
     react(),
     typescriptPaths(),

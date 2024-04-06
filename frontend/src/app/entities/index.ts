@@ -1,1 +1,2 @@
-export * from './User/index';
+export * from './User';
+export * from './Homework';
