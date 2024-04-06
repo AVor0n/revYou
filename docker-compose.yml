@@ -1,12 +1,14 @@
-version: '3.8'
+version: "3.8"
 
 services:
   frontend:
+    platform: linux/amd64
     image: semashkevichea/cross_review_front:latest
     ports:
       - "${FRONT_PORT:-3000}:80"
   backend:
     image: semashkevichea/cross_review_back:latest
+    platform: linux/amd64
     environment:
       SPRING_DATASOURCE_URL: "jdbc:postgresql://db:${POSTGRES_PORT:-5432}/${POSTGRES_DB:-cross_review}"
     ports:
@@ -16,14 +18,15 @@ services:
         condition: service_healthy
   db:
     image: postgres:16.2-alpine3.19
+    platform: linux/amd64
     environment:
       POSTGRES_DB: "${POSTGRES_DB:-cross_review}"
       POSTGRES_USER: "${POSTGRES_USER:-postgres}"
       POSTGRES_PASSWORD: "${POSTGRES_PASSWORD:-postgres_pass}"
       PGDATA: "${PGDATA:-/var/lib/postgresql/data/pgdata}"
     volumes:
-       - "postgres:/var/lib/postgresql/data"
-       - "./db/init.sql:/docker-entrypoint-initdb.d/init.sql"
+      - "postgres:/var/lib/postgresql/data"
+      - "./db/init.sql:/docker-entrypoint-initdb.d/init.sql"
     ports:
       - "${POSTGRES_PORT:-5432}:5432"
     healthcheck:
@@ -45,9 +48,9 @@ services:
       - "${GITLAB_HTTPS_PORT:-443}:443"
       - "${GITLAB_SSH_PORT:-23}:22"
     volumes:
-      - '$GITLAB_HOME/config:/etc/gitlab'
-      - '$GITLAB_HOME/logs:/var/log/gitlab'
-      - '$GITLAB_HOME/data:/var/opt/gitlab'
+      - "$GITLAB_HOME/config:/etc/gitlab"
+      - "$GITLAB_HOME/logs:/var/log/gitlab"
+      - "$GITLAB_HOME/data:/var/opt/gitlab"
     networks:
       - gitlab
     links:
