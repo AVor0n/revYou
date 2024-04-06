@@ -4,7 +4,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { App, StoreProvider } from './app';
 
 async function runMockServer() {
-  if (!import.meta.env.FRONT_ENABLE_MOCK) return null;
+  if (import.meta.env.FRONT_ENABLE_MOCK !== 'true') return null;
 
   const { worker } = await import('./mocks/browser');
   return worker.start();

@@ -7,6 +7,11 @@ import typescriptPaths from 'vite-tsconfig-paths';
 export default defineConfig({
   server: {
     port: 3000,
+    proxy: {
+      '/api': {
+        target: 'http://localhost:8080/',
+      },
+    },
   },
   envPrefix: 'FRONT_',
   envDir: '../',
@@ -18,4 +23,9 @@ export default defineConfig({
       typescript: true,
     }),
   ],
+  esbuild: {
+    supported: {
+      'top-level-await': true,
+    },
+  },
 });
