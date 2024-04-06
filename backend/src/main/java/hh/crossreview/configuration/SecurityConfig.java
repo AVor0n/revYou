@@ -52,14 +52,14 @@ public class SecurityConfig {
           corsConfiguration.setAllowCredentials(true);
           return corsConfiguration;
         }))
-        .authorizeRequests()
-        .requestMatchers(HttpMethod.POST, "/api/homeworks").hasAnyAuthority(UserRole.ADMIN.toString(), UserRole.TEACHER.toString())
-        .requestMatchers(HttpMethod.PATCH, "/api/homeworks").hasAnyAuthority(UserRole.ADMIN.toString(), UserRole.TEACHER.toString())
-        .requestMatchers(HttpMethod.DELETE, "/api/homeworks").hasAnyAuthority(UserRole.ADMIN.toString(), UserRole.TEACHER.toString())
-        .requestMatchers("/api/homeworks/**").authenticated()
-        .requestMatchers("/api/hello/**").hasAuthority(UserRole.ADMIN.toString())
-        .anyRequest().permitAll()
-        .and()
+        .authorizeHttpRequests(manager -> manager
+            .requestMatchers(HttpMethod.POST, "/api/homeworks").hasAnyAuthority(UserRole.ADMIN.toString(), UserRole.TEACHER.toString())
+            .requestMatchers(HttpMethod.PATCH, "/api/homeworks").hasAnyAuthority(UserRole.ADMIN.toString(), UserRole.TEACHER.toString())
+            .requestMatchers(HttpMethod.DELETE, "/api/homeworks").hasAnyAuthority(UserRole.ADMIN.toString(), UserRole.TEACHER.toString())
+            .requestMatchers("/api/homeworks/**").authenticated()
+            .requestMatchers("/api/hello/**").hasAuthority(UserRole.ADMIN.toString())
+            .anyRequest().permitAll()
+        )
         .exceptionHandling(handler -> handler.authenticationEntryPoint(authenticationExceptionEntryPoint))
         .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS))
         .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
