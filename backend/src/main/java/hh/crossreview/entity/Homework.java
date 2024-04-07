@@ -2,6 +2,7 @@ package hh.crossreview.entity;
 
 import hh.crossreview.entity.enums.ReviewDuration;
 import hh.crossreview.entity.enums.converters.ReviewDurationAttributeConverter;
+import hh.crossreview.entity.interfaces.Authorable;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
@@ -17,7 +18,7 @@ import java.util.Date;
 
 @Entity
 @Table
-public class Homework {
+public class Homework implements Authorable {
 
   @Id
   @Column(name = "homework_id")
@@ -56,6 +57,11 @@ public class Homework {
   @JoinColumn(name = "lecture_id")
   private Lecture lecture;
 
+  @NotNull(message = "Homework must have an author")
+  @ManyToOne
+  @JoinColumn(name = "author_id")
+  private User author;
+
   public Integer getHomeworkId() {
     return homeworkId;
   }
@@ -90,6 +96,10 @@ public class Homework {
 
   public Lecture getLecture() {
     return lecture;
+  }
+
+  public User getAuthor() {
+    return author;
   }
 
   public Homework setRepositoryLink(String homeworkLink) {
@@ -132,4 +142,13 @@ public class Homework {
     return this;
   }
 
+  public Homework setAuthor(User author) {
+    this.author = author;
+    return this;
+  }
+
+  @Override
+  public Integer getAuthorId() {
+    return author.getUserId();
+  }
 }

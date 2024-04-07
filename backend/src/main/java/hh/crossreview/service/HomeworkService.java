@@ -12,40 +12,49 @@ import hh.crossreview.entity.User;
 import jakarta.inject.Named;
 import jakarta.inject.Singleton;
 import jakarta.transaction.Transactional;
+import jakarta.ws.rs.ServerErrorException;
+import jakarta.ws.rs.core.Response;
 import java.util.List;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 @Named
 @Singleton
 public class HomeworkService extends GenericService {
 
   private final HomeworkDao homeworkDao;
-  private final UserDao userDao;
   private final HomeworkConverter homeworkConverter;
 
-  public HomeworkService(HomeworkDao homeworkDao, UserDao userDao, HomeworkConverter homeworkConverter) {
+  public HomeworkService(
+      HomeworkDao homeworkDao,
+      UserDao userDao,
+      HomeworkConverter homeworkConverter) {
+    super(userDao);
     this.homeworkDao = homeworkDao;
-    this.userDao = userDao;
     this.homeworkConverter = homeworkConverter;
   }
 
   @Transactional
-  public HomeworksWrapperDto getHomeworks() {
-    List<Homework> homeworks = homeworkDao.getHomeworks();
+  public HomeworksWrapperDto getHomeworks(UsernamePasswordAuthenticationToken token) {
+    User user = retrieveUserFromToken(token);
+    List<Homework> homeworks;
+    switch(user.getRole().toString()) {
+      case "ADMIN" -> homeworks = homeworkDao.findAll();
+      case "TEACHER" -> homeworks = homeworkDao.findByAuthor(user);
+      case "STUDENT" -> homeworks = homeworkDao.findByCohort(user.getCohort());
+      default -> throw new ServerErrorException("Unexpected user role", Response.Status.INTERNAL_SERVER_ERROR);
+    }
     return homeworkConverter.convertToHomeworksWrapperDto(homeworks);
   }
 
   @Transactional
   public HomeworkPostResponseDto createHomework(HomeworkDto homeworkDto, UsernamePasswordAuthenticationToken token) {
-    Integer authorId = retrieveUserIdFromToken(token);
     Integer lectureId = homeworkDto.getLecture().getId();
-
     Lecture lecture = homeworkDao.find(Lecture.class, lectureId);
     requireEntityNotNull(lecture, String.format("Lecture with id %d was not found", lectureId));
-    requireUserIdEquals(authorId, lecture.getTeacher().getUserId());
+    requireAuthorPermission(token, lecture);
 
-    Homework homework = homeworkConverter.convertToHomework(homeworkDto, lecture);
+    User user = retrieveUserFromToken(token);
+    Homework homework = homeworkConverter.convertToHomework(homeworkDto, lecture, user);
     homeworkDao.save(homework);
     return homeworkConverter.convertToHomeworkPostResponseDto(homework.getHomeworkId());
   }
@@ -53,18 +62,16 @@ public class HomeworkService extends GenericService {
   @Transactional
   public HomeworkDto getHomework(Integer homeworkId) {
     Homework homework = homeworkDao.find(Homework.class, homeworkId);
-    requireEntityNotNull(homework, String.format("Homework with id %d was not found", homeworkId));
+    requireEntityNotNull(homework, getHomeworkNotFoundMessage(homeworkId));
     return homeworkConverter.convertToHomeworkDto(homework);
   }
 
+
   @Transactional
   public void deleteHomework(Integer homeworkId, UsernamePasswordAuthenticationToken token) {
-    Integer userId = retrieveUserIdFromToken(token);
-
     Homework homework = homeworkDao.find(Homework.class, homeworkId);
-    requireEntityNotNull(homework, String.format("Homework with id %d was not found", homeworkId));
-    requireUserIdEquals(userId, homework.getLecture().getTeacher().getUserId());
-
+    requireEntityNotNull(homework, getHomeworkNotFoundMessage(homeworkId));
+    requireAuthorPermission(token, homework);
     homeworkDao.deleteHomework(homework);
   }
 
@@ -74,24 +81,15 @@ public class HomeworkService extends GenericService {
       HomeworkDto homeworkDto,
       UsernamePasswordAuthenticationToken token
   ) {
-    Integer userId = retrieveUserIdFromToken(token);
-
     Homework homework = homeworkDao.find(Homework.class, homeworkId);
-    requireEntityNotNull(homework, String.format("Homework with id %d was not found", homeworkId));
-    requireUserIdEquals(userId, homework.getLecture().getTeacher().getUserId());
-
+    requireEntityNotNull(homework, getHomeworkNotFoundMessage(homeworkId));
+    requireAuthorPermission(token, homework);
     homeworkConverter.merge(homework, homeworkDto);
     homeworkDao.save(homework);
   }
 
-  private Integer retrieveUserIdFromToken(UsernamePasswordAuthenticationToken token) {
-    String username = token.getPrincipal().toString();
-    List<User> users = userDao.findByUsername(username);
-    if (users.isEmpty()) {
-      throw new UsernameNotFoundException(String.format("Пользователь '%s' не найден", username));
-    }
-    return users
-        .getFirst()
-        .getUserId();
+  private String getHomeworkNotFoundMessage(Integer homeworkId) {
+    return String.format("Homework with id %d was not found", homeworkId);
   }
+
 }

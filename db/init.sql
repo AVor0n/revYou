@@ -28,12 +28,12 @@ CREATE TABLE IF NOT EXISTS user_account
 CREATE TABLE IF NOT EXISTS lecture
 (
     lecture_id        SERIAL PRIMARY KEY,
-    title             VARCHAR(100) NOT NULL,
+    name              VARCHAR(100) NOT NULL,
     lecture_date      TIMESTAMP,
     zoom_link         VARCHAR(1000),
     presentation_link VARCHAR(1000),
-    teacher_id        INTEGER,
-    FOREIGN KEY (teacher_id) REFERENCES user_account (user_id)
+    author_id         INTEGER,
+    FOREIGN KEY (author_id) REFERENCES user_account (user_id)
 );
 
 CREATE TABLE IF NOT EXISTS lecture_cohort
@@ -56,7 +56,9 @@ CREATE TABLE IF NOT EXISTS homework
     completion_deadline TIMESTAMP    NOT NULL,
     review_duration     INTEGER      NOT NULL,
     lecture_id          INTEGER,
-    FOREIGN KEY (lecture_id) REFERENCES lecture (lecture_id)
+    author_id           INTEGER,
+    FOREIGN KEY (lecture_id) REFERENCES lecture (lecture_id),
+    FOREIGN KEY (author_id) REFERENCES user_account (user_id)
 );
 
 -- Вставка данных в таблицу cohort
@@ -83,7 +85,7 @@ VALUES ('username_1', 'Иван', 'Иванов', 'ivanov@example.com', '$2a$04$
         'ACTIVE', 'TEACHER', 2);
 
 -- Вставка данных в таблицу lecture
-INSERT INTO lecture (title, lecture_date, zoom_link, presentation_link, teacher_id)
+INSERT INTO lecture (name, lecture_date, zoom_link, presentation_link, author_id)
 VALUES ('React', '2023-10-05 09:00:00', 'https://zoom.us/git1', 'https://slides.com/git1', 3),
        ('Git', '2023-10-10 10:00:00', 'https://zoom.us/git2', 'https://slides.com/git2', 5),
        ('Kafka', '2023-10-15 13:00:00', 'https://zoom.us/kafka', 'https://slides.com/kafka', 5);
@@ -96,10 +98,10 @@ VALUES (1, 1),
        (3, 2);
 
 -- Вставка данных в таблицу homework
-INSERT INTO homework (repository_link, name, topic, description, start_date, completion_deadline, review_duration, lecture_id)
+INSERT INTO homework (repository_link, name, topic, description, start_date, completion_deadline, review_duration, lecture_id, author_id)
 VALUES ('https://gitlab.com/homework1', 'Домашка по гиту', 'Git',
-        'Создайте пул реквест в свой репозиторий и сделайте необходимые мерджи', '2023-10-05 23:59:59', '2023-10-12 23:59:59', 24, 2),
+        'Создайте пул реквест в свой репозиторий и сделайте необходимые мерджи', '2023-10-05 23:59:59', '2023-10-12 23:59:59', 24, 2, 5),
        ('https://gitlab.com/homework2', 'Домашка по реакту', 'React',
-        'Напишите компоненты, сделайте лендинг', '2023-10-10 23:59:59', '2023-10-17 23:59:59', 48, 1),
+        'Напишите компоненты, сделайте лендинг', '2023-10-10 23:59:59', '2023-10-17 23:59:59', 48, 1, 3),
        ('https://gitlab.com/homework3', 'Домашка по кафке', 'Kafka',
-        'Напишите реализацию AtLeastOnce', '2023-10-10 23:59:59', '2023-10-17 23:59:59', 48, 3);
+        'Напишите реализацию AtLeastOnce', '2023-10-10 23:59:59', '2023-10-17 23:59:59', 48, 3, 5);

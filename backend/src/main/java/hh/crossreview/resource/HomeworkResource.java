@@ -37,8 +37,10 @@ public class HomeworkResource {
 
   @GET
   @Produces(MediaType.APPLICATION_JSON)
-  public Response getHomeworks() {
-    HomeworksWrapperDto homeworksWrapperDto = homeworkService.getHomeworks();
+  public Response getHomeworks(@Context SecurityContext securityContext) {
+    HomeworksWrapperDto homeworksWrapperDto = homeworkService.getHomeworks(
+        jwtTokenUtils.retrieveTokenFromContext(securityContext)
+    );
     return Response
         .status(Response.Status.OK)
         .entity(homeworksWrapperDto)
