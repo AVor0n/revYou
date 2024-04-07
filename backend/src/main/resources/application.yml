@@ -17,3 +17,11 @@ server:
 jwt:
   secret: 984hg493gh0439rthr0429uruj2309yh937gc763fe87t3f89723gf
   lifetime: 300m
+springdoc:
+  swagger-ui:
+    disable-swagger-default-url: true
+    config-url: /api/openapi.json
+    url: /api/openapi.json
+    path: /swagger-ui.html
+  api-docs:
+    path: /api/openapi.json

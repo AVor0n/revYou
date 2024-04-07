@@ -17,6 +17,7 @@
         <java.version>21</java.version>
         <hibernate-core.version>6.4.4.Final</hibernate-core.version>
         <jakarta.inject-api.version>2.0.1</jakarta.inject-api.version>
+        <swagger.version>2.2.21</swagger.version>
     </properties>
     <dependencies>
 
@@ -77,6 +78,28 @@
             <artifactId>jaxb-api</artifactId>
             <version>2.3.1</version>
         </dependency>
+
+        <dependency>
+            <groupId>io.swagger.core.v3</groupId>
+            <artifactId>swagger-annotations</artifactId>
+            <version>${swagger.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.swagger.core.v3</groupId>
+            <artifactId>swagger-core</artifactId>
+            <version>${swagger.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.swagger.core.v3</groupId>
+            <artifactId>swagger-jaxrs2-jakarta</artifactId>
+            <version>${swagger.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>2.5.0</version>
+        </dependency>
+
     </dependencies>
 
     <build>
