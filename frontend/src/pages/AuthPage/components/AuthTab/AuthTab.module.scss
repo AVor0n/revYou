@@ -1,20 +1,7 @@
-.root {
-  inline-size: 300px;
+.AuthTab {
+  inline-size: 400px;
   margin-inline: auto;
-  padding: 25px;
+  padding: 20px;
   border-radius: var(--g-border-radius-xl);
   box-shadow: var(--g-box-shadow);
-}
-
-.form {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  block-size: 250px;
-
-  .inputs {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-  }
 }

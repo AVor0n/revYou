@@ -1,2 +1,2 @@
 export { AuthPage } from './AuthPage';
-export { type AuthSchema } from './types/Auth.types';
+export { type SignInSchema, type SignUpSchema } from './types/Auth.types';

@@ -1,10 +1,10 @@
-import { type AuthSchema } from '@pages/AuthPage';
+// type UserRole = 'Admin' | 'Student' | 'Teacher';
 
-type UserRole = 'Admin' | 'Student' | 'Teacher';
-
-export type UserAuthDataType = {
-  role: UserRole;
-} & AuthSchema;
+export interface UserAuthDataType {
+  userId: number;
+  username: string;
+  email: string;
+}
 
 export interface UserSchema {
   authData: UserAuthDataType;
