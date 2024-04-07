@@ -1,10 +1,22 @@
+import { PasswordInput } from '@gravity-ui/components';
 import { TextInput } from '@gravity-ui/uikit';
-import React from 'react';
+import { forwardRef } from 'react';
 
 interface InputProps extends Omit<React.ComponentProps<typeof TextInput>, 'validationState'> {
   hasError?: boolean;
 }
 
-export const Input = React.forwardRef<HTMLInputElement, InputProps>(({ hasError, ...restProps }, ref) => (
-  <TextInput ref={ref} {...restProps} validationState={hasError ? 'invalid' : undefined} />
-));
+export const Input = forwardRef<HTMLInputElement, InputProps>(({ hasError, type, value, ...restProps }, ref) =>
+  type !== 'password' ? (
+    <TextInput ref={ref} type={type} {...restProps} validationState={hasError ? 'invalid' : undefined} />
+  ) : (
+    <PasswordInput
+      controlRef={ref}
+      onUpdate={() => {}}
+      value={value ?? ''}
+      showRevealButton
+      {...restProps}
+      validationState={hasError ? 'invalid' : undefined}
+    />
+  ),
+);

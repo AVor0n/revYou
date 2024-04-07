@@ -1,0 +1,18 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  block-size: 350px;
+
+  .inputs {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .buttonsWrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+}
