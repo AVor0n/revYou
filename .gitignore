@@ -3,3 +3,4 @@
 logs/*
 data/*
 config/*
+docker-compose.override.yml
