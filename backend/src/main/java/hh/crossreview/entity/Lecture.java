@@ -1,5 +1,6 @@
 package hh.crossreview.entity;
 
+import hh.crossreview.entity.interfaces.Authorable;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -18,7 +19,7 @@ import java.util.List;
 
 @Entity
 @Table
-public class Lecture {
+public class Lecture implements Authorable {
 
   @Id
   @Column(name = "lecture_id")
@@ -26,7 +27,7 @@ public class Lecture {
   private Integer lectureId;
 
   @Column
-  private String title;
+  private String name;
 
   @Column(name = "lecture_date")
   private Date lectureDate;
@@ -39,8 +40,8 @@ public class Lecture {
 
   @NotNull(message = "Field 'teacherId' couldn't be empty")
   @ManyToOne
-  @JoinColumn(name = "teacher_id")
-  private User teacher;
+  @JoinColumn(name = "author_id")
+  private User author;
 
   @OneToMany(mappedBy = "lecture")
   private List<Homework> homeworks;
@@ -57,16 +58,20 @@ public class Lecture {
     return lectureId;
   }
 
-  public String getTitle() {
-    return title;
+  public String getName() {
+    return name;
   }
 
-  public User getTeacher() {
-    return teacher;
+  public User getAuthor() {
+    return author;
   }
 
   public List<Cohort> getCohorts() {
     return cohorts;
   }
 
+  @Override
+  public Integer getAuthorId() {
+    return author.getUserId();
+  }
 }

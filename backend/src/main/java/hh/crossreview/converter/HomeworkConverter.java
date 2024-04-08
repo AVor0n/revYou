@@ -55,7 +55,7 @@ public class HomeworkConverter {
   }
 
   private HomeworkAuthorDto convertToHomeworkAuthorDto(Homework homework) {
-    User user = homework.getLecture().getTeacher();
+    User user = homework.getAuthor();
 
     return new HomeworkAuthorDto(
         user.getUserId(),
@@ -69,11 +69,11 @@ public class HomeworkConverter {
 
     return new HomeworkLectureDto(
         lecture.getLectureId(),
-        lecture.getTitle()
+        lecture.getName()
     );
   }
 
-  public Homework convertToHomework(HomeworkDto homeworkDto, Lecture lecture) {
+  public Homework convertToHomework(HomeworkDto homeworkDto, Lecture lecture, User author) {
     return new Homework()
         .setStartDate(homeworkDto.getStartDate())
         .setTopic(homeworkDto.getTopic())
@@ -82,7 +82,8 @@ public class HomeworkConverter {
         .setCompletionDeadline(homeworkDto.getCompletionDeadline())
         .setReviewDuration(ReviewDuration.ofHours(homeworkDto.getReviewDuration()))
         .setLecture(lecture)
-        .setDescription(homeworkDto.getDescription());
+        .setDescription(homeworkDto.getDescription())
+        .setAuthor(author);
   }
 
   public HomeworkPostResponseDto convertToHomeworkPostResponseDto(Integer homeworkId) {

@@ -52,7 +52,7 @@ public class User {
   @Enumerated(EnumType.STRING)
   private UserRole role;
 
-  @OneToMany(mappedBy = "teacher")
+  @OneToMany(mappedBy = "author")
   private List<Lecture> lectures;
 
   @ManyToOne
@@ -85,6 +85,10 @@ public class User {
 
   public String getEmail() {
     return email;
+  }
+
+  public Cohort getCohort() {
+    return cohort;
   }
 
   public void setUsername(String username) {

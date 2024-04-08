@@ -1,25 +1,23 @@
 package hh.crossreview.exceptionmapper;
 
 import hh.crossreview.dto.exception.ExceptionDto;
-import jakarta.ws.rs.NotAuthorizedException;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.ExceptionMapper;
 import jakarta.ws.rs.ext.Provider;
 
 @Provider
-public class UnauthorizedExceptionMapper implements ExceptionMapper<NotAuthorizedException> {
+public class ServerErrorExceptionMapper implements ExceptionMapper<Exception> {
 
   @Override
-  public Response toResponse(NotAuthorizedException exception) {
+  public Response toResponse(Exception exception) {
     ExceptionDto exceptionDto = new ExceptionDto(
-        Response.Status.BAD_REQUEST.getStatusCode(),
+        Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
         exception.getMessage()
     );
 
     return Response
-        .status(Response.Status.BAD_REQUEST)
+        .serverError()
         .entity(exceptionDto)
         .build();
   }
-
 }
