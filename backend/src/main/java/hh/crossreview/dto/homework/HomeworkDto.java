@@ -1,12 +1,12 @@
 package hh.crossreview.dto.homework;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.Date;
 import java.util.List;
 
+@Schema(name = "Homework")
 public class HomeworkDto {
 
-  @JsonProperty(access = JsonProperty.Access.READ_ONLY)
   private Integer id;
 
   private String name;
@@ -15,10 +15,8 @@ public class HomeworkDto {
 
   private String description;
 
-  @JsonProperty(access = JsonProperty.Access.READ_ONLY)
   private List<String> departments;
 
-  @JsonProperty(access = JsonProperty.Access.READ_ONLY)
   private HomeworkAuthorDto author;
   private HomeworkLectureDto lecture;
 
@@ -28,6 +26,7 @@ public class HomeworkDto {
 
   private Date completionDeadline;
 
+  @Schema(allowableValues =  {"24", "48"})
   private Integer reviewDuration;
 
   public HomeworkDto setId(Integer id) {
@@ -63,11 +62,6 @@ public class HomeworkDto {
   public HomeworkDto setLecture(HomeworkLectureDto lecture) {
     this.lecture = lecture;
     return this;
-  }
-
-  @JsonProperty("lectureId")
-  public void setLectureId(Integer id) {
-    this.lecture = new HomeworkLectureDto(id);
   }
 
   public HomeworkDto setRepositoryLink(String repositoryLink) {

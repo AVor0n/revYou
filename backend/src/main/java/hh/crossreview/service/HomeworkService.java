@@ -4,6 +4,8 @@ import hh.crossreview.converter.HomeworkConverter;
 import hh.crossreview.dao.HomeworkDao;
 import hh.crossreview.dao.UserDao;
 import hh.crossreview.dto.homework.HomeworkDto;
+import hh.crossreview.dto.homework.HomeworkPatchDto;
+import hh.crossreview.dto.homework.HomeworkPostDto;
 import hh.crossreview.dto.homework.HomeworkPostResponseDto;
 import hh.crossreview.dto.homework.HomeworksWrapperDto;
 import hh.crossreview.entity.Homework;
@@ -47,14 +49,14 @@ public class HomeworkService extends GenericService {
   }
 
   @Transactional
-  public HomeworkPostResponseDto createHomework(HomeworkDto homeworkDto, UsernamePasswordAuthenticationToken token) {
-    Integer lectureId = homeworkDto.getLecture().getId();
+  public HomeworkPostResponseDto createHomework(HomeworkPostDto homeworkPostDto, UsernamePasswordAuthenticationToken token) {
+    Integer lectureId = homeworkPostDto.getLectureId();
     Lecture lecture = homeworkDao.find(Lecture.class, lectureId);
     requireEntityNotNull(lecture, String.format("Lecture with id %d was not found", lectureId));
     requireAuthorPermission(token, lecture);
 
     User user = retrieveUserFromToken(token);
-    Homework homework = homeworkConverter.convertToHomework(homeworkDto, lecture, user);
+    Homework homework = homeworkConverter.convertToHomework(homeworkPostDto, lecture, user);
     homeworkDao.save(homework);
     return homeworkConverter.convertToHomeworkPostResponseDto(homework.getHomeworkId());
   }
@@ -78,13 +80,13 @@ public class HomeworkService extends GenericService {
   @Transactional
   public void updateHomework(
       Integer homeworkId,
-      HomeworkDto homeworkDto,
+      HomeworkPatchDto homeworkPatchDto,
       UsernamePasswordAuthenticationToken token
   ) {
     Homework homework = homeworkDao.find(Homework.class, homeworkId);
     requireEntityNotNull(homework, getHomeworkNotFoundMessage(homeworkId));
     requireAuthorPermission(token, homework);
-    homeworkConverter.merge(homework, homeworkDto);
+    homeworkConverter.merge(homework, homeworkPatchDto);
     homeworkDao.save(homework);
   }
 

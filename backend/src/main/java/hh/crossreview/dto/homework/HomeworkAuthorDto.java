@@ -1,5 +1,8 @@
 package hh.crossreview.dto.homework;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
+@Schema(name = "HomeworkAuthor")
 public class HomeworkAuthorDto {
   private Integer id;
   private String firstName;
