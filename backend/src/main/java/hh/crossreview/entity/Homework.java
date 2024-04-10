@@ -25,6 +25,7 @@ public class Homework implements Authorable {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Integer homeworkId;
 
+  @NotBlank(message = "Homework 'repositoryLink' couldn't be empty")
   @Column(name = "repository_link")
   private String repositoryLink;
 

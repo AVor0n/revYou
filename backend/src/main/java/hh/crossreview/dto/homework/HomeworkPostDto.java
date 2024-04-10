@@ -17,6 +17,7 @@ public class HomeworkPostDto {
   @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
   private Integer lectureId;
 
+  @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
   private String repositoryLink;
 
   @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
