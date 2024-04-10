@@ -1,5 +1,8 @@
 package hh.crossreview.dto.user;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
+@Schema(name = "SignUpRequest")
 public class SignUpRequestDto {
   private String username;
   private String password;

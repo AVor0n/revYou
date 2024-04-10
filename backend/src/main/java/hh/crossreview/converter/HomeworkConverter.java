@@ -3,6 +3,8 @@ package hh.crossreview.converter;
 import hh.crossreview.dto.homework.HomeworkAuthorDto;
 import hh.crossreview.dto.homework.HomeworkDto;
 import hh.crossreview.dto.homework.HomeworkLectureDto;
+import hh.crossreview.dto.homework.HomeworkPatchDto;
+import hh.crossreview.dto.homework.HomeworkPostDto;
 import hh.crossreview.dto.homework.HomeworkPostResponseDto;
 import hh.crossreview.dto.homework.HomeworksWrapperDto;
 import hh.crossreview.entity.Homework;
@@ -73,16 +75,16 @@ public class HomeworkConverter {
     );
   }
 
-  public Homework convertToHomework(HomeworkDto homeworkDto, Lecture lecture, User author) {
+  public Homework convertToHomework(HomeworkPostDto homeworkPostDto, Lecture lecture, User author) {
     return new Homework()
-        .setStartDate(homeworkDto.getStartDate())
-        .setTopic(homeworkDto.getTopic())
-        .setName(homeworkDto.getName())
-        .setRepositoryLink(homeworkDto.getRepositoryLink())
-        .setCompletionDeadline(homeworkDto.getCompletionDeadline())
-        .setReviewDuration(ReviewDuration.ofHours(homeworkDto.getReviewDuration()))
+        .setStartDate(homeworkPostDto.getStartDate())
+        .setTopic(homeworkPostDto.getTopic())
+        .setName(homeworkPostDto.getName())
+        .setRepositoryLink(homeworkPostDto.getRepositoryLink())
+        .setCompletionDeadline(homeworkPostDto.getCompletionDeadline())
+        .setReviewDuration(ReviewDuration.ofHours(homeworkPostDto.getReviewDuration()))
         .setLecture(lecture)
-        .setDescription(homeworkDto.getDescription())
+        .setDescription(homeworkPostDto.getDescription())
         .setAuthor(author);
   }
 
@@ -90,27 +92,27 @@ public class HomeworkConverter {
     return new HomeworkPostResponseDto(homeworkId);
   }
 
-  public void merge(Homework homework, HomeworkDto homeworkDto) {
-    if (homeworkDto.getName() != null) {
-      homework.setName(homeworkDto.getName());
+  public void merge(Homework homework, HomeworkPatchDto homeworkPatchDto) {
+    if (homeworkPatchDto.getName() != null) {
+      homework.setName(homeworkPatchDto.getName());
     }
-    if (homeworkDto.getTopic() != null) {
-      homework.setTopic(homeworkDto.getTopic());
+    if (homeworkPatchDto.getTopic() != null) {
+      homework.setTopic(homeworkPatchDto.getTopic());
     }
-    if (homeworkDto.getDescription() != null) {
-      homework.setDescription(homeworkDto.getDescription());
+    if (homeworkPatchDto.getDescription() != null) {
+      homework.setDescription(homeworkPatchDto.getDescription());
     }
-    if (homeworkDto.getRepositoryLink() != null) {
-      homework.setRepositoryLink(homeworkDto.getRepositoryLink());
+    if (homeworkPatchDto.getRepositoryLink() != null) {
+      homework.setRepositoryLink(homeworkPatchDto.getRepositoryLink());
     }
-    if (homeworkDto.getStartDate() != null) {
-      homework.setStartDate(homeworkDto.getStartDate());
+    if (homeworkPatchDto.getStartDate() != null) {
+      homework.setStartDate(homeworkPatchDto.getStartDate());
     }
-    if (homeworkDto.getCompletionDeadline() != null) {
-      homework.setCompletionDeadline(homeworkDto.getCompletionDeadline());
+    if (homeworkPatchDto.getCompletionDeadline() != null) {
+      homework.setCompletionDeadline(homeworkPatchDto.getCompletionDeadline());
     }
-    if (homeworkDto.getReviewDuration() != null) {
-      homework.setReviewDuration(ReviewDuration.ofHours(homeworkDto.getReviewDuration()));
+    if (homeworkPatchDto.getReviewDuration() != null) {
+      homework.setReviewDuration(ReviewDuration.ofHours(homeworkPatchDto.getReviewDuration()));
     }
   }
 

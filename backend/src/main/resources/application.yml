@@ -19,9 +19,4 @@ jwt:
   lifetime: 300m
 springdoc:
   swagger-ui:
-    disable-swagger-default-url: true
-    config-url: /api/openapi.json
     url: /api/openapi.json
-    path: /swagger-ui.html
-  api-docs:
-    path: /api/openapi.json

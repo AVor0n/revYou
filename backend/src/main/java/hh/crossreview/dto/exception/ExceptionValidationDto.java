@@ -1,7 +1,9 @@
 package hh.crossreview.dto.exception;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
 
+@Schema(name = "ExceptionValidation")
 public class ExceptionValidationDto extends ExceptionDto {
   private List<String> validationMessages;
 
