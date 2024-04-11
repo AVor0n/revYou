@@ -1,4 +1,4 @@
-import { type AxiosInstance } from 'axios';
+import { type Api } from '@domains';
 import { type UserSchema, type HomeworkSchema } from 'app/entities';
 
 export interface StoreSchema {
@@ -7,7 +7,7 @@ export interface StoreSchema {
 }
 
 export interface ThunkExtraArg {
-  api: AxiosInstance;
+  api: Api;
 }
 
 export interface ThunkConfig<T> {

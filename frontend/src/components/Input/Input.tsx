@@ -8,7 +8,7 @@ interface InputProps extends Omit<React.ComponentProps<typeof TextInput>, 'valid
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(({ hasError, type, value, ...restProps }, ref) =>
   type !== 'password' ? (
-    <TextInput ref={ref} type={type} {...restProps} validationState={hasError ? 'invalid' : undefined} />
+    <TextInput ref={ref} value={value} type={type} {...restProps} validationState={hasError ? 'invalid' : undefined} />
   ) : (
     <PasswordInput
       controlRef={ref}

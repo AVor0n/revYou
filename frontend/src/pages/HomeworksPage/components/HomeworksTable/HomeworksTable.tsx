@@ -1,18 +1,18 @@
 import { Pencil, TrashBin } from '@gravity-ui/icons';
 import { Table, withTableSorting, withTableActions, Icon, DropdownMenu } from '@gravity-ui/uikit';
 import { useNavigate } from 'react-router-dom';
-import { type GetHomework } from '@domains/__generated__';
+import { type Homework } from '@domains';
 import { deleteHomework, loadHomeworks, useAppDispatch } from 'app';
 import { homeworksColumns } from './HomeworksColumns';
 import styles from './HomeworksTable.module.scss';
 
 interface HomeworksTableProps {
-  data: GetHomework[];
-  onRowClick?: (item: GetHomework) => void;
+  data: Homework[];
+  onRowClick?: (item: Homework) => void;
 }
 
-const TableWithSort = withTableSorting<GetHomework>(Table);
-const TableWithSortAndActions = withTableActions<GetHomework>(TableWithSort);
+const TableWithSort = withTableSorting<Homework>(Table);
+const TableWithSortAndActions = withTableActions<Homework>(TableWithSort);
 
 export const HomeworksTable = ({ data, onRowClick }: HomeworksTableProps) => {
   const dispatch = useAppDispatch();

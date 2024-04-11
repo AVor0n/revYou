@@ -9,125 +9,119 @@
  * ---------------------------------------------------------------
  */
 
-export interface HomeworkList {
-  data?: GetHomework[];
+export interface SignInResponse {
+  accessToken?: string;
 }
 
-export interface GetHomework {
-  /**
-   * @format int32
-   * @example 1
-   */
+export interface Exception {
+  /** @format date-time */
+  timestamp?: string;
+  /** @format int32 */
+  status?: number;
+  message?: string;
+}
+
+export interface SignInRequest {
+  username?: string;
+  password?: string;
+}
+
+export interface User {
+  /** @format int32 */
+  userId?: number;
+  username?: string;
+  email?: string;
+}
+
+export interface SignUpRequest {
+  username?: string;
+  password?: string;
+  confirmPassword?: string;
+  email?: string;
+}
+
+export interface HomeworkPostResponse {
+  /** @format int32 */
   id?: number;
-  /** @example "Основы Git" */
-  name?: string;
-  /** @example "Git" */
-  topic?: string;
-  /** @example "Описание домашки" */
-  description?: string;
-  /** @example ["FRONT","BACK"] */
-  departments?: string[];
-  author?: Author;
-  lecture?: Lecture;
-  /** @example "https://gitlab.com/hw_git" */
-  repositoryLink?: string;
-  /**
-   * @format date-time
-   * @example "2018-03-20T00:00:00Z"
-   */
-  startDate?: string;
-  /**
-   * @format date-time
-   * @example "2018-03-25T00:00:00Z"
-   */
-  completionDeadline?: string;
-  /**
-   * @format int32
-   * @example 48
-   */
-  reviewDuraion?: number;
 }
 
-export interface PostHomework {
-  /** @example "Основы Git" */
+export interface ExceptionValidation {
+  /** @format date-time */
+  timestamp?: string;
+  /** @format int32 */
+  status?: number;
+  message?: string;
+  validationMessages?: string[];
+}
+
+export interface HomeworkPost {
   name: string;
-  /** @example "Git" */
   topic: string;
-  /** @example "Описание домашки" */
   description?: string;
-  /**
-   * @format int32
-   * @example 2
-   */
-  authorId: number;
-  /**
-   * @format int32
-   * @example 3
-   */
+  /** @format int32 */
   lectureId: number;
-  /** @example "https://gitlab.com/hw_git" */
   repositoryLink?: string;
-  /**
-   * @format date-time
-   * @example "2018-03-20T00:00:00Z"
-   */
+  /** @format date-time */
   startDate: string;
-  /**
-   * @format date-time
-   * @example "2018-03-25T00:00:00Z"
-   */
+  /** @format date-time */
   completionDeadline: string;
-  /**
-   * @format int32
-   * @example 48
-   */
-  reviewDuraion: number;
+  /** @format int32 */
+  reviewDuration: HomeworkPostReviewDurationEnum;
 }
 
-export interface PatchHomework {
-  /** @example "Основы Git" */
-  name?: string;
-  /** @example "Git" */
-  topic?: string;
-  /** @example "Описание домашки" */
-  description?: string;
-  /** @example "https://gitlab.com/hw_git" */
-  repositoryLink?: string;
-  /**
-   * @format date-time
-   * @example "2018-03-20T00:00:00Z"
-   */
-  startDate?: string;
-  /**
-   * @format date-time
-   * @example "2018-03-25T00:00:00Z"
-   */
-  completionDeadline?: string;
-  /**
-   * @format int32
-   * @example 48
-   */
-  reviewDuraion?: number;
-}
-
-export interface Author {
-  /**
-   * @format int32
-   * @example 2
-   */
+export interface Homework {
+  /** @format int32 */
   id?: number;
-  /** @example "Иван" */
+  name?: string;
+  topic?: string;
+  description?: string;
+  departments?: string[];
+  author?: HomeworkAuthor;
+  lecture?: HomeworkLecture;
+  repositoryLink?: string;
+  /** @format date-time */
+  startDate?: string;
+  /** @format date-time */
+  completionDeadline?: string;
+  /** @format int32 */
+  reviewDuration?: HomeworkReviewDurationEnum;
+}
+
+export interface HomeworkAuthor {
+  /** @format int32 */
+  id?: number;
   firstName?: string;
-  /** @example "Иванов" */
   lastName?: string;
 }
 
-export interface Lecture {
-  /**
-   * @format int32
-   * @example 3
-   */
+export interface HomeworkLecture {
+  /** @format int32 */
   id?: number;
-  /** @example "Лекция по Git" */
   name?: string;
 }
+
+export interface HomeworksWrapper {
+  data?: Homework[];
+}
+
+export interface HomeworkPatch {
+  name?: string;
+  topic?: string;
+  description?: string;
+  repositoryLink?: string;
+  /** @format date-time */
+  startDate?: string;
+  /** @format date-time */
+  completionDeadline?: string;
+  /** @format int32 */
+  reviewDuration?: HomeworkPatchReviewDurationEnum;
+}
+
+/** @format int32 */
+export type HomeworkPostReviewDurationEnum = 24 | 48;
+
+/** @format int32 */
+export type HomeworkReviewDurationEnum = 24 | 48;
+
+/** @format int32 */
+export type HomeworkPatchReviewDurationEnum = 24 | 48;

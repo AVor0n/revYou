@@ -21,7 +21,7 @@ export const HomeworksPage = () => {
   useEffect(() => {
     const id = showEditWindow?.params.id;
     if (id) {
-      dispatch(loadHomework(id))
+      dispatch(loadHomework(+id))
         .unwrap()
         .then(homework => dispatch(homeworkActions.setHomeworkForEdit(homework)));
     }

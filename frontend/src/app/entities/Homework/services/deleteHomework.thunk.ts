@@ -5,7 +5,7 @@ export const deleteHomework = createAsyncThunk<null, number, ThunkConfig<string>
   'homework/loadHomeworks',
   async (id, { extra, rejectWithValue }) => {
     try {
-      await extra.api.delete(`/homeworks/${id}`);
+      await extra.api.deleteHomework(id);
       return null;
     } catch (error) {
       return rejectWithValue(String(error));

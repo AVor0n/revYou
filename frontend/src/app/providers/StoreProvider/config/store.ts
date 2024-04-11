@@ -1,5 +1,5 @@
 import { configureStore, combineReducers } from '@reduxjs/toolkit';
-import { $api } from 'app/api';
+import { Api } from '@domains';
 import { userReducer, homeworkReducer } from 'app/entities';
 import { type ThunkExtraArg, type StoreSchema } from './StoreSchema';
 
@@ -10,7 +10,7 @@ export function createReduxStore(initialState?: StoreSchema) {
   };
 
   const extraArg: ThunkExtraArg = {
-    api: $api,
+    api: new Api(),
   };
 
   return configureStore({

@@ -3,12 +3,12 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { Controller, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { Input } from '@components/index';
-import { type SignInSchema } from '@pages/AuthPage';
+import { type SignInRequest } from '@domains';
 import styles from './Form.module.scss';
 
 interface SignInFormProps {
   onChangeAuthType: () => void;
-  onSubmit: (data: SignInSchema) => void;
+  onSubmit: (data: SignInRequest) => void;
 }
 
 const schemaSignIn = yup

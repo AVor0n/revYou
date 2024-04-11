@@ -59,7 +59,7 @@ export const homeworksColumns: HomeworkTableColumn[] = [
     // опечатка в api reviewDuraion -> reviewDuration
     id: 'reviewDuraion',
     name: () => <span>Дедлайн проверки</span>,
-    template: ({ reviewDuraion }) => `${reviewDuraion} ч`,
+    template: ({ reviewDuration }) => `${reviewDuration} ч`,
     meta: { sort: true },
   },
 ];

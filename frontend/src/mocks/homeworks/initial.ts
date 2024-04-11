@@ -1,7 +1,11 @@
-import { type Author, type Lecture } from '@domains/__generated__';
-import { type Homework } from '@domains/custom';
+import { type Homework, type HomeworkAuthor, type HomeworkLecture } from '@domains';
 
-export const initialHomeworks: Homework[] = [
+export type MockHomework = Omit<Homework, 'author' | 'lecture'> & {
+  authorId: number;
+  lectureId: number;
+};
+
+export const initialHomeworks: MockHomework[] = [
   {
     id: 1,
     name: 'Git',
@@ -13,7 +17,7 @@ export const initialHomeworks: Homework[] = [
     startDate: '2024-03-03T10:29:28.265Z',
     completionDeadline: '2024-03-25T10:29:28.265Z',
     repositoryLink: '',
-    reviewDuraion: 48,
+    reviewDuration: 48,
   },
   {
     id: 2,
@@ -26,11 +30,11 @@ export const initialHomeworks: Homework[] = [
     startDate: '2024-03-04T10:29:28.265Z',
     completionDeadline: '2024-03-26T10:29:28.265Z',
     repositoryLink: 'https://github.com/AVor0n/hh-react-hw',
-    reviewDuraion: 48,
+    reviewDuration: 48,
   },
 ];
 
-export const initialAuthors: Author[] = [
+export const initialAuthors: HomeworkAuthor[] = [
   {
     id: 1,
     firstName: 'Иван',
@@ -43,7 +47,7 @@ export const initialAuthors: Author[] = [
   },
 ];
 
-export const initialLectures: Lecture[] = [
+export const initialLectures: HomeworkLecture[] = [
   {
     id: 1,
     name: 'Git',

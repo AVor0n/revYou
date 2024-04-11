@@ -1,11 +1,12 @@
 import { DatePicker } from '@gravity-ui/date-components';
 import { dateTimeParse } from '@gravity-ui/date-utils';
+import { RadioButton, Text } from '@gravity-ui/uikit';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Controller, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { FormWindow } from '@components/FormWindow';
 import { Input } from '@components/Input';
-import { type PostHomework } from '@domains/__generated__';
+import { type HomeworkPost } from '@domains';
 import { defaultHomework } from '@pages/HomeworksPage/constants';
 import { createHomework, homeworkActions, loadHomeworks, useAppDispatch } from 'app';
 import { createHomeworkSchema } from './createHomeworkSchema';
@@ -23,7 +24,7 @@ export const CreateHomeworkWindow = ({ open }: CreateHomeworkWindowProps) => {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<PostHomework>({
+  } = useForm<HomeworkPost>({
     resolver: yupResolver(createHomeworkSchema),
     mode: 'all',
     defaultValues: defaultHomework,
@@ -32,11 +33,10 @@ export const CreateHomeworkWindow = ({ open }: CreateHomeworkWindowProps) => {
       topic: defaultHomework.topic,
       description: defaultHomework.description,
       repositoryLink: defaultHomework.repositoryLink,
-      authorId: defaultHomework.authorId,
       lectureId: defaultHomework.lectureId,
       startDate: defaultHomework.startDate,
       completionDeadline: defaultHomework.completionDeadline,
-      reviewDuraion: defaultHomework.reviewDuraion,
+      reviewDuration: defaultHomework.reviewDuration,
     },
   });
 
@@ -81,7 +81,6 @@ export const CreateHomeworkWindow = ({ open }: CreateHomeworkWindowProps) => {
             />
           )}
         />
-        <Input label="Автор" value="1" size="l" />
         <Input label="Лекция" value="1" size="l" />
         <Controller
           name="startDate"
@@ -115,18 +114,19 @@ export const CreateHomeworkWindow = ({ open }: CreateHomeworkWindowProps) => {
             />
           )}
         />
+        <Text variant="subheader-1">Дедлайн проверки</Text>
         <Controller
-          name="reviewDuraion"
+          name="reviewDuration"
           control={control}
           render={({ field }) => (
-            <Input
-              {...field}
+            <RadioButton
               value={field.value.toString()}
-              type="number"
-              label="Дедлайн проверки"
+              onChange={field.onChange}
               size="l"
-              hasError={!!errors.reviewDuraion?.message}
-              errorMessage={errors.reviewDuraion?.message}
+              options={[
+                { value: '24', content: '24ч' },
+                { value: '48', content: '48ч' },
+              ]}
             />
           )}
         />

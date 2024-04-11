@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { type SignUpSchema, type SignInSchema } from '@pages/AuthPage';
+import { type SignInRequest, type SignUpRequest } from '@domains';
 import { useAppDispatch } from 'app';
 import { signInUser, signUpUser } from 'app/entities';
 import { SignInForm, SignUpForm } from './components';
@@ -12,14 +12,14 @@ export const AuthTab = () => {
 
   const [authType, setAuthType] = useState<'signIn' | 'signUp'>('signIn');
 
-  const onSubmitSignIn = async (data: SignInSchema) => {
+  const onSubmitSignIn = async (data: SignInRequest) => {
     const res = await dispatch(signInUser(data));
     if (res.meta.requestStatus === 'fulfilled') {
       nav('/homeworks');
     }
   };
 
-  const onSubmitSignUp = async (data: SignUpSchema) => {
+  const onSubmitSignUp = async (data: SignUpRequest) => {
     const res = await dispatch(signUpUser(data));
     if (res.meta.requestStatus === 'fulfilled') {
       nav('/homeworks');

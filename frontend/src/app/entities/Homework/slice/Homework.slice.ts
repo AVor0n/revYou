@@ -1,5 +1,4 @@
 import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
-import { type GetHomework } from '@domains/__generated__';
 import { loadHomeworks } from '../services';
 import { type HomeworkSchema } from '../types';
 
@@ -13,12 +12,12 @@ export const homeworkSlice = createSlice({
   name: 'Homework',
   initialState,
   reducers: {
-    setHomeworkForEdit(state, { payload }: PayloadAction<GetHomework | null>) {
+    setHomeworkForEdit(state, { payload }: PayloadAction<HomeworkSchema['homeworkForEdit']>) {
       state.homeworkForEdit = payload;
     },
   },
   extraReducers(builder) {
-    builder.addCase(loadHomeworks.fulfilled, (state, { payload }: PayloadAction<GetHomework[]>) => {
+    builder.addCase(loadHomeworks.fulfilled, (state, { payload }: PayloadAction<HomeworkSchema['homeworks']>) => {
       state.homeworks = payload;
     });
     builder.addCase(loadHomeworks.rejected, (state, { payload }: PayloadAction<string | undefined>) => {

@@ -1,7 +1,7 @@
-import { type GetHomework } from '@domains/__generated__';
+import { type Homework } from '@domains';
 
 export interface HomeworkSchema {
-  homeworkForEdit: GetHomework | null;
-  homeworks: GetHomework[] | null;
+  homeworkForEdit: Partial<Homework> | null;
+  homeworks: Homework[] | null;
   error: string;
 }

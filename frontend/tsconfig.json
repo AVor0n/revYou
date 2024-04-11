@@ -19,7 +19,7 @@
       "@components/*": ["./components/*"],
       "@pages/*": ["./pages/*"],
       "@types/*": ["./types/*"],
-      "@domains/*": ["./domains/*"]
+      "@domains": ["./domains"]
     },
 
     /* Linting */

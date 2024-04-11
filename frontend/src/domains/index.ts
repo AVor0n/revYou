@@ -1,2 +1,2 @@
-export * from './__generated__';
-export * from './custom';
+export * from './__generated__/Api';
+export * from './__generated__/data-contracts';

@@ -1,13 +1,5 @@
-// type UserRole = 'Admin' | 'Student' | 'Teacher';
-
-export interface UserAuthDataType {
-  userId: number;
-  username: string;
-  email: string;
-}
-
 export interface UserSchema {
-  authData: UserAuthDataType;
+  authData: unknown; // пока что не существует в api
   isAuth: boolean;
   error: string;
 }

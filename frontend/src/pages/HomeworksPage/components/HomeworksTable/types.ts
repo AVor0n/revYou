@@ -1,8 +1,7 @@
 import { type TableColumnConfig } from '@gravity-ui/uikit';
-import { type GetHomework } from '@domains/__generated__';
-import { type Homework } from '@domains/custom';
+import { type Homework } from '@domains';
 
-export interface HomeworkTableColumn extends TableColumnConfig<GetHomework> {
+export interface HomeworkTableColumn extends TableColumnConfig<Homework> {
   meta?: {
     defaultSortOrder?: 'asc' | 'desc';
     sort?: boolean | ((itemA: Homework, itemB: Homework) => number);

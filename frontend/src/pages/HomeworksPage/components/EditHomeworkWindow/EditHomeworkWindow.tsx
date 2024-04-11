@@ -1,18 +1,19 @@
 import { DatePicker } from '@gravity-ui/date-components';
 import { dateTimeParse } from '@gravity-ui/date-utils';
+import { RadioButton, Text } from '@gravity-ui/uikit';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Controller, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { FormWindow } from '@components/FormWindow';
 import { Input } from '@components/Input';
-import { type PatchHomework, type GetHomework } from '@domains/__generated__';
+import { type HomeworkPatch, type Homework } from '@domains';
 import { defaultHomework } from '@pages/HomeworksPage/constants';
 import { editHomework, homeworkActions, loadHomeworks, useAppDispatch } from 'app';
 import { editHomeworkSchema } from './editHomeworkSchema';
 import styles from './EditHomeworkWindow.module.scss';
 
 interface EditHomeworkWindowProps {
-  record: GetHomework | null;
+  record: Partial<Homework> | null;
   open: boolean;
 }
 
@@ -24,7 +25,7 @@ export const EditHomeworkWindow = ({ record, open }: EditHomeworkWindowProps) =>
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<PatchHomework>({
+  } = useForm<HomeworkPatch>({
     resolver: yupResolver(editHomeworkSchema),
     mode: 'all',
     defaultValues: defaultHomework,
@@ -33,7 +34,7 @@ export const EditHomeworkWindow = ({ record, open }: EditHomeworkWindowProps) =>
       topic: record?.topic ?? defaultHomework.topic,
       description: record?.description ?? defaultHomework.description,
       repositoryLink: record?.repositoryLink ?? defaultHomework.repositoryLink,
-      reviewDuraion: record?.reviewDuraion ?? defaultHomework.reviewDuraion,
+      reviewDuration: record?.reviewDuration ?? defaultHomework.reviewDuration,
       startDate: record?.startDate ?? defaultHomework.startDate,
       completionDeadline: record?.completionDeadline ?? defaultHomework.completionDeadline,
     },
@@ -81,7 +82,6 @@ export const EditHomeworkWindow = ({ record, open }: EditHomeworkWindowProps) =>
             />
           )}
         />
-        <Input label="Автор" value={`${record?.author?.firstName} ${record?.author?.lastName}`} size="l" disabled />
         <Controller
           name="startDate"
           control={control}
@@ -114,18 +114,19 @@ export const EditHomeworkWindow = ({ record, open }: EditHomeworkWindowProps) =>
             />
           )}
         />
+        <Text variant="subheader-1">Дедлайн проверки</Text>
         <Controller
-          name="reviewDuraion"
+          name="reviewDuration"
           control={control}
           render={({ field }) => (
-            <Input
-              {...field}
-              value={field.value?.toString() ?? '0'}
-              type="number"
-              label="Дедлайн проверки"
+            <RadioButton
+              value={field.value?.toString()}
+              onChange={field.onChange}
               size="l"
-              hasError={!!errors.reviewDuraion?.message}
-              errorMessage={errors.reviewDuraion?.message}
+              options={[
+                { value: '24', content: '24ч' },
+                { value: '48', content: '48ч' },
+              ]}
             />
           )}
         />
