@@ -44,7 +44,11 @@ export const HomeworksPage = () => {
         disabled={!filteredHomeworks}
         onCreate={openCreateWindow}
       />
-      {filteredHomeworks ? <HomeworksTable data={filteredHomeworks} /> : <Skeleton className={styles.skeleton} />}
+      {filteredHomeworks ? (
+        <HomeworksTable data={filteredHomeworks} onRowClick={({ id }) => navigate(`/homeworks/${id}`)} />
+      ) : (
+        <Skeleton className={styles.skeleton} />
+      )}
       <CreateHomeworkWindow open={!!showCreateWindow} />
       <EditHomeworkWindow open={!!showEditWindow} record={homeworkForEdit} />
     </div>

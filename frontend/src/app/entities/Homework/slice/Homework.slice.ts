@@ -3,6 +3,7 @@ import { loadHomeworks } from '../services';
 import { type HomeworkSchema } from '../types';
 
 const initialState: HomeworkSchema = {
+  selectedHomework: null,
   homeworkForEdit: null,
   homeworks: null,
   error: '',
@@ -14,6 +15,9 @@ export const homeworkSlice = createSlice({
   reducers: {
     setHomeworkForEdit(state, { payload }: PayloadAction<HomeworkSchema['homeworkForEdit']>) {
       state.homeworkForEdit = payload;
+    },
+    setSelectedHomework(state, { payload }: PayloadAction<HomeworkSchema['selectedHomework']>) {
+      state.selectedHomework = payload;
     },
   },
   extraReducers(builder) {
