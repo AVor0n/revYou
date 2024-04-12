@@ -1,6 +1,6 @@
 import { settings } from '@gravity-ui/date-utils';
 import { ThemeProvider, ToasterComponent, ToasterProvider } from '@gravity-ui/uikit';
-import { RouterProvider } from './providers';
+import { AuthProvider, RouterProvider } from './providers';
 import './global.css';
 
 settings.loadLocale('ru').then(() => {
@@ -10,7 +10,10 @@ settings.loadLocale('ru').then(() => {
 export const App = () => (
   <ThemeProvider theme="light">
     <ToasterProvider>
-      <RouterProvider />
+      <AuthProvider>
+        <RouterProvider />
+      </AuthProvider>
+
       <ToasterComponent />
     </ToasterProvider>
   </ThemeProvider>
