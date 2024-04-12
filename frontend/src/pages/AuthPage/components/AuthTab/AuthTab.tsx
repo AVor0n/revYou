@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { type SignInRequest, type SignUpRequest } from '@domains';
-import { useAppDispatch } from 'app';
+import { useAppDispatch, useAuth } from 'app';
 import { signInUser, signUpUser } from 'app/entities';
 import { SignInForm, SignUpForm } from './components';
 import styles from './AuthTab.module.scss';
@@ -9,21 +9,28 @@ import styles from './AuthTab.module.scss';
 export const AuthTab = () => {
   const dispatch = useAppDispatch();
   const nav = useNavigate();
+  const { setToken } = useAuth();
 
   const [authType, setAuthType] = useState<'signIn' | 'signUp'>('signIn');
 
-  const onSubmitSignIn = async (data: SignInRequest) => {
-    const res = await dispatch(signInUser(data));
-    if (res.meta.requestStatus === 'fulfilled') {
-      nav('/homeworks');
-    }
+  const onSubmitSignIn = (data: SignInRequest) => {
+    dispatch(signInUser(data))
+      .unwrap()
+      .then(({ accessToken }) => {
+        setToken(accessToken ?? '');
+        nav('/homeworks');
+      });
   };
 
-  const onSubmitSignUp = async (data: SignUpRequest) => {
-    const res = await dispatch(signUpUser(data));
-    if (res.meta.requestStatus === 'fulfilled') {
-      nav('/homeworks');
-    }
+  const onSubmitSignUp = (data: SignUpRequest) => {
+    dispatch(signUpUser(data))
+      .unwrap()
+      .then(() => {
+        onSubmitSignIn({
+          username: data.username,
+          password: data.password,
+        });
+      });
   };
 
   const onChangeAuthType = () => {

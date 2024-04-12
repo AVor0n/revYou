@@ -1,5 +1,6 @@
+import { type User } from '@domains';
+
 export interface UserSchema {
-  authData: unknown; // пока что не существует в api
-  isAuth: boolean;
+  authData: User;
   error: string;
 }
