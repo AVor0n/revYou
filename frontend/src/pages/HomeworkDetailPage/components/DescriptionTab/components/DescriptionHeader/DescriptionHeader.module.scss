@@ -1,0 +1,15 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  padding-block-end: 10px;
+  border-block-end: 1px solid rgb(0 0 0 / 10%);
+
+  & .departmentsWrapper {
+    display: flex;
+    gap: 10px;
+
+    & .dep {
+      border-radius: 5px;
+    }
+  }
+}
