@@ -1,14 +1,29 @@
 package hh.crossreview.dto.user;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
+
+
 
 @Schema(name = "SignUpRequest")
 public class SignUpRequestDto {
+  @NotNull(message = "Field 'username' couldn't be empty")
+  @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
   private String username;
+  @NotNull(message = "Field 'password' couldn't be empty")
+  @Size(min = 8, message = "Minimum password length - 8 characters")
+  @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
   private String password;
 
+  @NotNull(message = "Field 'confirmPassword' couldn't be empty")
+  @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
   private String confirmPassword;
 
+  @NotNull(message = "Field 'email' couldn't be empty")
+  @Pattern(regexp = "\\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}\\b", message = "Enter correct email")
+  @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
   private String email;
 
 

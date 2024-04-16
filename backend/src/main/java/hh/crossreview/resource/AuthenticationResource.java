@@ -1,6 +1,7 @@
 package hh.crossreview.resource;
 
 import hh.crossreview.dto.exception.ExceptionDto;
+import hh.crossreview.dto.user.RefreshAccessTokenRequestDto;
 import hh.crossreview.dto.user.SignInRequestDto;
 import hh.crossreview.dto.user.SignInResponseDto;
 import hh.crossreview.dto.user.SignUpRequestDto;
@@ -13,6 +14,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.inject.Singleton;
+import jakarta.validation.Valid;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
@@ -47,7 +49,7 @@ public class AuthenticationResource {
       description = "Bad request",
       content = @Content(schema = @Schema(implementation = ExceptionDto.class))
   )
-  public Response signUp(SignUpRequestDto request) {
+  public Response signUp(@Valid SignUpRequestDto request) {
     return authenticationService.createNewUser(request);
   }
 
@@ -65,7 +67,25 @@ public class AuthenticationResource {
       description = "Bad request",
       content = @Content(schema = @Schema(implementation = ExceptionDto.class))
   )
-  public Response signIn(SignInRequestDto request) {
+  public Response signIn(@Valid SignInRequestDto request) {
     return authenticationService.createAuthToken(request);
+  }
+
+  @POST
+  @Path("/refresh-access-token")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  @ApiResponse(
+          responseCode = "200",
+          description = "Successful operation",
+          content = @Content(schema = @Schema(implementation = SignInResponseDto.class))
+  )
+  @ApiResponse(
+          responseCode = "403",
+          description = "Bad request",
+          content = @Content(schema = @Schema(implementation = ExceptionDto.class))
+  )
+  public Response refreshAccessToken(@Valid RefreshAccessTokenRequestDto request) {
+    return authenticationService.refreshToken(request);
   }
 }

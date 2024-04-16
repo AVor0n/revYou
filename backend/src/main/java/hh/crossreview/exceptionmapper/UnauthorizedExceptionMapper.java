@@ -12,12 +12,12 @@ public class UnauthorizedExceptionMapper implements ExceptionMapper<NotAuthorize
   @Override
   public Response toResponse(NotAuthorizedException exception) {
     ExceptionDto exceptionDto = new ExceptionDto(
-        Response.Status.BAD_REQUEST.getStatusCode(),
+        Response.Status.UNAUTHORIZED.getStatusCode(),
         exception.getMessage()
     );
 
     return Response
-        .status(Response.Status.BAD_REQUEST)
+        .status(Response.Status.UNAUTHORIZED)
         .entity(exceptionDto)
         .build();
   }

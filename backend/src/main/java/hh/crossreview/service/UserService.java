@@ -32,9 +32,15 @@ public class UserService implements UserDetailsService {
   }
 
 
-  public List<User> findByUsername(String username) throws UsernameNotFoundException {
+  public List<User> findByUsername(String username){
     return userDao.findByUsername(username);
   }
+
+  public List<User> findByEmail(String email) {
+    return userDao.findByEmail(email);
+  }
+
+
 
   @Override
   @Transactional
