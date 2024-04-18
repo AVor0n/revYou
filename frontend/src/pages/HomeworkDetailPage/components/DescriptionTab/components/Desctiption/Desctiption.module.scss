@@ -1,4 +1,8 @@
 .content {
   margin-block-start: 10px;
   padding-inline-start: 10px;
+
+  & .text {
+    white-space: 'pre-line';
+  }
 }

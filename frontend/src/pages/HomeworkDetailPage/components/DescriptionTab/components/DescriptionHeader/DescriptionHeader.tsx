@@ -11,8 +11,8 @@ export const DescriptionHeader = ({ homeworkInfo }: DescriptionHeaderProps) => (
     <div>
       {(!!homeworkInfo.topic || !!homeworkInfo.lecture?.name) && (
         <Text variant="header-1">
-          {!!homeworkInfo.topic && `Домашнее задание по теме ${homeworkInfo.topic}`}
-          {!!homeworkInfo.lecture?.name && `. Лекция ${homeworkInfo.lecture.name}`}
+          {!!homeworkInfo.topic && `Домашнее задание по теме ${homeworkInfo.topic}. `}
+          {!!homeworkInfo.lecture?.name && `Лекция ${homeworkInfo.lecture.name}`}
         </Text>
       )}
     </div>

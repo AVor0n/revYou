@@ -10,7 +10,7 @@ export const Desctiption = ({ homeworkInfo }: DesctiptionProps) => (
   <div>
     <Text variant="subheader-2">Описание</Text>
     <div className={styles.content}>
-      <Text variant="body-2" style={{ whiteSpace: 'pre-line' }}>
+      <Text variant="body-2" className={styles.text}>
         {homeworkInfo.description}
       </Text>
     </div>
