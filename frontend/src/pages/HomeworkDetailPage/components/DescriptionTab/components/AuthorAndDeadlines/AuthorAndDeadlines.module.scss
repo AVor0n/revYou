@@ -1,0 +1,25 @@
+.AuthorAndDeadlines {
+  & .content {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-block-start: 10px;
+    padding-inline-start: 10px;
+
+    & .contentItem {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    & .date {
+      border-radius: 5px;
+    }
+
+    & .reviewDuration {
+      margin-inline-start: 10px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+  }
+}
