@@ -32,8 +32,8 @@ CREATE TABLE IF NOT EXISTS lecture
     lecture_date      TIMESTAMP,
     zoom_link         VARCHAR(1000),
     presentation_link VARCHAR(1000),
-    author_id         INTEGER,
-    FOREIGN KEY (author_id) REFERENCES user_account (user_id)
+    lector_id         INTEGER,
+    FOREIGN KEY (lector_id) REFERENCES user_account (user_id)
 );
 
 CREATE TABLE IF NOT EXISTS lecture_cohort
@@ -63,28 +63,25 @@ CREATE TABLE IF NOT EXISTS homework
 
 CREATE TABLE IF NOT EXISTS solution
 (
-    solution_id        SERIAL PRIMARY KEY,
-    branch_link        VARCHAR(500) NOT NULL,
-    commit_id          VARCHAR(500) NOT NULL,
-    attempt_number     INTEGER      NOT NULL DEFAULT 1,
-    creation_timestamp TIMESTAMP    NOT NULL DEFAULT NOW(),
-    homework_id        INTEGER      NOT NULL,
-    author_id          INTEGER      NOT NULL,
+    solution_id   SERIAL PRIMARY KEY,
+    status        VARCHAR(20),
+    approve_score INTEGER      NOT NULL,
+    review_score  INTEGER      NOT NULL,
+    branch_link   VARCHAR(500) NOT NULL UNIQUE,
+    homework_id   INTEGER      NOT NULL,
+    student_id    INTEGER      NOT NULL,
     FOREIGN KEY (homework_id) REFERENCES homework (homework_id),
-    FOREIGN KEY (author_id) REFERENCES user_account (user_id),
-    UNIQUE (attempt_number, homework_id, author_id)
+    FOREIGN KEY (student_id) REFERENCES user_account (user_id),
+    UNIQUE (homework_id, student_id)
 );
 
-CREATE TABLE IF NOT EXISTS homework_record
+CREATE TABLE IF NOT EXISTS solution_attempt
 (
-    homework_record_id SERIAL PRIMARY KEY,
-    status             VARCHAR(20) NOT NULL, -- PASSED, ATTEMPTED, SKIPPED
-    approve_score      INTEGER     NOT NULL DEFAULT 0,
-    review_score       INTEGER     NOT NULL DEFAULT 0,
-    homework_id        INTEGER     NOT NULL,
-    student_id         INTEGER     NOT NULL,
-    FOREIGN KEY (homework_id) REFERENCES homework (homework_id),
-    FOREIGN KEY (student_id) REFERENCES user_account (user_id)
+    solution_attempt_id SERIAL PRIMARY KEY,
+    commit_id           VARCHAR(500) NOT NULL,
+    created_at          TIMESTAMP    NOT NULL DEFAULT NOW(),
+    solution_id         INTEGER      NOT NULL,
+    FOREIGN KEY (solution_id) REFERENCES solution (solution_id)
 );
 
 -- Вставка данных в таблицу cohort
@@ -117,7 +114,7 @@ VALUES ('username_1', 'Иван', 'Иванов', 'ivanov@example.com',
         'ACTIVE', 'TEACHER', NULL);
 
 -- Вставка данных в таблицу lecture
-INSERT INTO lecture (name, lecture_date, zoom_link, presentation_link, author_id)
+INSERT INTO lecture (name, lecture_date, zoom_link, presentation_link, lector_id)
 VALUES ('React', '2023-10-05 09:00:00', 'https://zoom.us/git1', 'https://slides.com/git1', 3),
        ('Git', '2023-10-10 10:00:00', 'https://zoom.us/git2', 'https://slides.com/git2', 5),
        ('Kafka', '2023-10-15 13:00:00', 'https://zoom.us/kafka', 'https://slides.com/kafka', 5);

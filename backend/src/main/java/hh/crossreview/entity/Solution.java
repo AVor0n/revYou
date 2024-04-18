@@ -1,15 +1,20 @@
 package hh.crossreview.entity;
 
+import hh.crossreview.entity.enums.SolutionStatus;
 import hh.crossreview.entity.interfaces.Authorable;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table
@@ -21,61 +26,76 @@ public class Solution implements Authorable {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Integer solutionId;
 
+  @Column(name = "status")
+  @Enumerated(EnumType.STRING)
+  private SolutionStatus status;
+
   @Column(name = "branch_link")
   private String branchLink;
 
-  @Column(name = "commit_id")
-  private String commitId;
+  @Column(name = "approve_score")
+  private Integer approveScore;
 
-  @Column(name = "attempt_number")
-  private Integer attemptNumber;
-
-  @Column(name = "creation_timestamp")
-  private LocalDateTime creationTimestamp;
+  @Column(name = "review_score")
+  private Integer reviewScore;
 
   @ManyToOne
   @JoinColumn(name = "homework_id")
   private Homework homework;
 
   @ManyToOne
-  @JoinColumn(name = "author_id")
-  private User author;
+  @JoinColumn(name = "student_id")
+  private User student;
+
+  @OneToMany(
+      cascade = CascadeType.ALL,
+      mappedBy = "solution")
+  private List<SolutionAttempt> solutionAttempts;
 
   @Override
   public Integer getAuthorId() {
-    return author.getUserId();
+    return student.getUserId();
   }
 
   public Integer getSolutionId() {
     return solutionId;
   }
 
-  public Integer getAttemptNumber() {
-    return attemptNumber;
+  public SolutionStatus getStatus() {
+    return status;
   }
 
   public String getBranchLink() {
     return branchLink;
   }
 
-  public String getCommitId() {
-    return commitId;
+  public Integer getApproveScore() {
+    return approveScore;
   }
 
-  public LocalDateTime getCreationTimestamp() {
-    return creationTimestamp;
+  public Integer getReviewScore() {
+    return reviewScore;
   }
 
   public Homework getHomework() {
     return homework;
   }
 
-  public User getAuthor() {
-    return author;
+  public User getStudent() {
+    return student;
+  }
+
+  public List<SolutionAttempt> getSolutionAttempts() {
+    return solutionAttempts;
   }
 
   public Solution setSolutionId(Integer solutionId) {
     this.solutionId = solutionId;
+    return this;
+  }
+
+  public Solution setStatus(SolutionStatus status) {
+    this.status = status;
     return this;
   }
 
@@ -84,18 +104,13 @@ public class Solution implements Authorable {
     return this;
   }
 
-  public Solution setCommitId(String commitId) {
-    this.commitId = commitId;
+  public Solution setApproveScore(Integer approveScore) {
+    this.approveScore = approveScore;
     return this;
   }
 
-  public Solution setAttemptNumber(Integer attemptNumber) {
-    this.attemptNumber = attemptNumber;
-    return this;
-  }
-
-  public Solution setCreationTimestamp(LocalDateTime creationTimestamp) {
-    this.creationTimestamp = creationTimestamp;
+  public Solution setReviewScore(Integer reviewScore) {
+    this.reviewScore = reviewScore;
     return this;
   }
 
@@ -104,9 +119,13 @@ public class Solution implements Authorable {
     return this;
   }
 
-  public Solution setAuthor(User author) {
-    this.author = author;
+  public Solution setStudent(User student) {
+    this.student = student;
     return this;
   }
 
+  public Solution setSolutionAttempts(List<SolutionAttempt> solutionAttempts) {
+    this.solutionAttempts = solutionAttempts;
+    return this;
+  }
 }

@@ -1,51 +1,54 @@
 package hh.crossreview.dto.solution;
 
-import hh.crossreview.dto.homework.HomeworkDto;
 import io.swagger.v3.oas.annotations.media.Schema;
-import java.time.LocalDateTime;
+import java.util.List;
 
 @Schema(name = "Solution")
 @SuppressWarnings({"unused"})
 public class SolutionDto {
 
-  private Integer id;
+  private String status;
+
+  private Integer approveScore;
+
+  private Integer reviewScore;
 
   private String branchLink;
 
-  private String commitId;
+  private List<SolutionAttemptDto> solutionAttempts;
 
-  private Integer attemptNumber;
+  public String getStatus() {
+    return status;
+  }
 
-  private LocalDateTime creationTimestamp;
+  public Integer getApproveScore() {
+    return approveScore;
+  }
 
-  private HomeworkDto homework;
-
-  public Integer getId() {
-    return id;
+  public Integer getReviewScore() {
+    return reviewScore;
   }
 
   public String getBranchLink() {
     return branchLink;
   }
 
-  public String getCommitId() {
-    return commitId;
+  public List<SolutionAttemptDto> getSolutionAttempts() {
+    return solutionAttempts;
   }
 
-  public Integer getAttemptNumber() {
-    return attemptNumber;
+  public SolutionDto setStatus(String status) {
+    this.status = status;
+    return this;
   }
 
-  public LocalDateTime getCreationTimestamp() {
-    return creationTimestamp;
+  public SolutionDto setApproveScore(Integer approveScore) {
+    this.approveScore = approveScore;
+    return this;
   }
 
-  public HomeworkDto getHomework() {
-    return homework;
-  }
-
-  public SolutionDto setId(Integer id) {
-    this.id = id;
+  public SolutionDto setReviewScore(Integer reviewScore) {
+    this.reviewScore = reviewScore;
     return this;
   }
 
@@ -54,24 +57,8 @@ public class SolutionDto {
     return this;
   }
 
-  public SolutionDto setCommitId(String commitId) {
-    this.commitId = commitId;
+  public SolutionDto setSolutionAttempts(List<SolutionAttemptDto> solutionAttempts) {
+    this.solutionAttempts = solutionAttempts;
     return this;
   }
-
-  public SolutionDto setAttemptNumber(Integer attemptNumber) {
-    this.attemptNumber = attemptNumber;
-    return this;
-  }
-
-  public SolutionDto setCreationTimestamp(LocalDateTime creationTimestamp) {
-    this.creationTimestamp = creationTimestamp;
-    return this;
-  }
-
-  public SolutionDto setHomework(HomeworkDto homework) {
-    this.homework = homework;
-    return this;
-  }
-
 }

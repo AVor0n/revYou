@@ -16,6 +16,8 @@ import java.util.StringJoiner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestClient;
 
 @Named
@@ -34,14 +36,37 @@ public class GitlabService {
     this.objectMapper = objectMapper;
   }
 
+  public void checkBranchLink(String branchLink) {
+    try {
+      getBranch(branchLink);
+    } catch (HttpClientErrorException | HttpServerErrorException e) {
+      throw new BadRequestException("Branch link is not accessible");
+    }
+  }
+
+
+
   public String retrieveCommitId(String branchLink) {
+    try {
+      return objectMapper
+          .readTree(getBranch(branchLink))
+          .get("commit")
+          .get("id")
+          .asText();
+    } catch (JsonProcessingException e) {
+      throw new InternalServerErrorException(e);
+    }
+  }
+
+  private String getBranch(String branchLink) {
     List<String> result = parseBranchLink(branchLink);
     if (result.isEmpty()) {
       throw new BadRequestException("Branch link isn't valid");
     }
     String repository = urlEncodeString(result.get(0));
     String branch = urlEncodeString(result.get(1));
-    URI uri = URI.create(new StringJoiner("/")
+    URI uri = URI
+        .create(new StringJoiner("/")
         .add(gitlabUrl)
         .add("projects")
         .add(repository)
@@ -59,12 +84,8 @@ public class GitlabService {
           .header("PRIVATE-TOKEN", rootToken)
           .retrieve()
           .body(String.class);
-      return objectMapper
-          .readTree(response)
-          .get("commit")
-          .get("id")
-          .asText();
-    } catch (JsonProcessingException | NoSuchAlgorithmException | KeyManagementException e) {
+      return response;
+    } catch (NoSuchAlgorithmException | KeyManagementException e) {
       throw new InternalServerErrorException(e);
     }
   }

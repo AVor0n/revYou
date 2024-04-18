@@ -3,9 +3,10 @@ package hh.crossreview.dto.solution;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
 
-@Schema(name = "SolutionsWrapper")
+@Schema(name = "SolutionWrapper")
 @SuppressWarnings({"unused", "FieldMayBeFinal"})
 public class SolutionsWrapperDto {
+
   private List<SolutionDto> data;
 
   public SolutionsWrapperDto(List<SolutionDto> data) {
@@ -15,4 +16,5 @@ public class SolutionsWrapperDto {
   public List<SolutionDto> getData() {
     return data;
   }
+
 }

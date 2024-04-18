@@ -6,19 +6,13 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @SuppressWarnings({"unused", "FieldMayBeFinal"})
 public class SolutionPostResponseDto {
   private Integer solutionId;
-  private Integer attemptNumber;
 
-  public SolutionPostResponseDto(Integer solutionId, Integer attemptNumber) {
+  public SolutionPostResponseDto(Integer solutionId) {
     this.solutionId = solutionId;
-    this.attemptNumber = attemptNumber;
   }
 
   public Integer getSolutionId() {
     return solutionId;
-  }
-
-  public Integer getAttemptNumber() {
-    return attemptNumber;
   }
 
 }

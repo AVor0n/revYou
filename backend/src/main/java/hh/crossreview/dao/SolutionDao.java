@@ -6,33 +6,41 @@ import hh.crossreview.entity.User;
 import jakarta.inject.Named;
 import jakarta.inject.Singleton;
 import java.util.List;
+import java.util.Optional;
 
 @Named
 @Singleton
 public class SolutionDao extends GenericDao {
 
-  public List<Solution> findByBranchLinkForOtherUser(String branchLink, User user) {
+  public Optional<Solution> findByBranchLink(String branchLink) {
     return getEntityManager()
         .createQuery("SELECT s FROM Solution s " +
-            "WHERE s.branchLink = :branchLink " +
-            "AND s.author != :user",
+            "WHERE s.branchLink = :branchLink ",
             Solution.class)
         .setParameter("branchLink", branchLink)
-        .setParameter("user", user)
-        .getResultList();
+        .getResultStream()
+        .findFirst();
   }
 
-  public Solution findLastSolutionByHomeworkAndUser(Homework homework, User user) {
+  public Optional<Solution> findByHomeworkAndStudent(Homework homework, User student) {
     return getEntityManager()
         .createQuery("SELECT s FROM Solution s " +
-            "WHERE s.homework = :homework " +
-            "AND s.author = :user " +
-            "ORDER BY attemptNumber DESC " +
-            "LIMIT 1",
+                "WHERE s.homework = :homework " +
+                "AND s.student = :student ",
             Solution.class)
         .setParameter("homework", homework)
-        .setParameter("user", user)
-        .getSingleResult();
+        .setParameter("student", student)
+        .getResultStream()
+        .findFirst();
+  }
+
+  public List<Solution> findByHomework(Homework homework) {
+    return getEntityManager()
+        .createQuery("SELECT s FROM Solution s " +
+            "WHERE s.homework = :homework",
+            Solution.class)
+        .setParameter("homework", homework)
+        .getResultList();
   }
 
 }

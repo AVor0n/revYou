@@ -2,6 +2,8 @@ package hh.crossreview.resource;
 
 import hh.crossreview.dto.exception.ExceptionDto;
 import hh.crossreview.dto.exception.ExceptionValidationDto;
+import hh.crossreview.dto.solution.SolutionAttemptDto;
+import hh.crossreview.dto.solution.SolutionDto;
 import hh.crossreview.dto.solution.SolutionPostDto;
 import hh.crossreview.dto.solution.SolutionPostResponseDto;
 import hh.crossreview.dto.solution.SolutionsWrapperDto;
@@ -15,6 +17,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.inject.Singleton;
+import jakarta.validation.Valid;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
@@ -33,6 +36,10 @@ import jakarta.ws.rs.core.SecurityContext;
 @ApiResponse(
     responseCode = "403",
     description = "Forbidden request",
+    content = @Content(schema = @Schema(implementation = ExceptionDto.class)))
+@ApiResponse(
+    responseCode = "404",
+    description = "Not found",
     content = @Content(schema = @Schema(implementation = ExceptionDto.class)))
 @SecurityRequirement(name = "bearerAuth")
 public class SolutionResource {
@@ -58,13 +65,14 @@ public class SolutionResource {
       description = "Bad request",
       content = @Content(schema = @Schema(implementation = ExceptionValidationDto.class)))
   public Response createSolution(
-      SolutionPostDto solutionPostDto,
+      @Valid SolutionPostDto solutionPostDto,
       @PathParam("homeworkId") Integer homeworkId,
       @Context SecurityContext securityContext) {
     SolutionPostResponseDto solutionPostResponseDto = solutionService.createSolution(
         solutionPostDto,
         homeworkId,
         jwtTokenUtils.retrieveTokenFromContext(securityContext));
+//    solutionService.createSolutionAttempt(homeworkId, jwtTokenUtils.retrieveTokenFromContext(securityContext));
     return Response
         .status(Response.Status.CREATED)
         .entity(solutionPostResponseDto)
@@ -76,11 +84,62 @@ public class SolutionResource {
   @ApiResponse(
       responseCode = "200",
       description = "Successful operation",
-      content = @Content(schema = @Schema(implementation = SolutionsWrapperDto.class)))
-  public Response readSolutions(@PathParam("homeworkId") Integer homeworkId) {
+      content = @Content(schema = @Schema(implementation = SolutionDto.class)))
+  public Response readSolution(
+      @PathParam("homeworkId") Integer homeworkId,
+      @Context SecurityContext securityContext
+  ) {
+    SolutionDto solutionDto = solutionService.readSolution(
+        homeworkId,
+        jwtTokenUtils.retrieveTokenFromContext(securityContext));
     return Response
         .status(Response.Status.OK)
-        .entity(solutionService.getSolutions(homeworkId))
+        .entity(solutionDto)
+        .build();
+  }
+
+  @GET
+  @Path("/all")
+  @Produces(MediaType.APPLICATION_JSON)
+  @ApiResponse(
+      responseCode = "200",
+      description = "Successful operation",
+      content = @Content(schema = @Schema(implementation = SolutionsWrapperDto.class)))
+  public Response readSolutions(
+      @PathParam("homeworkId") Integer homeworkId,
+      @Context SecurityContext securityContext
+  ) {
+    SolutionsWrapperDto solutionsWrapperDto = solutionService.readSolutions(
+        homeworkId,
+        jwtTokenUtils.retrieveTokenFromContext(securityContext));
+    return Response
+        .status(Response.Status.OK)
+        .entity(solutionsWrapperDto)
+        .build();
+  }
+
+  @POST
+  @Path("/attempts")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  @ApiResponse(
+      responseCode = "201",
+      description = "Created",
+      content = @Content(schema = @Schema(implementation = SolutionAttemptDto.class)))
+  @ApiResponse(
+      responseCode = "400",
+      description = "Bad request",
+      content = @Content(schema = @Schema(implementation = ExceptionValidationDto.class)))
+  public Response createSolutionAttempt(
+      @PathParam("homeworkId") Integer homeworkId,
+      @Context SecurityContext securityContext
+  ) {
+    SolutionAttemptDto solutionAttemptDto =  solutionService.createSolutionAttempt(
+        homeworkId,
+        jwtTokenUtils.retrieveTokenFromContext(securityContext));
+    return Response
+        .status(Response.Status.CREATED)
+        .entity(solutionAttemptDto)
         .build();
   }
 

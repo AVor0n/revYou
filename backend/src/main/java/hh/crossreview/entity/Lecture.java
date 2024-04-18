@@ -19,6 +19,7 @@ import java.util.List;
 
 @Entity
 @Table
+@SuppressWarnings({"unused"})
 public class Lecture implements Authorable {
 
   @Id
@@ -40,8 +41,8 @@ public class Lecture implements Authorable {
 
   @NotNull(message = "Field 'teacherId' couldn't be empty")
   @ManyToOne
-  @JoinColumn(name = "author_id")
-  private User author;
+  @JoinColumn(name = "lector_id")
+  private User lector;
 
   @OneToMany(mappedBy = "lecture")
   private List<Homework> homeworks;
@@ -62,8 +63,8 @@ public class Lecture implements Authorable {
     return name;
   }
 
-  public User getAuthor() {
-    return author;
+  public User getLector() {
+    return lector;
   }
 
   public List<Cohort> getCohorts() {
@@ -72,6 +73,6 @@ public class Lecture implements Authorable {
 
   @Override
   public Integer getAuthorId() {
-    return author.getUserId();
+    return lector.getUserId();
   }
 }

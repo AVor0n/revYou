@@ -55,7 +55,7 @@ public class User implements Cohortable {
   @Enumerated(EnumType.STRING)
   private UserRole role;
 
-  @OneToMany(mappedBy = "author")
+  @OneToMany(mappedBy = "lector")
   private List<Lecture> lectures;
 
   @ManyToOne
