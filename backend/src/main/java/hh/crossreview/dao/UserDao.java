@@ -19,6 +19,16 @@ public class UserDao extends GenericDao{
             .getResultList();
   }
 
+  public List<User> findByEmail(String email) {
+    return  getEntityManager()
+            .createQuery(
+                    "SELECT u FROM User u " +
+                            "WHERE u.email = :email",
+                    User.class)
+            .setParameter("email", email)
+            .getResultList();
+  }
+
   public void createUser(User user) {
     getEntityManager().persist(user);
   }

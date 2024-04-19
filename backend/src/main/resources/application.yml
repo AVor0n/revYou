@@ -15,8 +15,12 @@ server:
   port: 8080
   servlet.context-path: /
 jwt:
-  secret: 984hg493gh0439rthr0429uruj2309yh937gc763fe87t3f89723gf
-  lifetime: 300m
+  secret:
+    access: 984hg493gh0439rthr0429uruj2309yh937gc763fe87t3f89723gf
+    refresh: 984hg493gh0s5f46sd54f21sdfsda9yh937gc763fe87t3f89723gf
+  lifetime:
+    access: 1d
+    refresh: 30d
 springdoc:
   swagger-ui:
     url: /api/openapi.json

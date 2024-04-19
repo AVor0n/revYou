@@ -1,11 +1,13 @@
 package hh.crossreview.service;
 
+import hh.crossreview.dto.user.RefreshAccessTokenRequestDto;
 import hh.crossreview.dto.user.SignInRequestDto;
 import hh.crossreview.dto.user.SignInResponseDto;
 import hh.crossreview.dto.user.SignUpRequestDto;
 import hh.crossreview.dto.user.UserDto;
 import hh.crossreview.entity.User;
 import hh.crossreview.utils.JwtTokenUtils;
+import io.jsonwebtoken.Claims;
 import jakarta.inject.Named;
 import jakarta.inject.Singleton;
 import jakarta.transaction.Transactional;
@@ -42,27 +44,54 @@ public class AuthenticationService {
         new UsernamePasswordAuthenticationToken(signInRequestDto.getUsername(), signInRequestDto.getPassword())
       );
     } catch (BadCredentialsException e) {
-      throw new NotAuthorizedException("Неправильный логин или пароль");
+      throw new NotAuthorizedException("Incorrect login or password");
     }
     UserDetails userDetails = userService.loadUserByUsername(signInRequestDto.getUsername());
-    String token = jwtTokenUtils.generateToken(userDetails);
-    return Response.ok(new SignInResponseDto(token))
+    String accessToken = jwtTokenUtils.generateAccessToken(userDetails);
+    String refreshToken = jwtTokenUtils.generateRefreshToken(userDetails);
+
+    return Response.ok(new SignInResponseDto(accessToken, refreshToken))
             .type(MediaType.APPLICATION_JSON)
             .build();
   }
 
   @Transactional
   public Response createNewUser(SignUpRequestDto signUpRequestDto) {
-    if (!signUpRequestDto.getPassword().equals(signUpRequestDto.getConfirmPassword())) {
-      throw new BadRequestException("Пароли не совпадают");
-    }
-    List<User> users = userService.findByUsername(signUpRequestDto.getUsername());
-    if (!users.isEmpty()) {
-      throw new BadRequestException("Пользователь с указанным именем уже существует");
+    if (!validateSignUpRequest(signUpRequestDto)){
+      throw new BadRequestException("Invalid data");
     }
     User user = userService.createNewUser(signUpRequestDto);
     return Response.ok(new UserDto(user.getUserId(), user.getUsername(), user.getEmail()))
             .type(MediaType.APPLICATION_JSON)
             .build();
+  }
+
+  public Response refreshToken(RefreshAccessTokenRequestDto refreshAccessTokenRequestDto) {
+    String refreshToken = refreshAccessTokenRequestDto.getRefreshToken();
+    if (jwtTokenUtils.validateRefreshToken(refreshToken)){
+      final Claims claims = jwtTokenUtils.getRefreshClaims(refreshToken);
+      final String username = claims.getSubject();
+      UserDetails userDetails = userService.loadUserByUsername(username);
+      final String accessToken = jwtTokenUtils.generateAccessToken(userDetails);
+      return Response.ok(new SignInResponseDto(accessToken, refreshToken))
+              .type(MediaType.APPLICATION_JSON)
+              .build();
+    }
+    throw new NotAuthorizedException("Invalid JWT token");
+  }
+
+  private boolean validateSignUpRequest(SignUpRequestDto signUpRequestDto) {
+    if (!signUpRequestDto.getPassword().equals(signUpRequestDto.getConfirmPassword())) {
+      throw new BadRequestException("Password mismatch");
+    }
+    List<User> usersWithSameUsername = userService.findByUsername(signUpRequestDto.getUsername());
+    if (!usersWithSameUsername.isEmpty()) {
+      throw new BadRequestException("A user with the specified username already exists");
+    }
+    List<User> usersWithSameEmail = userService.findByEmail(signUpRequestDto.getEmail());
+    if (!usersWithSameEmail.isEmpty()) {
+      throw new BadRequestException("A user with the specified email already exists");
+    }
+    return true;
   }
 }

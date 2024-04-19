@@ -1,10 +1,15 @@
 package hh.crossreview.dto.user;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotNull;
 
 @Schema(name = "SignInRequest")
 public class SignInRequestDto {
+  @NotNull(message = "Field 'username' couldn't be empty")
+  @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
   private String username;
+  @NotNull(message = "Field 'password' couldn't be empty")
+  @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
   private String password;
 
   public SignInRequestDto(String username, String password) {

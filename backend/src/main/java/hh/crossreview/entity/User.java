@@ -14,6 +14,8 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import java.util.Collections;
 import java.util.List;
 
@@ -28,6 +30,7 @@ public class User implements Cohortable {
   private Integer userId;
 
   @Column
+  @NotNull(message = "'username' couldn't be empty")
   private String username;
   @Column
   private String name;
@@ -36,9 +39,11 @@ public class User implements Cohortable {
   private String surname;
 
   @Column
+  @NotNull(message = "'email' couldn't be empty")
   private String email;
 
   @Column
+  @NotBlank(message = "'password' couldn't be empty")
   private String password;
 
   @Column(name = "gitlab_username")
