@@ -8,8 +8,8 @@ import hh.crossreview.dao.SolutionDao;
 import hh.crossreview.dao.UserDao;
 import hh.crossreview.dto.solution.SolutionAttemptDto;
 import hh.crossreview.dto.solution.SolutionDto;
+import hh.crossreview.dto.solution.SolutionPatchDto;
 import hh.crossreview.dto.solution.SolutionPostDto;
-import hh.crossreview.dto.solution.SolutionPostResponseDto;
 import hh.crossreview.dto.solution.SolutionsWrapperDto;
 import hh.crossreview.entity.Homework;
 import hh.crossreview.entity.Solution;
@@ -54,7 +54,7 @@ public class SolutionService extends GenericService {
   }
 
   @Transactional
-  public SolutionPostResponseDto createSolution(
+  public SolutionDto createSolution(
       SolutionPostDto solutionPostDto,
       Integer homeworkId,
       UsernamePasswordAuthenticationToken token
@@ -75,9 +75,7 @@ public class SolutionService extends GenericService {
 
     Solution solution = solutionConverter.convertToSolution(solutionPostDto, homework, user);
     solutionDao.save(solution);
-    return new SolutionPostResponseDto(
-        solution.getSolutionId()
-    );
+    return solutionConverter.convertToSolutionDto(solution);
   }
 
   private void requireBranchLinkExist(String branchLink) {
@@ -167,5 +165,35 @@ public class SolutionService extends GenericService {
 
     List<Solution> solutions = solutionDao.findByHomework(homework);
     return solutionConverter.convertToSolutionsWrapperDto(solutions);
+  }
+
+  @Transactional
+  public SolutionDto updateSolution(
+      SolutionPatchDto solutionPatchDto,
+      Integer homeworkId,
+      UsernamePasswordAuthenticationToken token) {
+    User user = retrieveUserFromToken(token);
+    requireUserHasRole(user, UserRole.STUDENT);
+
+    Homework homework = homeworkDao.find(Homework.class, homeworkId);
+    requireEntityNotNull(homework, String.format("Homework with id %d was not found", homeworkId));
+
+    requireReviewAttemptNotExist(homework, user);
+    Solution solution = requireSolutionExist(homework, user);
+
+    String branchLink = trimBranchLink(solutionPatchDto.getBranchLink());
+    requireBranchLinkUnique(branchLink);
+    requireBranchLinkExist(branchLink);
+    solutionPatchDto.setBranchLink(trimBranchLink(solutionPatchDto.getBranchLink()));
+
+    solutionConverter.merge(solution, solutionPatchDto);
+    return solutionConverter.convertToSolutionDto(solution);
+  }
+
+  private void requireReviewAttemptNotExist(Homework homework, User user) {
+    List<SolutionAttempt> solutionAttempts = solutionAttemptDao.findByHomeworkAndStudent(homework, user);
+    if (!solutionAttempts.isEmpty()) {
+      throw new BadRequestException("You can't change a branch after a review request");
+    }
   }
 }

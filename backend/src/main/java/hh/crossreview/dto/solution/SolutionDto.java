@@ -15,6 +15,8 @@ public class SolutionDto {
 
   private String branchLink;
 
+  private Integer studentId;
+
   private List<SolutionAttemptDto> solutionAttempts;
 
   public String getStatus() {
@@ -31,6 +33,10 @@ public class SolutionDto {
 
   public String getBranchLink() {
     return branchLink;
+  }
+
+  public Integer getStudentId() {
+    return studentId;
   }
 
   public List<SolutionAttemptDto> getSolutionAttempts() {
@@ -54,6 +60,11 @@ public class SolutionDto {
 
   public SolutionDto setBranchLink(String branchLink) {
     this.branchLink = branchLink;
+    return this;
+  }
+
+  public SolutionDto setStudentId(Integer studentId) {
+    this.studentId = studentId;
     return this;
   }
 

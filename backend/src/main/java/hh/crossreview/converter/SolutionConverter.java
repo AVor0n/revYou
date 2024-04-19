@@ -2,6 +2,7 @@ package hh.crossreview.converter;
 
 import hh.crossreview.dto.solution.SolutionAttemptDto;
 import hh.crossreview.dto.solution.SolutionDto;
+import hh.crossreview.dto.solution.SolutionPatchDto;
 import hh.crossreview.dto.solution.SolutionPostDto;
 import hh.crossreview.dto.solution.SolutionsWrapperDto;
 import hh.crossreview.entity.Homework;
@@ -11,6 +12,7 @@ import hh.crossreview.entity.User;
 import hh.crossreview.entity.enums.SolutionStatus;
 import jakarta.inject.Named;
 import jakarta.inject.Singleton;
+import java.util.ArrayList;
 import java.util.List;
 
 @Named
@@ -24,15 +26,17 @@ public class SolutionConverter {
   ) {
     return new Solution()
         .setBranchLink(solutionPostDto.getBranchLink())
-        .setStatus(SolutionStatus.ATTEMPTED)
+        .setStatus(SolutionStatus.IN_PROGRESS)
         .setApproveScore(0)
         .setReviewScore(0)
         .setHomework(homework)
-        .setStudent(student);
+        .setStudent(student)
+        .setSolutionAttempts(new ArrayList<>());
   }
 
   public SolutionDto convertToSolutionDto(Solution solution) {
-    List<SolutionAttemptDto> solutionAttemptsDto = solution.getSolutionAttempts()
+    List<SolutionAttemptDto> solutionAttemptsDto = solution
+        .getSolutionAttempts()
         .stream()
         .map(this::convertToSolutionAttemptDto)
         .toList();
@@ -41,6 +45,7 @@ public class SolutionConverter {
         .setApproveScore(solution.getApproveScore())
         .setReviewScore(solution.getReviewScore())
         .setBranchLink(solution.getBranchLink())
+        .setStudentId(solution.getAuthorId())
         .setSolutionAttempts(solutionAttemptsDto);
   }
 
@@ -57,6 +62,12 @@ public class SolutionConverter {
         .map(this::convertToSolutionDto)
         .toList();
     return new SolutionsWrapperDto(solutionsDto);
+  }
+
+  public void merge(Solution solution, SolutionPatchDto solutionPatchDto) {
+    if (solutionPatchDto.getBranchLink() != null) {
+      solution.setBranchLink(solutionPatchDto.getBranchLink());
+    }
   }
 
 }

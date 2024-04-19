@@ -1,5 +1,5 @@
 package hh.crossreview.entity.enums;
 
 public enum SolutionStatus {
-  PASSED, ATTEMPTED, SKIPPED
+  IN_PROGRESS, REVIEW_STAGE, REVIEWER_STAGE, COMPLETE
 }

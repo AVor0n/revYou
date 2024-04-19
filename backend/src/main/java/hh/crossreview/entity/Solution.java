@@ -7,6 +7,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -49,7 +50,8 @@ public class Solution implements Authorable {
 
   @OneToMany(
       cascade = CascadeType.ALL,
-      mappedBy = "solution")
+      mappedBy = "solution",
+      fetch = FetchType.EAGER)
   private List<SolutionAttempt> solutionAttempts;
 
   @Override
