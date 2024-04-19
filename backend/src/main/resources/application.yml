@@ -20,3 +20,6 @@ jwt:
 springdoc:
   swagger-ui:
     url: /api/openapi.json
+gitlab:
+  url: "https://158.160.88.104/gitlab/api/v4"
+  token: "glpat-ZQbUz8tz1cNdKZzpmVCu"
