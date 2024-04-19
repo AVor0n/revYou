@@ -100,15 +100,15 @@ public class JwtTokenUtils {
               .getBody();
       return true;
     } catch (ExpiredJwtException e) {
-      throw new BadRequestException("Время жизни токена истекло");
+      throw new BadRequestException("Token lifetime has expired");
     } catch (UnsupportedJwtException unsEx) {
-      throw new BadRequestException("Неподдерживаемый формат jwt");
+      throw new BadRequestException("Unsupported jwt format");
     } catch (MalformedJwtException mjEx) {
-      throw new BadRequestException("Искаженный jwt");
+      throw new BadRequestException("Distorted jwt");
     } catch (SignatureException sEx) {
-      throw new BadRequestException("jwt ключ имеет неверную подпись");
+      throw new BadRequestException("jwt key has an invalid signature");
     } catch (Exception e) {
-      throw new BadRequestException("Невалидный токен");
+      throw new BadRequestException("Invalid JWT token");
     }
 
   }
