@@ -32,7 +32,7 @@ import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.SecurityContext;
 
 @Named
-@Path("/homeworks/{homeworkId}/solutions")
+@Path("/homeworks/{homeworkId}")
 @Singleton
 @Tag(name = "Solutions")
 @ApiResponse(
@@ -56,6 +56,7 @@ public class SolutionResource {
   }
 
   @POST
+  @Path("/solutions")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   @Operation(summary = "You can create a solution for a specific homework only once")
@@ -82,6 +83,7 @@ public class SolutionResource {
   }
 
   @PATCH
+  @Path("/solutions")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   @Operation(summary = "Updating the solution branch is only available if no attempts have been made")
@@ -108,7 +110,7 @@ public class SolutionResource {
   }
 
   @GET
-  @Path("/single")
+  @Path("/solution")
   @Produces(MediaType.APPLICATION_JSON)
   @Operation(summary = "Available only for students")
   @ApiResponse(
@@ -129,6 +131,7 @@ public class SolutionResource {
   }
 
   @GET
+  @Path("/solutions")
   @Produces(MediaType.APPLICATION_JSON)
   @Operation(summary = "Available only for teachers")
   @ApiResponse(
@@ -149,7 +152,7 @@ public class SolutionResource {
   }
 
   @POST
-  @Path("/attempts")
+  @Path("/solutions/attempts")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   @ApiResponse(
