@@ -3,6 +3,7 @@ package hh.crossreview.entity;
 import hh.crossreview.entity.enums.ReviewDuration;
 import hh.crossreview.entity.enums.converters.ReviewDurationAttributeConverter;
 import hh.crossreview.entity.interfaces.Authorable;
+import hh.crossreview.entity.interfaces.Cohortable;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
@@ -15,10 +16,11 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table
-public class Homework implements Authorable {
+public class Homework implements Authorable, Cohortable {
 
   @Id
   @Column(name = "homework_id")
@@ -152,4 +154,10 @@ public class Homework implements Authorable {
   public Integer getAuthorId() {
     return author.getUserId();
   }
+
+  @Override
+  public List<Cohort> getCohorts() {
+    return lecture.getCohorts();
+  }
+
 }

@@ -1,0 +1,1 @@
+export { DescriptionHeader } from './DescriptionHeader';

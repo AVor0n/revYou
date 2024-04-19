@@ -10,7 +10,6 @@ const initialState: UserSchema = {
     username: '',
     email: '',
   },
-  isAuth: false,
   error: '',
 };
 
@@ -21,7 +20,6 @@ export const userSlice = createSlice({
   extraReducers(builder) {
     builder
       .addCase(signInUser.fulfilled, state => {
-        state.isAuth = true;
         state.error = '';
         toaster.remove('authError');
       })
@@ -30,7 +28,6 @@ export const userSlice = createSlice({
       })
       .addCase(signUpUser.fulfilled, (state, action) => {
         state.authData = { ...action.payload };
-        state.isAuth = true;
         state.error = '';
         toaster.remove('authError');
       })

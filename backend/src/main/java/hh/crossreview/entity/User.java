@@ -2,6 +2,7 @@ package hh.crossreview.entity;
 
 import hh.crossreview.entity.enums.UserRole;
 import hh.crossreview.entity.enums.UserStatus;
+import hh.crossreview.entity.interfaces.Cohortable;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -15,11 +16,13 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import java.util.Collections;
 import java.util.List;
 
 @Entity
 @Table(name = "user_account")
-public class User {
+@SuppressWarnings({"unused"})
+public class User implements Cohortable {
 
   @Id
   @Column(name = "user_id")
@@ -43,11 +46,11 @@ public class User {
   @NotBlank(message = "'password' couldn't be empty")
   private String password;
 
-  @Column(name = "gitlab_link")
-  private String gitlabLink;
+  @Column(name = "gitlab_username")
+  private String gitlabUsername;
 
-  @Column(name = "mm_link")
-  private String mmLink;
+  @Column(name = "mm_username")
+  private String mmUsername;
 
   @Column
   @Enumerated(EnumType.STRING)
@@ -57,7 +60,7 @@ public class User {
   @Enumerated(EnumType.STRING)
   private UserRole role;
 
-  @OneToMany(mappedBy = "author")
+  @OneToMany(mappedBy = "lector")
   private List<Lecture> lectures;
 
   @ManyToOne
@@ -96,6 +99,14 @@ public class User {
     return cohort;
   }
 
+  public String getGitlabUsername() {
+    return gitlabUsername;
+  }
+
+  public String getMmUsername() {
+    return mmUsername;
+  }
+
   public void setUsername(String username) {
     this.username = username;
   }
@@ -115,4 +126,10 @@ public class User {
   public void setStatus(UserStatus status) {
     this.status = status;
   }
+
+  @Override
+  public List<Cohort> getCohorts() {
+    return Collections.singletonList(cohort);
+  }
+
 }

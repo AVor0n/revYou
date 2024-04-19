@@ -15,6 +15,7 @@ import java.util.List;
 
 @Entity
 @Table
+@SuppressWarnings({"unused"})
 public class Cohort {
 
   @Id
@@ -41,8 +42,32 @@ public class Cohort {
   @ManyToMany(mappedBy = "cohorts")
   private List<Lecture> lectures;
 
+  public Integer getCohortId() {
+    return cohortId;
+  }
+
+  public Integer getCohortNumber() {
+    return cohortNumber;
+  }
+
+  public Date getEducationStartDate() {
+    return educationStartDate;
+  }
+
+  public Date getEducationEndDate() {
+    return educationEndDate;
+  }
+
+  public String getMmChannelLink() {
+    return mmChannelLink;
+  }
+
   public StudyDirection getStudyDirection() {
     return studyDirection;
+  }
+
+  public List<Lecture> getLectures() {
+    return lectures;
   }
 
 }

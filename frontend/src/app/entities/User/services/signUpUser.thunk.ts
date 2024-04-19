@@ -1,18 +1,18 @@
 import { toaster } from '@gravity-ui/uikit/toaster-singleton';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { type AxiosError } from 'axios';
-import { type SignInResponse, type SignInRequest } from '@domains';
+import { type SignUpRequest, type User } from '@domains';
 import { type ThunkConfig } from 'app/providers';
 
-export const signUpUser = createAsyncThunk<SignInResponse, SignInRequest, ThunkConfig<string>>(
+export const signUpUser = createAsyncThunk<User, SignUpRequest, ThunkConfig<string>>(
   'user/signUpUser',
   async (data, thunkApi) => {
     const { extra, rejectWithValue } = thunkApi;
 
     try {
-      const response = await extra.api.signIn(data);
+      const response = await extra.api.signUp(data);
 
-      if (!response.data.accessToken) {
+      if (!response.data.email) {
         throw new Error('no data');
       }
 

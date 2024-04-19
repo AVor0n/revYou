@@ -58,7 +58,7 @@ public class AuthenticationService {
   @Transactional
   public Response createNewUser(SignUpRequestDto signUpRequestDto) {
     if (!validateSignUpRequest(signUpRequestDto)){
-      throw new BadRequestException("");
+      throw new BadRequestException("Invalid data");
     }
     User user = userService.createNewUser(signUpRequestDto);
     return Response.ok(new UserDto(user.getUserId(), user.getUsername(), user.getEmail()))

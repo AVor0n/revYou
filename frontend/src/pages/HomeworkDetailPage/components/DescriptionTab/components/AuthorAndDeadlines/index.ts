@@ -1,0 +1,1 @@
+export { AuthorAndDeadlines } from './AuthorAndDeadlines';
