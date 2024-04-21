@@ -42,6 +42,17 @@ jobs:
     runs-on: ubuntu-latest
     # needs: build_and_push_to_docker_hub
     steps:
+      - name: deleting old versions of files
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USER }}
+          key: ${{ secrets.SSH_KEY }}
+          passphrase: ${{ secrets.PASSPHRASE }}
+          script: |
+            sudo cd db/
+            sudo rm init.sql
+
       - name: Checkout code
         uses: actions/checkout@master
 
