@@ -62,8 +62,8 @@ jobs:
           username: ${{ secrets.USER }}
           key: ${{ secrets.SSH_KEY }}
           passphrase: ${{ secrets.PASSPHRASE }}
-          source: "./db"
-          target: "./"
+          source: "./db/init.sql"
+          target: "./db/init.sql"
 
       - name: executing remote ssh commands to deploy
         uses: appleboy/ssh-action@master
