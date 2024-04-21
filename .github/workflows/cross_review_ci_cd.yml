@@ -50,8 +50,7 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           passphrase: ${{ secrets.PASSPHRASE }}
           script: |
-            sudo cd db/
-            sudo rm init.sql
+            sudo rm ./db/init.sql
 
       - name: Checkout code
         uses: actions/checkout@master
