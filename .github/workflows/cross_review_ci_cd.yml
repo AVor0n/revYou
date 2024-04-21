@@ -51,6 +51,7 @@ jobs:
           passphrase: ${{ secrets.PASSPHRASE }}
           script: |
             sudo rm ./db/init.sql
+            sudo rm -rf db
 
       - name: Checkout code
         uses: actions/checkout@master
