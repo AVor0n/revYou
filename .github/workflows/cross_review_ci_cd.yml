@@ -50,7 +50,6 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           passphrase: ${{ secrets.PASSPHRASE }}
           script: |
-            sudo rm ./db/init.sql
             sudo rm -rf db
             sudo rm nginx.conf
 
