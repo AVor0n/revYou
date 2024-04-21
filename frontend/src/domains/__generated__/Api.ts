@@ -17,14 +17,38 @@ import {
   HomeworkPost,
   HomeworkPostResponse,
   HomeworksWrapper,
+  RefreshAccessTokenRequestDto,
   SignInRequest,
   SignInResponse,
   SignUpRequest,
+  Solution,
+  SolutionAttempt,
+  SolutionPatch,
+  SolutionPost,
+  SolutionWrapper,
   User,
 } from './data-contracts';
 import { ContentType, HttpClient, RequestParams } from './http-client';
 
 export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType> {
+  /**
+   * No description
+   *
+   * @tags Auth
+   * @name RefreshAccessToken
+   * @request POST:/api/auth/refresh-access-token
+   * @response `200` `SignInResponse` Successful operation
+   * @response `403` `Exception` Bad request
+   */
+  refreshAccessToken = (data: RefreshAccessTokenRequestDto, params: RequestParams = {}) =>
+    this.request<SignInResponse, Exception>({
+      path: `/api/auth/refresh-access-token`,
+      method: 'POST',
+      body: data,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
   /**
    * No description
    *
@@ -171,6 +195,112 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
       body: data,
       secure: true,
       type: ContentType.Json,
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags Solutions
+   * @name ReadSolutions
+   * @summary Available only for teachers
+   * @request GET:/api/homeworks/{homeworkId}/solutions
+   * @secure
+   * @response `200` `SolutionWrapper` Successful operation
+   * @response `403` `Exception` Forbidden request
+   * @response `404` `Exception` Not found
+   */
+  readSolutions = (homeworkId: number, params: RequestParams = {}) =>
+    this.request<SolutionWrapper, Exception>({
+      path: `/api/homeworks/${homeworkId}/solutions`,
+      method: 'GET',
+      secure: true,
+      format: 'json',
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags Solutions
+   * @name CreateSolution
+   * @summary You can create a solution for a specific homework only once
+   * @request POST:/api/homeworks/{homeworkId}/solutions
+   * @secure
+   * @response `201` `Solution` Created
+   * @response `400` `ExceptionValidation` Bad request
+   * @response `403` `Exception` Forbidden request
+   * @response `404` `Exception` Not found
+   */
+  createSolution = (homeworkId: number, data: SolutionPost, params: RequestParams = {}) =>
+    this.request<Solution, ExceptionValidation | Exception>({
+      path: `/api/homeworks/${homeworkId}/solutions`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags Solutions
+   * @name UpdateSolution
+   * @summary Updating the solution branch is only available if no attempts have been made
+   * @request PATCH:/api/homeworks/{homeworkId}/solutions
+   * @secure
+   * @response `200` `Solution` Successful operation
+   * @response `400` `ExceptionValidation` Bad request
+   * @response `403` `Exception` Forbidden request
+   * @response `404` `Exception` Not found
+   */
+  updateSolution = (homeworkId: number, data: SolutionPatch, params: RequestParams = {}) =>
+    this.request<Solution, ExceptionValidation | Exception>({
+      path: `/api/homeworks/${homeworkId}/solutions`,
+      method: 'PATCH',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags Solutions
+   * @name CreateSolutionAttempt
+   * @request POST:/api/homeworks/{homeworkId}/solutions/attempts
+   * @secure
+   * @response `201` `SolutionAttempt` Created
+   * @response `400` `ExceptionValidation` Bad request
+   * @response `403` `Exception` Forbidden request
+   * @response `404` `Exception` Not found
+   */
+  createSolutionAttempt = (homeworkId: number, params: RequestParams = {}) =>
+    this.request<SolutionAttempt, ExceptionValidation | Exception>({
+      path: `/api/homeworks/${homeworkId}/solutions/attempts`,
+      method: 'POST',
+      secure: true,
+      format: 'json',
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags Solutions
+   * @name ReadSolution
+   * @summary Available only for students
+   * @request GET:/api/homeworks/{homeworkId}/solution
+   * @secure
+   * @response `200` `Solution` Successful operation
+   * @response `403` `Exception` Forbidden request
+   * @response `404` `Exception` Not found
+   */
+  readSolution = (homeworkId: number, params: RequestParams = {}) =>
+    this.request<Solution, Exception>({
+      path: `/api/homeworks/${homeworkId}/solution`,
+      method: 'GET',
+      secure: true,
+      format: 'json',
       ...params,
     });
 }

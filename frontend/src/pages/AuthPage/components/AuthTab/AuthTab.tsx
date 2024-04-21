@@ -9,15 +9,16 @@ import styles from './AuthTab.module.scss';
 export const AuthTab = () => {
   const dispatch = useAppDispatch();
   const nav = useNavigate();
-  const { setToken } = useAuth();
+  const { setAccessToken, setRefreshToken } = useAuth();
 
   const [authType, setAuthType] = useState<'signIn' | 'signUp'>('signIn');
 
   const onSubmitSignIn = (data: SignInRequest) => {
     dispatch(signInUser(data))
       .unwrap()
-      .then(({ accessToken }) => {
-        setToken(accessToken ?? '');
+      .then(({ accessToken, refreshToken }) => {
+        setRefreshToken(refreshToken ?? '');
+        setAccessToken(accessToken ?? '');
         nav('/homeworks');
       });
   };
