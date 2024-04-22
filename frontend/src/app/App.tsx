@@ -1,6 +1,7 @@
 import { settings } from '@gravity-ui/date-utils';
 import { ThemeProvider, ToasterComponent, ToasterProvider } from '@gravity-ui/uikit';
 import { type AxiosError } from 'axios';
+import { useEffect } from 'react';
 import { GetApi } from './api';
 import { useAppDispatch } from './hooks';
 import { AuthProvider, RouterProvider, refreshAuthToken, useAuth } from './providers';
@@ -15,27 +16,27 @@ export const App = () => {
   const dispatch = useAppDispatch();
   const { setRefreshToken, setAccessToken } = useAuth();
 
-  GetApi().instance.interceptors.response.use(
-    response => response,
-    async (error: AxiosError) => {
-      const originalRequest = error.config;
-      // @ts-expect-error: Unreachable code error
-      if (error.response?.status === 403 && !originalRequest?._retry) {
-        // @ts-expect-error: Unreachable code error
-        originalRequest._retry = true;
-        const refreshToken = localStorage.getItem('refreshToken');
-        if (refreshToken) {
-          dispatch(refreshAuthToken({ refreshToken }))
-            .unwrap()
-            .then(({ accessToken, refreshToken: newRefreshToken }) => {
-              setAccessToken(accessToken ?? '');
-              setRefreshToken(newRefreshToken ?? '');
-            });
+  useEffect(() => {
+    GetApi().instance.interceptors.response.use(
+      response => response,
+      async (error: AxiosError) => {
+        const originalRequest: (AxiosError['config'] & { _retry?: boolean }) | undefined = error.config;
+        if (error.response?.status === 401 && originalRequest && !originalRequest._retry) {
+          originalRequest._retry = true;
+          const refreshToken = localStorage.getItem('refreshToken');
+          if (refreshToken) {
+            dispatch(refreshAuthToken({ refreshToken }))
+              .unwrap()
+              .then(({ accessToken, refreshToken: newRefreshToken }) => {
+                setAccessToken(accessToken ?? '');
+                setRefreshToken(newRefreshToken ?? '');
+              });
+          }
         }
-      }
-      return Promise.reject(error);
-    },
-  );
+        return Promise.reject(error);
+      },
+    );
+  }, [dispatch, setAccessToken, setRefreshToken]);
 
   return (
     <ThemeProvider theme="light">
