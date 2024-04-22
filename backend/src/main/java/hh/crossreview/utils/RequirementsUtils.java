@@ -38,14 +38,12 @@ public class RequirementsUtils {
     }
   }
 
-  @SuppressWarnings({"unused"})
   public void requireUserHasRole(User user, UserRole userRole) {
     if (!user.getRole().equals(userRole)) {
       throw new ForbiddenException(String.format("Action available only for %s", userRole.toString()));
     }
   }
 
-  @SuppressWarnings({"unused"})
   public void requireValidCohorts(List<Cohort> cohorts, Cohortable cohortable) {
     Map<Integer, Cohort> cohortsById = cohorts
         .stream()
@@ -58,4 +56,9 @@ public class RequirementsUtils {
         .orElseThrow(() -> new ForbiddenException("You study direction isn't valid"));
   }
 
+  public void requireUserHasRoles(User user, List<UserRole> userRoles) {
+    if (!userRoles.contains(user.getRole())) {
+      throw new ForbiddenException(String.format("Action not available for %s", user.getRole().toString()));
+    }
+  }
 }

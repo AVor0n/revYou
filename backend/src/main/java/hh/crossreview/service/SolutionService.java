@@ -5,7 +5,6 @@ import hh.crossreview.converter.SolutionConverter;
 import hh.crossreview.dao.HomeworkDao;
 import hh.crossreview.dao.SolutionAttemptDao;
 import hh.crossreview.dao.SolutionDao;
-import hh.crossreview.dao.UserDao;
 import hh.crossreview.dto.solution.SolutionAttemptDto;
 import hh.crossreview.dto.solution.SolutionDto;
 import hh.crossreview.dto.solution.SolutionPatchDto;
@@ -17,6 +16,7 @@ import hh.crossreview.entity.SolutionAttempt;
 import hh.crossreview.entity.User;
 import hh.crossreview.entity.enums.UserRole;
 import hh.crossreview.external.gitlab.GitlabService;
+import hh.crossreview.utils.RequirementsUtils;
 import jakarta.inject.Named;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.BadRequestException;
@@ -24,48 +24,47 @@ import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.transaction.annotation.Transactional;
 
 @Named
 @Singleton
-public class SolutionService extends GenericService {
+public class SolutionService {
 
   private final GitlabService gitlabService;
   private final HomeworkDao homeworkDao;
   private final SolutionAttemptDao solutionAttemptDao;
   private final SolutionDao solutionDao;
   private final SolutionConverter solutionConverter;
+  private final RequirementsUtils reqUtils;
 
   public SolutionService(
-      UserDao userDao,
       GitlabService gitlabService,
       HomeworkDao homeworkDao,
       SolutionAttemptDao solutionAttemptDao,
       SolutionDao solutionDao,
-      SolutionConverter solutionConverter
+      SolutionConverter solutionConverter,
+      RequirementsUtils reqUtils
   ) {
-    super(userDao);
     this.gitlabService = gitlabService;
     this.homeworkDao = homeworkDao;
     this.solutionAttemptDao = solutionAttemptDao;
     this.solutionDao = solutionDao;
     this.solutionConverter = solutionConverter;
+    this.reqUtils = reqUtils;
   }
 
   @Transactional
   public SolutionDto createSolution(
       SolutionPostDto solutionPostDto,
       Integer homeworkId,
-      UsernamePasswordAuthenticationToken token
+      User user
   ) {
-    User user = retrieveUserFromToken(token);
-    requireUserHasRole(user, UserRole.STUDENT);
+    reqUtils.requireUserHasRole(user, UserRole.STUDENT);
 
     Homework homework = homeworkDao.find(Homework.class, homeworkId);
-    requireEntityNotNull(homework, String.format("Homework with id %d was not found", homeworkId));
+    reqUtils.requireEntityNotNull(homework, getHomeworkNotFoundMessage(homeworkId));
 
-    requireValidCohorts(user.getCohorts(), homework);
+    reqUtils.requireValidCohorts(user.getCohorts(), homework);
     requireSolutionNotExist(homework, user);
 
     String branchLink = trimBranchLink(solutionPostDto.getBranchLink());
@@ -99,15 +98,14 @@ public class SolutionService extends GenericService {
   @Transactional
   public SolutionAttemptDto createSolutionAttempt(
       Integer homeworkId,
-      UsernamePasswordAuthenticationToken token
+      User user
   ) {
-    User user = retrieveUserFromToken(token);
-    requireUserHasRole(user, UserRole.STUDENT);
+    reqUtils.requireUserHasRole(user, UserRole.STUDENT);
 
     Homework homework = homeworkDao.find(Homework.class, homeworkId);
-    requireEntityNotNull(homework, String.format("Homework with id %d was not found", homeworkId));
+    reqUtils.requireEntityNotNull(homework, getHomeworkNotFoundMessage(homeworkId));
 
-    requireValidCohorts(user.getCohorts(), homework);
+    reqUtils.requireValidCohorts(user.getCohorts(), homework);
 
     Solution solution = requireSolutionExist(homework, user);
     String commitId = gitlabService.retrieveCommitId(solution.getBranchLink());
@@ -138,30 +136,28 @@ public class SolutionService extends GenericService {
   }
 
   @Transactional
-  public SolutionDto readSolution(
+  public SolutionDto getSolution(
       Integer homeworkId,
-      UsernamePasswordAuthenticationToken token
+      User user
   ) {
-    User user = retrieveUserFromToken(token);
-    requireUserHasRole(user, UserRole.STUDENT);
+    reqUtils.requireUserHasRole(user, UserRole.STUDENT);
 
     Homework homework = homeworkDao.find(Homework.class, homeworkId);
-    requireEntityNotNull(homework, String.format("Homework with id %d was not found", homeworkId));
+    reqUtils.requireEntityNotNull(homework, getHomeworkNotFoundMessage(homeworkId));
 
     Solution solution = requireSolutionExist(homework, user);
     return solutionConverter.convertToSolutionDto(solution);
   }
 
   @Transactional
-  public SolutionsWrapperDto readSolutions(
+  public SolutionsWrapperDto getSolutions(
       Integer homeworkId,
-      UsernamePasswordAuthenticationToken token
+      User user
   ) {
-    User user = retrieveUserFromToken(token);
-    requireUserHasRole(user, UserRole.TEACHER);
+    reqUtils.requireUserHasRoles(user, List.of(UserRole.TEACHER, UserRole.ADMIN));
 
     Homework homework = homeworkDao.find(Homework.class, homeworkId);
-    requireEntityNotNull(homework, String.format("Homework with id %d was not found", homeworkId));
+    reqUtils.requireEntityNotNull(homework, getHomeworkNotFoundMessage(homeworkId));
 
     List<Solution> solutions = solutionDao.findByHomework(homework);
     return solutionConverter.convertToSolutionsWrapperDto(solutions);
@@ -171,12 +167,12 @@ public class SolutionService extends GenericService {
   public SolutionDto updateSolution(
       SolutionPatchDto solutionPatchDto,
       Integer homeworkId,
-      UsernamePasswordAuthenticationToken token) {
-    User user = retrieveUserFromToken(token);
-    requireUserHasRole(user, UserRole.STUDENT);
+      User user
+  ) {
+    reqUtils.requireUserHasRole(user, UserRole.STUDENT);
 
     Homework homework = homeworkDao.find(Homework.class, homeworkId);
-    requireEntityNotNull(homework, String.format("Homework with id %d was not found", homeworkId));
+    reqUtils.requireEntityNotNull(homework, getHomeworkNotFoundMessage(homeworkId));
 
     requireReviewAttemptNotExist(homework, user);
     Solution solution = requireSolutionExist(homework, user);
@@ -195,5 +191,9 @@ public class SolutionService extends GenericService {
     if (!solutionAttempts.isEmpty()) {
       throw new BadRequestException("You can't change a branch after a review request");
     }
+  }
+
+  private String getHomeworkNotFoundMessage(Integer homeworkId) {
+    return String.format("Homework with id %d was not found", homeworkId);
   }
 }

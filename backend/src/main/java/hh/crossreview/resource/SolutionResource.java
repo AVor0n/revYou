@@ -7,8 +7,9 @@ import hh.crossreview.dto.solution.SolutionDto;
 import hh.crossreview.dto.solution.SolutionPatchDto;
 import hh.crossreview.dto.solution.SolutionPostDto;
 import hh.crossreview.dto.solution.SolutionsWrapperDto;
+import hh.crossreview.entity.User;
 import hh.crossreview.service.SolutionService;
-import hh.crossreview.utils.JwtTokenUtils;
+import hh.crossreview.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -47,12 +48,12 @@ import jakarta.ws.rs.core.SecurityContext;
 public class SolutionResource {
 
   private final SolutionService solutionService;
-  private final JwtTokenUtils jwtTokenUtils;
+  private final UserService userService;
 
   @Inject
-  public SolutionResource(SolutionService solutionService, JwtTokenUtils jwtTokenUtils) {
+  public SolutionResource(SolutionService solutionService, UserService userService) {
     this.solutionService = solutionService;
-    this.jwtTokenUtils = jwtTokenUtils;
+    this.userService = userService;
   }
 
   @POST
@@ -71,10 +72,12 @@ public class SolutionResource {
       @Valid SolutionPostDto solutionPostDto,
       @PathParam("homeworkId") Integer homeworkId,
       @Context SecurityContext securityContext) {
+    User user = userService.findByPrincipal(securityContext.getUserPrincipal());
     SolutionDto solutionDto = solutionService.createSolution(
         solutionPostDto,
         homeworkId,
-        jwtTokenUtils.retrieveTokenFromContext(securityContext));
+        user
+    );
     return Response
         .status(Response.Status.CREATED)
         .entity(solutionDto)
@@ -97,10 +100,12 @@ public class SolutionResource {
       @Valid SolutionPatchDto solutionPatchDto,
       @PathParam("homeworkId") Integer homeworkId,
       @Context SecurityContext securityContext) {
+    User user = userService.findByPrincipal(securityContext.getUserPrincipal());
     SolutionDto solutionDto = solutionService.updateSolution(
         solutionPatchDto,
         homeworkId,
-        jwtTokenUtils.retrieveTokenFromContext(securityContext));
+        user
+    );
     return Response
         .status(Response.Status.OK)
         .entity(solutionDto)
@@ -119,9 +124,11 @@ public class SolutionResource {
       @PathParam("homeworkId") Integer homeworkId,
       @Context SecurityContext securityContext
   ) {
-    SolutionDto solutionDto = solutionService.readSolution(
+    User user = userService.findByPrincipal(securityContext.getUserPrincipal());
+    SolutionDto solutionDto = solutionService.getSolution(
         homeworkId,
-        jwtTokenUtils.retrieveTokenFromContext(securityContext));
+        user
+    );
     return Response
         .status(Response.Status.OK)
         .entity(solutionDto)
@@ -139,9 +146,11 @@ public class SolutionResource {
       @PathParam("homeworkId") Integer homeworkId,
       @Context SecurityContext securityContext
   ) {
-    SolutionsWrapperDto solutionsWrapperDto = solutionService.readSolutions(
+    User user = userService.findByPrincipal(securityContext.getUserPrincipal());
+    SolutionsWrapperDto solutionsWrapperDto = solutionService.getSolutions(
         homeworkId,
-        jwtTokenUtils.retrieveTokenFromContext(securityContext));
+        user
+    );
     return Response
         .status(Response.Status.OK)
         .entity(solutionsWrapperDto)
@@ -164,9 +173,11 @@ public class SolutionResource {
       @PathParam("homeworkId") Integer homeworkId,
       @Context SecurityContext securityContext
   ) {
+    User user = userService.findByPrincipal(securityContext.getUserPrincipal());
     SolutionAttemptDto solutionAttemptDto =  solutionService.createSolutionAttempt(
         homeworkId,
-        jwtTokenUtils.retrieveTokenFromContext(securityContext));
+        user
+    );
     return Response
         .status(Response.Status.CREATED)
         .entity(solutionAttemptDto)
