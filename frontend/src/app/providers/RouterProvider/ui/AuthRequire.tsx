@@ -4,10 +4,10 @@ import { useAuth } from 'app';
 
 // Если не залогинен, то редирект на "/"
 export const AuthRequire: FC<PropsWithChildren> = ({ children }) => {
-  const { token } = useAuth();
+  const { accessToken } = useAuth();
   const location = useLocation();
 
-  if (!token) {
+  if (!accessToken) {
     return <Navigate to="/auth" state={{ from: location }} replace />;
   }
 

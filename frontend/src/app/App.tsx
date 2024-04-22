@@ -1,20 +1,52 @@
 import { settings } from '@gravity-ui/date-utils';
 import { ThemeProvider, ToasterComponent, ToasterProvider } from '@gravity-ui/uikit';
-import { AuthProvider, RouterProvider } from './providers';
+import { type AxiosError } from 'axios';
+import { useEffect } from 'react';
+import { GetApi } from './api';
+import { useAppDispatch } from './hooks';
+import { AuthProvider, RouterProvider, refreshAuthToken, useAuth } from './providers';
+
 import './global.css';
 
 settings.loadLocale('ru').then(() => {
   settings.setLocale('ru');
 });
 
-export const App = () => (
-  <ThemeProvider theme="light">
-    <ToasterProvider>
-      <AuthProvider>
-        <RouterProvider />
-      </AuthProvider>
+export const App = () => {
+  const dispatch = useAppDispatch();
+  const { setRefreshToken, setAccessToken } = useAuth();
 
-      <ToasterComponent />
-    </ToasterProvider>
-  </ThemeProvider>
-);
+  useEffect(() => {
+    GetApi().instance.interceptors.response.use(
+      response => response,
+      async (error: AxiosError) => {
+        const originalRequest: (AxiosError['config'] & { _retry?: boolean }) | undefined = error.config;
+        if (error.response?.status === 401 && originalRequest && !originalRequest._retry) {
+          originalRequest._retry = true;
+          const refreshToken = localStorage.getItem('refreshToken');
+          if (refreshToken) {
+            dispatch(refreshAuthToken({ refreshToken }))
+              .unwrap()
+              .then(({ accessToken, refreshToken: newRefreshToken }) => {
+                setAccessToken(accessToken ?? '');
+                setRefreshToken(newRefreshToken ?? '');
+              });
+          }
+        }
+        return Promise.reject(error);
+      },
+    );
+  }, [dispatch, setAccessToken, setRefreshToken]);
+
+  return (
+    <ThemeProvider theme="light">
+      <ToasterProvider>
+        <AuthProvider>
+          <RouterProvider />
+        </AuthProvider>
+
+        <ToasterComponent />
+      </ToasterProvider>
+    </ThemeProvider>
+  );
+};

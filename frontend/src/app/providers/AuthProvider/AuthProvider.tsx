@@ -3,31 +3,46 @@ import { type FC, type PropsWithChildren, useEffect, useMemo, useState } from 'r
 import { AuthContext } from './authContext';
 
 export const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
-  // State to hold the authentication token
-  const [token, SET_TOKEN] = useState(localStorage.getItem('token'));
+  // State to hold the authentication accessToken
+  const [accessToken, SET_ACCESS_TOKEN] = useState(localStorage.getItem('accessToken'));
+  const [refreshToken, SET_REFRESH_TOKEN] = useState(localStorage.getItem('refreshToken'));
 
-  // Function to set the authentication token
-  const setToken = (newToken: string) => {
-    SET_TOKEN(newToken);
+  // Function to set the authentication accessToken
+  const setAccessToken = (newToken: string) => {
+    SET_ACCESS_TOKEN(newToken);
+  };
+
+  const setRefreshToken = (newToken: string) => {
+    SET_REFRESH_TOKEN(newToken);
   };
 
   useEffect(() => {
-    if (token) {
-      axios.defaults.headers.common.Authorization = `Bearer ${token}`;
-      localStorage.setItem('token', token);
+    if (accessToken) {
+      axios.defaults.headers.common.Authorization = `Bearer ${accessToken}`;
+      localStorage.setItem('accessToken', accessToken);
     } else {
       delete axios.defaults.headers.common.Authorization;
-      localStorage.removeItem('token');
+      localStorage.removeItem('accessToken');
     }
-  }, [token]);
+  }, [accessToken]);
+
+  useEffect(() => {
+    if (refreshToken) {
+      localStorage.setItem('refreshToken', refreshToken);
+    } else {
+      localStorage.removeItem('refreshToken');
+    }
+  }, [refreshToken]);
 
   // Memoized value of the authentication context
   const contextValue = useMemo(
     () => ({
-      token,
-      setToken,
+      refreshToken,
+      setRefreshToken,
+      accessToken,
+      setAccessToken,
     }),
-    [token],
+    [accessToken, refreshToken],
   );
 
   // Provide the authentication context to the children components

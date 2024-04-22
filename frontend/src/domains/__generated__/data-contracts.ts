@@ -11,6 +11,7 @@
 
 export interface SignInResponse {
   accessToken?: string;
+  refreshToken?: string;
 }
 
 export interface Exception {
@@ -21,9 +22,13 @@ export interface Exception {
   message?: string;
 }
 
+export interface RefreshAccessTokenRequestDto {
+  refreshToken: string;
+}
+
 export interface SignInRequest {
-  username?: string;
-  password?: string;
+  username: string;
+  password: string;
 }
 
 export interface User {
@@ -34,10 +39,10 @@ export interface User {
 }
 
 export interface SignUpRequest {
-  username?: string;
-  password?: string;
-  confirmPassword?: string;
-  email?: string;
+  username: string;
+  password: string;
+  confirmPassword: string;
+  email: string;
 }
 
 export interface HomeworkPostResponse {
@@ -60,7 +65,7 @@ export interface HomeworkPost {
   description?: string;
   /** @format int32 */
   lectureId: number;
-  repositoryLink?: string;
+  repositoryLink: string;
   /** @format date-time */
   startDate: string;
   /** @format date-time */
@@ -115,6 +120,36 @@ export interface HomeworkPatch {
   completionDeadline?: string;
   /** @format int32 */
   reviewDuration?: HomeworkPatchReviewDurationEnum;
+}
+
+export interface Solution {
+  status?: string;
+  /** @format int32 */
+  approveScore?: number;
+  /** @format int32 */
+  reviewScore?: number;
+  branchLink?: string;
+  /** @format int32 */
+  studentId?: number;
+  solutionAttempts?: SolutionAttempt[];
+}
+
+export interface SolutionAttempt {
+  commitId?: string;
+  /** @format date-time */
+  createdAt?: string;
+}
+
+export interface SolutionPost {
+  branchLink: string;
+}
+
+export interface SolutionWrapper {
+  data?: Solution[];
+}
+
+export interface SolutionPatch {
+  branchLink: string;
 }
 
 /** @format int32 */
