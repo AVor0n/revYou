@@ -7,8 +7,9 @@ import hh.crossreview.dto.homework.HomeworkPatchDto;
 import hh.crossreview.dto.homework.HomeworkPostDto;
 import hh.crossreview.dto.homework.HomeworkPostResponseDto;
 import hh.crossreview.dto.homework.HomeworksWrapperDto;
+import hh.crossreview.entity.User;
 import hh.crossreview.service.HomeworkService;
-import hh.crossreview.utils.JwtTokenUtils;
+import hh.crossreview.service.UserService;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -43,12 +44,12 @@ import jakarta.ws.rs.core.SecurityContext;
 public class HomeworkResource {
 
   private final HomeworkService homeworkService;
-  private final JwtTokenUtils jwtTokenUtils;
+  private final UserService userService;
 
   @Inject
-  public HomeworkResource(HomeworkService homeworkService, JwtTokenUtils jwtTokenUtils) {
+  public HomeworkResource(HomeworkService homeworkService, UserService userService) {
     this.homeworkService = homeworkService;
-    this.jwtTokenUtils = jwtTokenUtils;
+    this.userService = userService;
   }
 
   @GET
@@ -59,9 +60,8 @@ public class HomeworkResource {
       content = @Content(schema = @Schema(implementation = HomeworksWrapperDto.class))
   )
   public Response getHomeworks(@Context SecurityContext securityContext) {
-    HomeworksWrapperDto homeworksWrapperDto = homeworkService.getHomeworks(
-        jwtTokenUtils.retrieveTokenFromContext(securityContext)
-    );
+    User user = userService.findByPrincipal(securityContext.getUserPrincipal());
+    HomeworksWrapperDto homeworksWrapperDto = homeworkService.getHomeworks(user);
     return Response
         .status(Response.Status.OK)
         .entity(homeworksWrapperDto)
@@ -84,9 +84,10 @@ public class HomeworkResource {
   public Response createHomework(
       HomeworkPostDto homeworkPostDto,
       @Context SecurityContext securityContext) {
+    User user = userService.findByPrincipal(securityContext.getUserPrincipal());
     HomeworkPostResponseDto homeworkPostResponseDto = homeworkService.createHomework(
         homeworkPostDto,
-        jwtTokenUtils.retrieveTokenFromContext(securityContext)
+        user
     );
     return Response
         .status(Response.Status.CREATED)
@@ -137,10 +138,11 @@ public class HomeworkResource {
       @PathParam("homeworkId") Integer homeworkId,
       HomeworkPatchDto homeworkPatchDto,
       @Context SecurityContext securityContext) {
+    User user = userService.findByPrincipal(securityContext.getUserPrincipal());
     homeworkService.updateHomework(
         homeworkId,
         homeworkPatchDto,
-        jwtTokenUtils.retrieveTokenFromContext(securityContext)
+        user
     );
     return Response
         .status(Response.Status.OK)
@@ -157,9 +159,10 @@ public class HomeworkResource {
   public Response deleteHomework(
       @PathParam("homeworkId") Integer homeworkId,
       @Context SecurityContext securityContext) {
+    User user = userService.findByPrincipal(securityContext.getUserPrincipal());
     homeworkService.deleteHomework(
         homeworkId,
-        jwtTokenUtils.retrieveTokenFromContext(securityContext)
+        user
     );
     return Response
         .status(Response.Status.OK)

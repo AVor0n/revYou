@@ -11,6 +11,8 @@ public class HomeworksWrapperDto {
     this.data = data;
   }
 
+  public HomeworksWrapperDto() {}
+
   public List<HomeworkDto> getData() {
     return data;
   }
