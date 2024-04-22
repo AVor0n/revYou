@@ -5,8 +5,17 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @Schema(name = "HomeworkPost")
 public class FeedbackPostDto {
 
+  @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
+  private Integer reviewer;
+  @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
+  private Integer student;
+  private String description;
+  @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
+  private Integer rating;
+
+  public Integer getReviewer() {
     return reviewer;
-}
+  }
 
   public void setReviewer(Integer reviewer) {
     this.reviewer = reviewer;
@@ -35,14 +44,5 @@ public class FeedbackPostDto {
   public void setRating(Integer rating) {
     this.rating = rating;
   }
-
-  @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
-  private Integer reviewer;
-  @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
-  private Integer student;
-  private String description;
-  @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
-  private Integer rating;
 }
 
-  public Integer getReviewer() {
