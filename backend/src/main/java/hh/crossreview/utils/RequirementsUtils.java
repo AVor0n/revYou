@@ -38,12 +38,14 @@ public class RequirementsUtils {
     }
   }
 
+  @SuppressWarnings({"unused"})
   public void requireUserHasRole(User user, UserRole userRole) {
     if (!user.getRole().equals(userRole)) {
       throw new ForbiddenException(String.format("Action available only for %s", userRole.toString()));
     }
   }
 
+  @SuppressWarnings({"unused"})
   public void requireValidCohorts(List<Cohort> cohorts, Cohortable cohortable) {
     Map<Integer, Cohort> cohortsById = cohorts
         .stream()

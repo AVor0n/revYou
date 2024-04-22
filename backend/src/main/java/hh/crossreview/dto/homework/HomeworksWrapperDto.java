@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
 
 @Schema(name = "HomeworksWrapper")
+@SuppressWarnings({"unused"})
 public class HomeworksWrapperDto {
   private List<HomeworkDto> data;
 
