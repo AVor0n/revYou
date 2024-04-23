@@ -8,9 +8,12 @@ public class SignInResponseDto {
 
   private String refreshToken;
 
-  public SignInResponseDto(String accessToken, String refreshToken) {
+  private String role;
+
+  public SignInResponseDto(String accessToken, String refreshToken, String role) {
     this.accessToken = accessToken;
     this.refreshToken = refreshToken;
+    this.role = role;
   }
 
   public String getAccessToken() {
@@ -27,5 +30,13 @@ public class SignInResponseDto {
 
   public void setRefreshToken(String refreshToken) {
     this.refreshToken = refreshToken;
+  }
+
+  public String getRole() {
+    return role;
+  }
+
+  public void setRole(String role) {
+    this.role = role;
   }
 }
