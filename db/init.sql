@@ -70,7 +70,7 @@ CREATE TABLE IF NOT EXISTS solution
     branch_link   VARCHAR(500) NOT NULL UNIQUE,
     homework_id   INTEGER      NOT NULL,
     student_id    INTEGER      NOT NULL,
-    FOREIGN KEY (homework_id) REFERENCES homework (homework_id),
+    FOREIGN KEY (homework_id) REFERENCES homework (homework_id) ON DELETE CASCADE,
     FOREIGN KEY (student_id) REFERENCES user_account (user_id),
     UNIQUE (homework_id, student_id)
 );
@@ -81,7 +81,7 @@ CREATE TABLE IF NOT EXISTS solution_attempt
     commit_id           VARCHAR(500) NOT NULL,
     created_at          TIMESTAMP    NOT NULL DEFAULT NOW(),
     solution_id         INTEGER      NOT NULL,
-    FOREIGN KEY (solution_id) REFERENCES solution (solution_id)
+    FOREIGN KEY (solution_id) REFERENCES solution (solution_id) ON DELETE CASCADE
 );
 
 -- Вставка данных в таблицу cohort

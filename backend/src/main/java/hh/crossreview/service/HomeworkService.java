@@ -2,7 +2,6 @@ package hh.crossreview.service;
 
 import hh.crossreview.converter.HomeworkConverter;
 import hh.crossreview.dao.HomeworkDao;
-import hh.crossreview.dao.UserDao;
 import hh.crossreview.dto.homework.HomeworkDto;
 import hh.crossreview.dto.homework.HomeworkPatchDto;
 import hh.crossreview.dto.homework.HomeworkPostDto;
@@ -11,33 +10,34 @@ import hh.crossreview.dto.homework.HomeworksWrapperDto;
 import hh.crossreview.entity.Homework;
 import hh.crossreview.entity.Lecture;
 import hh.crossreview.entity.User;
+import hh.crossreview.utils.RequirementsUtils;
 import jakarta.inject.Named;
 import jakarta.inject.Singleton;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.ServerErrorException;
 import jakarta.ws.rs.core.Response;
 import java.util.List;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
 @Named
 @Singleton
-public class HomeworkService extends GenericService {
+public class HomeworkService {
 
   private final HomeworkDao homeworkDao;
   private final HomeworkConverter homeworkConverter;
+  private final RequirementsUtils reqUtils;
 
   public HomeworkService(
       HomeworkDao homeworkDao,
-      UserDao userDao,
-      HomeworkConverter homeworkConverter) {
-    super(userDao);
+      HomeworkConverter homeworkConverter,
+      RequirementsUtils reqUtils
+  ) {
     this.homeworkDao = homeworkDao;
     this.homeworkConverter = homeworkConverter;
+    this.reqUtils = reqUtils;
   }
 
   @Transactional
-  public HomeworksWrapperDto getHomeworks(UsernamePasswordAuthenticationToken token) {
-    User user = retrieveUserFromToken(token);
+  public HomeworksWrapperDto getHomeworks(User user) {
     List<Homework> homeworks;
     switch(user.getRole().toString()) {
       case "ADMIN" -> homeworks = homeworkDao.findAll();
@@ -49,14 +49,13 @@ public class HomeworkService extends GenericService {
   }
 
   @Transactional
-  public HomeworkPostResponseDto createHomework(HomeworkPostDto homeworkPostDto, UsernamePasswordAuthenticationToken token) {
+  public HomeworkPostResponseDto createHomework(HomeworkPostDto homeworkPostDto, User user) {
     Integer lectureId = homeworkPostDto.getLectureId();
     Lecture lecture = homeworkDao.find(Lecture.class, lectureId);
-    requireEntityNotNull(lecture, String.format("Lecture with id %d was not found", lectureId));
-    requireAuthorPermission(token, lecture);
+    reqUtils.requireEntityNotNull(lecture, String.format("Lecture with id %d was not found", lectureId));
+    reqUtils.requireAuthorPermissionOrAdmin(user, lecture);
 
-    User user = retrieveUserFromToken(token);
-    Homework homework = homeworkConverter.convertToHomework(homeworkPostDto, lecture, user);
+    Homework homework = homeworkConverter.convertToHomework(homeworkPostDto, lecture);
     homeworkDao.save(homework);
     return homeworkConverter.convertToHomeworkPostResponseDto(homework.getHomeworkId());
   }
@@ -64,16 +63,16 @@ public class HomeworkService extends GenericService {
   @Transactional
   public HomeworkDto getHomework(Integer homeworkId) {
     Homework homework = homeworkDao.find(Homework.class, homeworkId);
-    requireEntityNotNull(homework, getHomeworkNotFoundMessage(homeworkId));
+    reqUtils.requireEntityNotNull(homework, getHomeworkNotFoundMessage(homeworkId));
     return homeworkConverter.convertToHomeworkDto(homework);
   }
 
 
   @Transactional
-  public void deleteHomework(Integer homeworkId, UsernamePasswordAuthenticationToken token) {
+  public void deleteHomework(Integer homeworkId, User user) {
     Homework homework = homeworkDao.find(Homework.class, homeworkId);
-    requireEntityNotNull(homework, getHomeworkNotFoundMessage(homeworkId));
-    requireAuthorPermission(token, homework);
+    reqUtils.requireEntityNotNull(homework, getHomeworkNotFoundMessage(homeworkId));
+    reqUtils.requireAuthorPermissionOrAdmin(user, homework);
     homeworkDao.deleteHomework(homework);
   }
 
@@ -81,17 +80,23 @@ public class HomeworkService extends GenericService {
   public void updateHomework(
       Integer homeworkId,
       HomeworkPatchDto homeworkPatchDto,
-      UsernamePasswordAuthenticationToken token
+      User user
   ) {
     Homework homework = homeworkDao.find(Homework.class, homeworkId);
-    requireEntityNotNull(homework, getHomeworkNotFoundMessage(homeworkId));
-    requireAuthorPermission(token, homework);
+    reqUtils.requireEntityNotNull(homework, getHomeworkNotFoundMessage(homeworkId));
+    reqUtils.requireAuthorPermissionOrAdmin(user, homework);
     homeworkConverter.merge(homework, homeworkPatchDto);
     homeworkDao.save(homework);
   }
 
   private String getHomeworkNotFoundMessage(Integer homeworkId) {
     return String.format("Homework with id %d was not found", homeworkId);
+  }
+
+  public Homework getHomeworkEntity(Integer homeworkId) {
+    Homework homework = homeworkDao.find(Homework.class, homeworkId);
+    reqUtils.requireEntityNotNull(homework, getHomeworkNotFoundMessage(homeworkId));
+    return homework;
   }
 
 }

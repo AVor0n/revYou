@@ -75,7 +75,7 @@ public class HomeworkConverter {
     );
   }
 
-  public Homework convertToHomework(HomeworkPostDto homeworkPostDto, Lecture lecture, User author) {
+  public Homework convertToHomework(HomeworkPostDto homeworkPostDto, Lecture lecture) {
     return new Homework()
         .setStartDate(homeworkPostDto.getStartDate())
         .setTopic(homeworkPostDto.getTopic())
@@ -85,7 +85,7 @@ public class HomeworkConverter {
         .setReviewDuration(ReviewDuration.ofHours(homeworkPostDto.getReviewDuration()))
         .setLecture(lecture)
         .setDescription(homeworkPostDto.getDescription())
-        .setAuthor(author);
+        .setAuthor(lecture.getLector());
   }
 
   public HomeworkPostResponseDto convertToHomeworkPostResponseDto(Integer homeworkId) {
