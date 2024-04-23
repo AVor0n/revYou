@@ -3,6 +3,7 @@ package hh.crossreview.dto.homework;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(name = "HomeworkLecture", requiredProperties = {"id", "name"})
+@SuppressWarnings({"unused", "FieldMayBeFinal"})
 public class HomeworkLectureDto {
 
   private Integer id;

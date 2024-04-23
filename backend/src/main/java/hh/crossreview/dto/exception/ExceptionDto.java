@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.Date;
 
 @Schema(name = "Exception")
+@SuppressWarnings({"unused", "FieldMayBeFinal"})
 public class ExceptionDto {
 
   @Schema(requiredMode = Schema.RequiredMode.REQUIRED)

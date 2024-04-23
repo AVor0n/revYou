@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
 
 @Schema(name = "ExceptionValidation")
+@SuppressWarnings({"unused", "FieldMayBeFinal"})
 public class ExceptionValidationDto extends ExceptionDto {
 
   @Schema(requiredMode = Schema.RequiredMode.REQUIRED)

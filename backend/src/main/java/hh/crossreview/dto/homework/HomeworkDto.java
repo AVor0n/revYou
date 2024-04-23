@@ -13,6 +13,7 @@ import java.util.List;
         "completionDeadline", "reviewDuration"
     }
 )
+@SuppressWarnings({"unused"})
 public class HomeworkDto {
 
   private Integer id;

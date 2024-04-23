@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
     name = "HomeworkAuthor",
     requiredProperties = {"id", "firstName", "lastName"}
 )
+@SuppressWarnings({"unused", "FieldMayBeFinal"})
 public class HomeworkAuthorDto {
 
   private Integer id;
