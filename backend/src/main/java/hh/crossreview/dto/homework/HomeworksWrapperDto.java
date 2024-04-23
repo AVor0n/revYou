@@ -17,4 +17,9 @@ public class HomeworksWrapperDto {
   public List<HomeworkDto> getData() {
     return data;
   }
+
+  public HomeworksWrapperDto setData(List<HomeworkDto> data) {
+    this.data = data;
+    return this;
+  }
 }

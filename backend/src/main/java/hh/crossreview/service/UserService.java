@@ -39,7 +39,7 @@ public class UserService implements UserDetailsService {
   }
 
   public User findByPrincipal(Principal principal){
-    List<User> users = userDao.findByUsername(principal.toString());
+    List<User> users = userDao.findByUsername(principal.getName());
     if (users.isEmpty()) {
       throw new ForbiddenException("Bad token");
     }
