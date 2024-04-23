@@ -3,16 +3,19 @@ package hh.crossreview.dto.solution;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
 
-@Schema(name = "Solution")
+@Schema(
+    name = "Solution",
+    requiredProperties = {
+        "status", "approveScore", "reviewScore",
+        "branchLink", "studentId", "solutionAttempts"
+    }
+)
 @SuppressWarnings({"unused"})
 public class SolutionDto {
 
   private String status;
-
   private Integer approveScore;
-
   private Integer reviewScore;
-
   private String branchLink;
 
   private Integer studentId;

@@ -3,9 +3,11 @@ package hh.crossreview.dto.homework;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
 
-@Schema(name = "HomeworksWrapper")
+@Schema(name = "HomeworksWrapper", requiredProperties = {"data"})
 @SuppressWarnings({"unused"})
 public class HomeworksWrapperDto {
+
+  @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
   private List<HomeworkDto> data;
 
   public HomeworksWrapperDto(List<HomeworkDto> data) {
@@ -22,4 +24,5 @@ public class HomeworksWrapperDto {
     this.data = data;
     return this;
   }
+
 }

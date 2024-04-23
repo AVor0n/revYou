@@ -5,6 +5,8 @@ import java.util.List;
 
 @Schema(name = "ExceptionValidation")
 public class ExceptionValidationDto extends ExceptionDto {
+
+  @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
   private List<String> validationMessages;
 
   public ExceptionValidationDto(Integer status, String message, List<String> validationMessages) {

@@ -6,8 +6,11 @@ import java.util.Date;
 @Schema(name = "Exception")
 public class ExceptionDto {
 
+  @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
   private Date timestamp;
+  @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
   private Integer status;
+  @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
   private String message;
 
   public ExceptionDto(Integer status, String message) {

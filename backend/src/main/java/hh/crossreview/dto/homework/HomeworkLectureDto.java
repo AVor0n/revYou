@@ -2,7 +2,7 @@ package hh.crossreview.dto.homework;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-@Schema(name = "HomeworkLecture")
+@Schema(name = "HomeworkLecture", requiredProperties = {"id", "name"})
 public class HomeworkLectureDto {
 
   private Integer id;

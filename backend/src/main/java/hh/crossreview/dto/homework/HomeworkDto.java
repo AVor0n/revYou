@@ -4,26 +4,26 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.Date;
 import java.util.List;
 
-@Schema(name = "Homework")
+@Schema(
+    name = "Homework",
+    requiredProperties = {
+        "id", "name", "topic",
+        "description", "departments", "author",
+        "lecture", "repositoryLink", "startDate",
+        "completionDeadline", "reviewDuration"
+    }
+)
 public class HomeworkDto {
 
   private Integer id;
-
   private String name;
-
   private String topic;
-
   private String description;
-
   private List<String> departments;
-
   private HomeworkAuthorDto author;
   private HomeworkLectureDto lecture;
-
   private String repositoryLink;
-
   private Date startDate;
-
   private Date completionDeadline;
 
   @Schema(allowableValues =  {"24", "48"})

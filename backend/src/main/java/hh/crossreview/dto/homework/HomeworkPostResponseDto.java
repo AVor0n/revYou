@@ -2,7 +2,7 @@ package hh.crossreview.dto.homework;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-@Schema(name = "HomeworkPostResponse")
+@Schema(name = "HomeworkPostResponse", requiredProperties = {"id"})
 public class HomeworkPostResponseDto {
 
   private Integer id;
@@ -14,4 +14,5 @@ public class HomeworkPostResponseDto {
   public HomeworkPostResponseDto(Integer id) {
     this.id = id;
   }
+
 }
