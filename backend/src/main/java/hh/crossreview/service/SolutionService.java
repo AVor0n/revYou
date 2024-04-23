@@ -2,7 +2,6 @@ package hh.crossreview.service;
 
 
 import hh.crossreview.converter.SolutionConverter;
-import hh.crossreview.dao.HomeworkDao;
 import hh.crossreview.dao.SolutionAttemptDao;
 import hh.crossreview.dao.SolutionDao;
 import hh.crossreview.dto.solution.SolutionAttemptDto;
@@ -31,7 +30,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class SolutionService {
 
   private final GitlabService gitlabService;
-  private final HomeworkDao homeworkDao;
   private final SolutionAttemptDao solutionAttemptDao;
   private final SolutionDao solutionDao;
   private final SolutionConverter solutionConverter;
@@ -39,14 +37,12 @@ public class SolutionService {
 
   public SolutionService(
       GitlabService gitlabService,
-      HomeworkDao homeworkDao,
       SolutionAttemptDao solutionAttemptDao,
       SolutionDao solutionDao,
       SolutionConverter solutionConverter,
       RequirementsUtils reqUtils
   ) {
     this.gitlabService = gitlabService;
-    this.homeworkDao = homeworkDao;
     this.solutionAttemptDao = solutionAttemptDao;
     this.solutionDao = solutionDao;
     this.solutionConverter = solutionConverter;
@@ -56,13 +52,10 @@ public class SolutionService {
   @Transactional
   public SolutionDto createSolution(
       SolutionPostDto solutionPostDto,
-      Integer homeworkId,
+      Homework homework,
       User user
   ) {
     reqUtils.requireUserHasRole(user, UserRole.STUDENT);
-
-    Homework homework = homeworkDao.find(Homework.class, homeworkId);
-    reqUtils.requireEntityNotNull(homework, getHomeworkNotFoundMessage(homeworkId));
 
     reqUtils.requireValidCohorts(user.getCohorts(), homework);
     requireSolutionNotExist(homework, user);
@@ -97,13 +90,10 @@ public class SolutionService {
 
   @Transactional
   public SolutionAttemptDto createSolutionAttempt(
-      Integer homeworkId,
+      Homework homework,
       User user
   ) {
     reqUtils.requireUserHasRole(user, UserRole.STUDENT);
-
-    Homework homework = homeworkDao.find(Homework.class, homeworkId);
-    reqUtils.requireEntityNotNull(homework, getHomeworkNotFoundMessage(homeworkId));
 
     reqUtils.requireValidCohorts(user.getCohorts(), homework);
 
@@ -137,13 +127,10 @@ public class SolutionService {
 
   @Transactional
   public SolutionDto getSolution(
-      Integer homeworkId,
+      Homework homework,
       User user
   ) {
     reqUtils.requireUserHasRole(user, UserRole.STUDENT);
-
-    Homework homework = homeworkDao.find(Homework.class, homeworkId);
-    reqUtils.requireEntityNotNull(homework, getHomeworkNotFoundMessage(homeworkId));
 
     Solution solution = requireSolutionExist(homework, user);
     return solutionConverter.convertToSolutionDto(solution);
@@ -151,13 +138,10 @@ public class SolutionService {
 
   @Transactional
   public SolutionsWrapperDto getSolutions(
-      Integer homeworkId,
+      Homework homework,
       User user
   ) {
     reqUtils.requireUserHasRoles(user, List.of(UserRole.TEACHER, UserRole.ADMIN));
-
-    Homework homework = homeworkDao.find(Homework.class, homeworkId);
-    reqUtils.requireEntityNotNull(homework, getHomeworkNotFoundMessage(homeworkId));
 
     List<Solution> solutions = solutionDao.findByHomework(homework);
     return solutionConverter.convertToSolutionsWrapperDto(solutions);
@@ -166,13 +150,10 @@ public class SolutionService {
   @Transactional
   public SolutionDto updateSolution(
       SolutionPatchDto solutionPatchDto,
-      Integer homeworkId,
+      Homework homework,
       User user
   ) {
     reqUtils.requireUserHasRole(user, UserRole.STUDENT);
-
-    Homework homework = homeworkDao.find(Homework.class, homeworkId);
-    reqUtils.requireEntityNotNull(homework, getHomeworkNotFoundMessage(homeworkId));
 
     requireReviewAttemptNotExist(homework, user);
     Solution solution = requireSolutionExist(homework, user);
@@ -193,7 +174,4 @@ public class SolutionService {
     }
   }
 
-  private String getHomeworkNotFoundMessage(Integer homeworkId) {
-    return String.format("Homework with id %d was not found", homeworkId);
-  }
 }

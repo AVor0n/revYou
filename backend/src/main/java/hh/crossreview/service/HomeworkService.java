@@ -93,4 +93,10 @@ public class HomeworkService {
     return String.format("Homework with id %d was not found", homeworkId);
   }
 
+  public Homework getHomeworkEntity(Integer homeworkId) {
+    Homework homework = homeworkDao.find(Homework.class, homeworkId);
+    reqUtils.requireEntityNotNull(homework, getHomeworkNotFoundMessage(homeworkId));
+    return homework;
+  }
+
 }

@@ -7,7 +7,9 @@ import hh.crossreview.dto.solution.SolutionDto;
 import hh.crossreview.dto.solution.SolutionPatchDto;
 import hh.crossreview.dto.solution.SolutionPostDto;
 import hh.crossreview.dto.solution.SolutionsWrapperDto;
+import hh.crossreview.entity.Homework;
 import hh.crossreview.entity.User;
+import hh.crossreview.service.HomeworkService;
 import hh.crossreview.service.SolutionService;
 import hh.crossreview.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -48,11 +50,13 @@ import jakarta.ws.rs.core.SecurityContext;
 public class SolutionResource {
 
   private final SolutionService solutionService;
+  private final HomeworkService homeworkService;
   private final UserService userService;
 
   @Inject
-  public SolutionResource(SolutionService solutionService, UserService userService) {
+  public SolutionResource(SolutionService solutionService, HomeworkService homeworkService, UserService userService) {
     this.solutionService = solutionService;
+    this.homeworkService = homeworkService;
     this.userService = userService;
   }
 
@@ -73,9 +77,10 @@ public class SolutionResource {
       @PathParam("homeworkId") Integer homeworkId,
       @Context SecurityContext securityContext) {
     User user = userService.findByPrincipal(securityContext.getUserPrincipal());
+    Homework homework = homeworkService.getHomeworkEntity(homeworkId);
     SolutionDto solutionDto = solutionService.createSolution(
         solutionPostDto,
-        homeworkId,
+        homework,
         user
     );
     return Response
@@ -101,9 +106,10 @@ public class SolutionResource {
       @PathParam("homeworkId") Integer homeworkId,
       @Context SecurityContext securityContext) {
     User user = userService.findByPrincipal(securityContext.getUserPrincipal());
+    Homework homework = homeworkService.getHomeworkEntity(homeworkId);
     SolutionDto solutionDto = solutionService.updateSolution(
         solutionPatchDto,
-        homeworkId,
+        homework,
         user
     );
     return Response
@@ -125,8 +131,9 @@ public class SolutionResource {
       @Context SecurityContext securityContext
   ) {
     User user = userService.findByPrincipal(securityContext.getUserPrincipal());
+    Homework homework = homeworkService.getHomeworkEntity(homeworkId);
     SolutionDto solutionDto = solutionService.getSolution(
-        homeworkId,
+        homework,
         user
     );
     return Response
@@ -147,8 +154,9 @@ public class SolutionResource {
       @Context SecurityContext securityContext
   ) {
     User user = userService.findByPrincipal(securityContext.getUserPrincipal());
+    Homework homework = homeworkService.getHomeworkEntity(homeworkId);
     SolutionsWrapperDto solutionsWrapperDto = solutionService.getSolutions(
-        homeworkId,
+        homework,
         user
     );
     return Response
@@ -174,8 +182,9 @@ public class SolutionResource {
       @Context SecurityContext securityContext
   ) {
     User user = userService.findByPrincipal(securityContext.getUserPrincipal());
+    Homework homework = homeworkService.getHomeworkEntity(homeworkId);
     SolutionAttemptDto solutionAttemptDto =  solutionService.createSolutionAttempt(
-        homeworkId,
+        homework,
         user
     );
     return Response
