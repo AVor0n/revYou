@@ -127,6 +127,34 @@ public class User implements Cohortable {
     this.status = status;
   }
 
+  public void setUserId(Integer userId) {
+    this.userId = userId;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public void setSurname(String surname) {
+    this.surname = surname;
+  }
+
+  public void setGitlabUsername(String gitlabUsername) {
+    this.gitlabUsername = gitlabUsername;
+  }
+
+  public void setMmUsername(String mmUsername) {
+    this.mmUsername = mmUsername;
+  }
+
+  public void setLectures(List<Lecture> lectures) {
+    this.lectures = lectures;
+  }
+
+  public void setCohort(Cohort cohort) {
+    this.cohort = cohort;
+  }
+
   @Override
   public List<Cohort> getCohorts() {
     return Collections.singletonList(cohort);

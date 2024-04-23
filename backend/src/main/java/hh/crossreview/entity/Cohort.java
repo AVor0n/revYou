@@ -70,4 +70,38 @@ public class Cohort {
     return lectures;
   }
 
+  public Cohort setCohortId(Integer cohortId) {
+    this.cohortId = cohortId;
+    return this;
+  }
+
+  public Cohort setCohortNumber(Integer cohortNumber) {
+    this.cohortNumber = cohortNumber;
+    return this;
+  }
+
+  public Cohort setEducationStartDate(Date educationStartDate) {
+    this.educationStartDate = educationStartDate;
+    return this;
+  }
+
+  public Cohort setEducationEndDate(Date educationEndDate) {
+    this.educationEndDate = educationEndDate;
+    return this;
+  }
+
+  public Cohort setMmChannelLink(String mmChannelLink) {
+    this.mmChannelLink = mmChannelLink;
+    return this;
+  }
+
+  public Cohort setStudyDirection(StudyDirection studyDirection) {
+    this.studyDirection = studyDirection;
+    return this;
+  }
+
+  public Cohort setLectures(List<Lecture> lectures) {
+    this.lectures = lectures;
+    return this;
+  }
 }
