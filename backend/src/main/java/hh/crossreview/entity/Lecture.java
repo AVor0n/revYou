@@ -75,4 +75,44 @@ public class Lecture implements Authorable {
   public Integer getAuthorId() {
     return lector.getUserId();
   }
+
+  public Lecture setLectureId(Integer lectureId) {
+    this.lectureId = lectureId;
+    return this;
+  }
+
+  public Lecture setName(String name) {
+    this.name = name;
+    return this;
+  }
+
+  public Lecture setLectureDate(Date lectureDate) {
+    this.lectureDate = lectureDate;
+    return this;
+  }
+
+  public Lecture setZoomLink(String zoomLink) {
+    this.zoomLink = zoomLink;
+    return this;
+  }
+
+  public Lecture setPresentationLink(String presentationLink) {
+    this.presentationLink = presentationLink;
+    return this;
+  }
+
+  public Lecture setLector(User lector) {
+    this.lector = lector;
+    return this;
+  }
+
+  public Lecture setHomeworks(List<Homework> homeworks) {
+    this.homeworks = homeworks;
+    return this;
+  }
+
+  public Lecture setCohorts(List<Cohort> cohorts) {
+    this.cohorts = cohorts;
+    return this;
+  }
 }

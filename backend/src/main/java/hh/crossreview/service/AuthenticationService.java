@@ -47,10 +47,11 @@ public class AuthenticationService {
       throw new NotAuthorizedException("Incorrect login or password");
     }
     UserDetails userDetails = userService.loadUserByUsername(signInRequestDto.getUsername());
+    String userRole = userDetails.getAuthorities().toString();
     String accessToken = jwtTokenUtils.generateAccessToken(userDetails);
     String refreshToken = jwtTokenUtils.generateRefreshToken(userDetails);
 
-    return Response.ok(new SignInResponseDto(accessToken, refreshToken))
+    return Response.ok(new SignInResponseDto(accessToken, refreshToken, userRole))
             .type(MediaType.APPLICATION_JSON)
             .build();
   }
@@ -72,8 +73,9 @@ public class AuthenticationService {
       final Claims claims = jwtTokenUtils.getRefreshClaims(refreshToken);
       final String username = claims.getSubject();
       UserDetails userDetails = userService.loadUserByUsername(username);
+      String userRole = userDetails.getAuthorities().toString();
       final String accessToken = jwtTokenUtils.generateAccessToken(userDetails);
-      return Response.ok(new SignInResponseDto(accessToken, refreshToken))
+      return Response.ok(new SignInResponseDto(accessToken, refreshToken, userRole))
               .type(MediaType.APPLICATION_JSON)
               .build();
     }

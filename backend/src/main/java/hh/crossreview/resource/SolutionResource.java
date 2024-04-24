@@ -7,8 +7,11 @@ import hh.crossreview.dto.solution.SolutionDto;
 import hh.crossreview.dto.solution.SolutionPatchDto;
 import hh.crossreview.dto.solution.SolutionPostDto;
 import hh.crossreview.dto.solution.SolutionsWrapperDto;
+import hh.crossreview.entity.Homework;
+import hh.crossreview.entity.User;
+import hh.crossreview.service.HomeworkService;
 import hh.crossreview.service.SolutionService;
-import hh.crossreview.utils.JwtTokenUtils;
+import hh.crossreview.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -32,7 +35,7 @@ import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.SecurityContext;
 
 @Named
-@Path("/homeworks/{homeworkId}")
+@Path("/homeworks/{homeworkId}/solutions")
 @Singleton
 @Tag(name = "Solutions")
 @ApiResponse(
@@ -47,16 +50,17 @@ import jakarta.ws.rs.core.SecurityContext;
 public class SolutionResource {
 
   private final SolutionService solutionService;
-  private final JwtTokenUtils jwtTokenUtils;
+  private final HomeworkService homeworkService;
+  private final UserService userService;
 
   @Inject
-  public SolutionResource(SolutionService solutionService, JwtTokenUtils jwtTokenUtils) {
+  public SolutionResource(SolutionService solutionService, HomeworkService homeworkService, UserService userService) {
     this.solutionService = solutionService;
-    this.jwtTokenUtils = jwtTokenUtils;
+    this.homeworkService = homeworkService;
+    this.userService = userService;
   }
 
   @POST
-  @Path("/solutions")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   @Operation(summary = "You can create a solution for a specific homework only once")
@@ -72,10 +76,13 @@ public class SolutionResource {
       @Valid SolutionPostDto solutionPostDto,
       @PathParam("homeworkId") Integer homeworkId,
       @Context SecurityContext securityContext) {
+    User user = userService.findByPrincipal(securityContext.getUserPrincipal());
+    Homework homework = homeworkService.getHomeworkEntity(homeworkId);
     SolutionDto solutionDto = solutionService.createSolution(
         solutionPostDto,
-        homeworkId,
-        jwtTokenUtils.retrieveTokenFromContext(securityContext));
+        homework,
+        user
+    );
     return Response
         .status(Response.Status.CREATED)
         .entity(solutionDto)
@@ -83,7 +90,6 @@ public class SolutionResource {
   }
 
   @PATCH
-  @Path("/solutions")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   @Operation(summary = "Updating the solution branch is only available if no attempts have been made")
@@ -99,10 +105,13 @@ public class SolutionResource {
       @Valid SolutionPatchDto solutionPatchDto,
       @PathParam("homeworkId") Integer homeworkId,
       @Context SecurityContext securityContext) {
+    User user = userService.findByPrincipal(securityContext.getUserPrincipal());
+    Homework homework = homeworkService.getHomeworkEntity(homeworkId);
     SolutionDto solutionDto = solutionService.updateSolution(
         solutionPatchDto,
-        homeworkId,
-        jwtTokenUtils.retrieveTokenFromContext(securityContext));
+        homework,
+        user
+    );
     return Response
         .status(Response.Status.OK)
         .entity(solutionDto)
@@ -110,7 +119,7 @@ public class SolutionResource {
   }
 
   @GET
-  @Path("/solution")
+  @Path("/student-solution")
   @Produces(MediaType.APPLICATION_JSON)
   @Operation(summary = "Available only for students")
   @ApiResponse(
@@ -121,9 +130,12 @@ public class SolutionResource {
       @PathParam("homeworkId") Integer homeworkId,
       @Context SecurityContext securityContext
   ) {
-    SolutionDto solutionDto = solutionService.readSolution(
-        homeworkId,
-        jwtTokenUtils.retrieveTokenFromContext(securityContext));
+    User user = userService.findByPrincipal(securityContext.getUserPrincipal());
+    Homework homework = homeworkService.getHomeworkEntity(homeworkId);
+    SolutionDto solutionDto = solutionService.getSolution(
+        homework,
+        user
+    );
     return Response
         .status(Response.Status.OK)
         .entity(solutionDto)
@@ -131,7 +143,6 @@ public class SolutionResource {
   }
 
   @GET
-  @Path("/solutions")
   @Produces(MediaType.APPLICATION_JSON)
   @Operation(summary = "Available only for teachers")
   @ApiResponse(
@@ -142,9 +153,12 @@ public class SolutionResource {
       @PathParam("homeworkId") Integer homeworkId,
       @Context SecurityContext securityContext
   ) {
-    SolutionsWrapperDto solutionsWrapperDto = solutionService.readSolutions(
-        homeworkId,
-        jwtTokenUtils.retrieveTokenFromContext(securityContext));
+    User user = userService.findByPrincipal(securityContext.getUserPrincipal());
+    Homework homework = homeworkService.getHomeworkEntity(homeworkId);
+    SolutionsWrapperDto solutionsWrapperDto = solutionService.getSolutions(
+        homework,
+        user
+    );
     return Response
         .status(Response.Status.OK)
         .entity(solutionsWrapperDto)
@@ -152,7 +166,7 @@ public class SolutionResource {
   }
 
   @POST
-  @Path("/solutions/attempts")
+  @Path("/attempts")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   @ApiResponse(
@@ -167,9 +181,12 @@ public class SolutionResource {
       @PathParam("homeworkId") Integer homeworkId,
       @Context SecurityContext securityContext
   ) {
+    User user = userService.findByPrincipal(securityContext.getUserPrincipal());
+    Homework homework = homeworkService.getHomeworkEntity(homeworkId);
     SolutionAttemptDto solutionAttemptDto =  solutionService.createSolutionAttempt(
-        homeworkId,
-        jwtTokenUtils.retrieveTokenFromContext(securityContext));
+        homework,
+        user
+    );
     return Response
         .status(Response.Status.CREATED)
         .entity(solutionAttemptDto)

@@ -7,6 +7,8 @@ import hh.crossreview.entity.enums.UserRole;
 import hh.crossreview.entity.enums.UserStatus;
 import jakarta.inject.Named;
 import jakarta.inject.Singleton;
+import jakarta.ws.rs.ForbiddenException;
+import java.security.Principal;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -34,6 +36,14 @@ public class UserService implements UserDetailsService {
 
   public List<User> findByUsername(String username){
     return userDao.findByUsername(username);
+  }
+
+  public User findByPrincipal(Principal principal){
+    List<User> users = userDao.findByUsername(principal.getName());
+    if (users.isEmpty()) {
+      throw new ForbiddenException("Bad token");
+    }
+    return users.getFirst();
   }
 
   public List<User> findByEmail(String email) {

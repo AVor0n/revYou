@@ -105,6 +105,11 @@ public class Homework implements Authorable, Cohortable {
     return author;
   }
 
+  public Homework setHomeworkId(Integer homeworkId) {
+    this.homeworkId = homeworkId;
+    return this;
+  }
+
   public Homework setRepositoryLink(String homeworkLink) {
     this.repositoryLink = homeworkLink;
     return this;
