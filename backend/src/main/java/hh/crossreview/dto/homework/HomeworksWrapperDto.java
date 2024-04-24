@@ -7,7 +7,6 @@ import java.util.List;
 @SuppressWarnings({"unused"})
 public class HomeworksWrapperDto {
 
-  @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
   private List<HomeworkDto> data;
 
   public HomeworksWrapperDto(List<HomeworkDto> data) {
