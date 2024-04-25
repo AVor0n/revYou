@@ -10,7 +10,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 @Entity
@@ -27,10 +27,10 @@ public class Cohort {
   private Integer cohortNumber;
 
   @Column(name = "education_start_date")
-  private Date educationStartDate;
+  private LocalDate educationStartDate;
 
   @Column(name = "education_end_date")
-  private Date educationEndDate;
+  private LocalDate educationEndDate;
 
   @Column(name = "mm_channel_link")
   private java.lang.String mmChannelLink;
@@ -50,11 +50,11 @@ public class Cohort {
     return cohortNumber;
   }
 
-  public Date getEducationStartDate() {
+  public LocalDate getEducationStartDate() {
     return educationStartDate;
   }
 
-  public Date getEducationEndDate() {
+  public LocalDate getEducationEndDate() {
     return educationEndDate;
   }
 
@@ -80,12 +80,12 @@ public class Cohort {
     return this;
   }
 
-  public Cohort setEducationStartDate(Date educationStartDate) {
+  public Cohort setEducationStartDate(LocalDate educationStartDate) {
     this.educationStartDate = educationStartDate;
     return this;
   }
 
-  public Cohort setEducationEndDate(Date educationEndDate) {
+  public Cohort setEducationEndDate(LocalDate educationEndDate) {
     this.educationEndDate = educationEndDate;
     return this;
   }

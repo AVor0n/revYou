@@ -25,6 +25,8 @@ public class HibernateConfiguration {
   private String password;
   @Value("${spring.datasource.driver-class-name}")
   private String driverClassName;
+  @Value("${spring.jpa.hibernate.ddl-auto}")
+  private String hibernateHbm2ddlAuto;
 
   @Bean("datasource")
   public DataSource getDatasource() {
@@ -55,9 +57,10 @@ public class HibernateConfiguration {
   }
 
 
-  private static Properties getJpaProperties() {
+  private Properties getJpaProperties() {
     Properties jpaProperties = new Properties();
     jpaProperties.put("hibernate.show_sql", true);
+    jpaProperties.put("hibernate.hbm2ddl.auto", hibernateHbm2ddlAuto);
     return jpaProperties;
   }
 }
