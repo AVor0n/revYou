@@ -3,10 +3,12 @@ version: "3.8"
 services:
   frontend:
     image: semashkevichea/cross_review_front:latest
+    container_name: frontend
     ports:
       - "${FRONT_PORT:-3000}:80"
   backend:
     image: semashkevichea/cross_review_back:latest
+    container_name: backend
     environment:
       SPRING_DATASOURCE_URL: "jdbc:postgresql://db:${POSTGRES_PORT:-5432}/${POSTGRES_DB:-cross_review}"
     ports:
@@ -40,6 +42,7 @@ services:
     environment:
       GITLAB_OMNIBUS_CONFIG: |
         external_url "https://${HOST:-158.160.88.104}/gitlab"
+        gitlab_rails['gitlab_shell_ssh_port'] = 23
     ports:
       - "${GITLAB_PORT:-8081}:80"
       - "${GITLAB_HTTPS_PORT:-443}:443"
@@ -48,8 +51,6 @@ services:
       - "$GITLAB_HOME/config:/etc/gitlab"
       - "$GITLAB_HOME/logs:/var/log/gitlab"
       - "$GITLAB_HOME/data:/var/opt/gitlab"
-    networks:
-      - gitlab
     links:
       - db
   nginx:
@@ -66,12 +67,6 @@ services:
       - gitlab
       - frontend
       - backend
-    networks:
-      - gitlab
-
-networks:
-  gitlab:
-    name: gitlab-network
 
 volumes:
   postgres:
