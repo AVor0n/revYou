@@ -2,6 +2,7 @@ package hh.crossreview.external.gitlab;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import hh.crossreview.dao.SolutionDao;
 import hh.crossreview.utils.ExternalUtils;
 import jakarta.inject.Named;
 import jakarta.inject.Singleton;
@@ -25,49 +26,57 @@ import org.springframework.web.client.RestClient;
 public class GitlabService {
 
   private final ObjectMapper objectMapper;
+  private final SolutionDao solutionDao;
 
   @Value("${gitlab.url}")
   private String gitlabUrl;
-
+  @Value("${gitlab.api-url}")
+  private String gitlabApiUrl;
   @Value("${gitlab.token}")
   private String rootToken;
 
-  public GitlabService(ObjectMapper objectMapper) {
+  public GitlabService(ObjectMapper objectMapper, SolutionDao solutionDao) {
     this.objectMapper = objectMapper;
+    this.solutionDao = solutionDao;
   }
 
-  public void checkBranchLink(String branchLink) {
+  public String validateBranchLink(String branchLink) {
     try {
-      getBranch(branchLink);
+      branchLink = trimBranchLink(branchLink);
+      requireBranchLinkUnique(branchLink);
+      getBranchRequest(branchLink);
+      return branchLink;
     } catch (HttpClientErrorException | HttpServerErrorException e) {
       throw new BadRequestException("Branch link is not accessible");
     }
   }
 
-
-
-  public String retrieveCommitId(String branchLink) {
-    try {
-      return objectMapper
-          .readTree(getBranch(branchLink))
-          .get("commit")
-          .get("id")
-          .asText();
-    } catch (JsonProcessingException e) {
-      throw new InternalServerErrorException(e);
+  private void requireBranchLinkUnique(String branchLink) {
+    if (solutionDao.findByBranchLink(branchLink).isPresent()) {
+      throw new BadRequestException("Branch link already send by another user or to another homework");
     }
   }
 
-  private String getBranch(String branchLink) {
+  private String trimBranchLink(String branchLink) {
+    String branchLinkRegex = String.format("(%s/[^/]+/[^/]+/-/tree/[\\w\\-./]+).*", gitlabUrl);
+    Pattern pattern = Pattern.compile(branchLinkRegex);
+    Matcher matcher = pattern.matcher(branchLink);
+    if (matcher.find()) {
+      return matcher.group(1);
+    }
+    throw new BadRequestException("Branch link isn't valid");
+  }
+
+  private String getBranchRequest(String branchLink) {
     List<String> result = parseBranchLink(branchLink);
     if (result.isEmpty()) {
       throw new BadRequestException("Branch link isn't valid");
     }
-    String repository = urlEncodeString(result.get(0));
-    String branch = urlEncodeString(result.get(1));
+    String repository = urlEncodePath(result.get(0));
+    String branch = urlEncodePath(result.get(1));
     URI uri = URI
         .create(new StringJoiner("/")
-        .add(gitlabUrl)
+        .add(gitlabApiUrl)
         .add("projects")
         .add(repository)
         .add("repository")
@@ -102,8 +111,20 @@ public class GitlabService {
     return result;
   }
 
-  private String urlEncodeString(String param) {
+  private String urlEncodePath(String param) {
     return param.replace("/", "%2F");
+  }
+
+  public String retrieveCommitId(String branchLink) {
+    try {
+      return objectMapper
+          .readTree(getBranchRequest(branchLink))
+          .get("commit")
+          .get("id")
+          .asText();
+    } catch (JsonProcessingException e) {
+      throw new InternalServerErrorException(e);
+    }
   }
 
 }

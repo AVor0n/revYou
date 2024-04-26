@@ -21,14 +21,15 @@ import jakarta.inject.Singleton;
 import jakarta.ws.rs.BadRequestException;
 import java.util.List;
 import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.transaction.annotation.Transactional;
 
 @Named
 @Singleton
 public class SolutionService {
 
+  @Value("${gitlab.url}")
+  private String gitlabUrl;
   private final GitlabService gitlabService;
   private final SolutionAttemptDao solutionAttemptDao;
   private final SolutionDao solutionDao;
@@ -59,24 +60,12 @@ public class SolutionService {
     reqUtils.requireValidCohorts(user.getCohorts(), homework);
     requireSolutionNotExist(homework, user);
 
-    String branchLink = trimBranchLink(solutionPostDto.getBranchLink());
-    requireBranchLinkUnique(branchLink);
-    requireBranchLinkExist(branchLink);
-    solutionPostDto.setBranchLink(trimBranchLink(solutionPostDto.getBranchLink()));
+    String branchLink = gitlabService.validateBranchLink(solutionPostDto.getBranchLink());
+    solutionPostDto.setBranchLink(branchLink);
 
     Solution solution = solutionConverter.convertToSolution(solutionPostDto, homework, user);
     solutionDao.save(solution);
     return solutionConverter.convertToSolutionDto(solution);
-  }
-
-  private void requireBranchLinkExist(String branchLink) {
-    gitlabService.checkBranchLink(branchLink);
-  }
-
-  private void requireBranchLinkUnique(String branchLink) {
-    if (solutionDao.findByBranchLink(branchLink).isPresent()) {
-      throw new BadRequestException("Branch link already send by another user or to another homework");
-    }
   }
 
   private void requireSolutionNotExist(Homework homework, User user) {
@@ -85,7 +74,6 @@ public class SolutionService {
       throw new BadRequestException("User has already created solution");
     }
   }
-
 
   @Transactional
   public SolutionAttemptDto createSolutionAttempt(
@@ -111,16 +99,6 @@ public class SolutionService {
       throw new BadRequestException("User has not created a solution yet");
     }
     return solution.get();
-  }
-
-  private String trimBranchLink(String branchLink) {
-    String branchLinkRegex = "(.+/[^/]+/[^/]+/-/tree/[\\w\\-./]+).*";
-    Pattern pattern = Pattern.compile(branchLinkRegex);
-    Matcher matcher = pattern.matcher(branchLink);
-    if (matcher.find()) {
-      return matcher.group(1);
-    }
-    throw new BadRequestException("Branch link isn't valid");
   }
 
   @Transactional
@@ -155,10 +133,8 @@ public class SolutionService {
     requireReviewAttemptNotExist(homework, user);
     Solution solution = requireSolutionExist(homework, user);
 
-    String branchLink = trimBranchLink(solutionPatchDto.getBranchLink());
-    requireBranchLinkUnique(branchLink);
-    requireBranchLinkExist(branchLink);
-    solutionPatchDto.setBranchLink(trimBranchLink(solutionPatchDto.getBranchLink()));
+    String branchLink = gitlabService.validateBranchLink(solutionPatchDto.getBranchLink());
+    solutionPatchDto.setBranchLink(branchLink);
 
     solutionConverter.merge(solution, solutionPatchDto);
     return solutionConverter.convertToSolutionDto(solution);
