@@ -24,7 +24,6 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import static org.mockito.ArgumentMatchers.any;
@@ -36,7 +35,7 @@ import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-class SolutionServiceTests {
+class SolutionServiceTests extends TestsUtil {
 
   @Mock
   private GitlabService gitlabService;
@@ -53,19 +52,12 @@ class SolutionServiceTests {
   @InjectMocks
   private SolutionService solutionService;
 
-  private static TestsUtil testsUtil;
-
-  @BeforeAll
-  static void setup() {
-    testsUtil = new TestsUtil();
-  }
-
   @Test
   void givenCreateSolutionCall_whenValid_thenSuccessfullyCreate() {
-    Homework homework = testsUtil.createBackHomework();
+    Homework homework = createBackHomework();
     String branchLink = "gitlab/username/repository/-/tree/branch-name.with-dot/and-slash?abc=1&some=2";
     SolutionPostDto solutionPostDto = createSolutionPostDto(branchLink);
-    User student = testsUtil.createUser(1, UserRole.STUDENT, homework.getCohorts().get(0));
+    User student = createUser(1, UserRole.STUDENT, homework.getCohorts().get(0));
 
     when(solutionDao.findByHomeworkAndStudent(homework, student)).thenReturn(Optional.empty());
     when(solutionDao.findByBranchLink(any(String.class))).thenReturn(Optional.empty());
@@ -83,8 +75,8 @@ class SolutionServiceTests {
 
   @Test
   void givenCreateSolutionAttemptCall_whenValid_thenSuccessfullyCreate() {
-    Homework homework = testsUtil.createBackHomework();
-    User student = testsUtil.createUser(1, UserRole.STUDENT, homework.getCohorts().get(0));
+    Homework homework = createBackHomework();
+    User student = createUser(1, UserRole.STUDENT, homework.getCohorts().get(0));
     String branchLink = "gitlab/username/repository/-/tree/branch-name.with-dot/and-slash?abc=1&some=2";
     String commitId = "aabbccddeeff";
     Solution solution = createSolution(1, SolutionStatus.IN_PROGRESS, student, branchLink, Collections.emptyList());
@@ -100,8 +92,8 @@ class SolutionServiceTests {
 
   @Test
   void givenGetSolutionCall_whenValid_thenSuccessfullyGet() {
-    Homework homework = testsUtil.createBackHomework();
-    User student = testsUtil.createUser(1, UserRole.STUDENT, homework.getCohorts().get(0));
+    Homework homework = createBackHomework();
+    User student = createUser(1, UserRole.STUDENT, homework.getCohorts().get(0));
     String branchLink = "gitlab/username/repository/-/tree/branch-name.with-dot/and-slash?abc=1&some=2";
     SolutionAttempt solutionAttempt = createSolutionAttempt("commitId", LocalDateTime.parse("2024-04-26T10:15:30"));
     Solution solution = createSolution(1, SolutionStatus.IN_PROGRESS, student, branchLink, List.of(solutionAttempt));
@@ -115,8 +107,8 @@ class SolutionServiceTests {
 
   @Test
   void givenGetSolutionsCall_whenValid_thenSuccessfullyGet() {
-    Homework homework = testsUtil.createBackHomework();
-    User student = testsUtil.createUser(1, UserRole.TEACHER, homework.getCohorts().get(0));
+    Homework homework = createBackHomework();
+    User student = createUser(1, UserRole.TEACHER, homework.getCohorts().get(0));
     String branchLink = "gitlab/username/repository/-/tree/branch-name.with-dot/and-slash?abc=1&some=2";
     SolutionAttempt solutionAttempt = createSolutionAttempt("commitId", LocalDateTime.parse("2024-04-26T10:15:30"));
     Solution solution = createSolution(1, SolutionStatus.IN_PROGRESS, student, branchLink, List.of(solutionAttempt));
@@ -132,8 +124,8 @@ class SolutionServiceTests {
 
   @Test
   void givenUpdateSolutionCall_whenValid_thenSuccessfullyUpdate() {
-    Homework homework = testsUtil.createBackHomework();
-    User student = testsUtil.createUser(1, UserRole.STUDENT, homework.getCohorts().get(0));
+    Homework homework = createBackHomework();
+    User student = createUser(1, UserRole.STUDENT, homework.getCohorts().get(0));
     String oldBranchLink = "gitlab/username/repository/-/tree/branch-name.with-dot/and-slash?abc=1&some=2";
     Solution oldSolution = createSolution(1, SolutionStatus.IN_PROGRESS, student, oldBranchLink, Collections.emptyList());
     String newBranchLink = "gitlab/usernameNew/repositoryNew/-/tree/branch-name.with-dot/and-slash?abc=1&some=2";

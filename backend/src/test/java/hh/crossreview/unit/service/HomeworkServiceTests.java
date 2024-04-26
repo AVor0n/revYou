@@ -26,7 +26,6 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import static org.mockito.ArgumentMatchers.any;
@@ -39,7 +38,7 @@ import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-class HomeworkServiceTests {
+class HomeworkServiceTests extends TestsUtil {
 
   @Mock
   private HomeworkDao homeworkDao;
@@ -51,18 +50,12 @@ class HomeworkServiceTests {
 
   @InjectMocks
   private HomeworkService homeworkService;
-  private static TestsUtil testsUtil;
-
-  @BeforeAll
-  static void setup() {
-    testsUtil = new TestsUtil();
-  }
 
   @Test
   void givenGetHomeworksCall_whenStudent_thenGetStudentHomeworks() {
-    Homework backHomework = testsUtil.createBackHomework();
+    Homework backHomework = createBackHomework();
     Cohort backCohort = backHomework.getCohorts().get(0);
-    User student = testsUtil.createUser(1, UserRole.STUDENT, backCohort);
+    User student = createUser(1, UserRole.STUDENT, backCohort);
 
     when(homeworkDao.findByCohort(student.getCohort())).thenReturn(List.of(backHomework));
     HomeworksWrapperDto homeworksWrapperDto = homeworkService.getHomeworks(student);
@@ -76,9 +69,9 @@ class HomeworkServiceTests {
 
   @Test
   void givenGetHomeworksCall_whenTeacher_thenGetTeacherHomeworks() {
-    Homework backHomework = testsUtil.createBackHomework();
+    Homework backHomework = createBackHomework();
     Cohort backCohort = backHomework.getCohorts().get(0);
-    User teacher = testsUtil.createUser(1, UserRole.TEACHER, backCohort);
+    User teacher = createUser(1, UserRole.TEACHER, backCohort);
 
     when(homeworkDao.findByAuthor(teacher)).thenReturn(List.of(backHomework));
     HomeworksWrapperDto homeworksWrapperDto = homeworkService.getHomeworks(teacher);
@@ -92,11 +85,11 @@ class HomeworkServiceTests {
 
   @Test
   void givenGetHomeworksCall_whenAdmin_thenGetAllHomeworks() {
-    Homework backHomework = testsUtil.createBackHomework();
-    Homework frontHomework = testsUtil. createFrontHomework();
+    Homework backHomework = createBackHomework();
+    Homework frontHomework = createFrontHomework();
     List<Homework> homeworks = Arrays.asList(backHomework, frontHomework);
     homeworks = homeworks.stream().sorted(Comparator.comparingInt(Homework::getHomeworkId)).toList();
-    User admin = testsUtil.createUser(1, UserRole.ADMIN, null);
+    User admin = createUser(1, UserRole.ADMIN, null);
 
     when(homeworkDao.findAll()).thenReturn(homeworks);
     HomeworksWrapperDto homeworksWrapperDto = homeworkService.getHomeworks(admin);
@@ -115,9 +108,9 @@ class HomeworkServiceTests {
   @Test
   void givenCreateHomeworkCall_whenAuthor_thenSuccessfullyCreate() {
     HomeworkPostDto homeworkPostDto = createHomeworkPostDto(1);
-    Cohort cohort = testsUtil.createCohort(StudyDirection.BACK);
-    User lector = testsUtil.createUser(1, UserRole.TEACHER, cohort);
-    Lecture lecture = testsUtil.createLecture(1, List.of(cohort), lector);
+    Cohort cohort = createCohort(StudyDirection.BACK);
+    User lector = createUser(1, UserRole.TEACHER, cohort);
+    Lecture lecture = createLecture(1, List.of(cohort), lector);
 
     when(homeworkDao.find(Lecture.class, 1)).thenReturn(lecture);
     doNothing().when(homeworkDao).save(any());
@@ -129,7 +122,7 @@ class HomeworkServiceTests {
 
   @Test
   void givenCreateHomeworkCall_whenNotAuthor_thenNotFoundErrorThrow() {
-    User teacher = testsUtil.createUser(1, UserRole.TEACHER, new Cohort());
+    User teacher = createUser(1, UserRole.TEACHER, new Cohort());
 
     assertThrows(
         NotFoundException.class,
@@ -139,8 +132,8 @@ class HomeworkServiceTests {
 
   @Test
   void givenCreateHomeworkCall_whenAdmin_thenSuccessfullyCreate() {
-    User admin = testsUtil.createUser(1, UserRole.ADMIN, new Cohort());
-    Lecture lecture = testsUtil.createLecture(1, Collections.emptyList(), new User());
+    User admin = createUser(1, UserRole.ADMIN, new Cohort());
+    Lecture lecture = createLecture(1, Collections.emptyList(), new User());
 
     when(homeworkDao.find(Lecture.class, 1)).thenReturn(lecture);
     doNothing().when(homeworkDao).save(any());
@@ -161,7 +154,7 @@ class HomeworkServiceTests {
 
   @Test
   void givenDeleteHomeworkCall_whenInvalidHomeworkId_thenNotFoundErrorThrow() {
-    User teacher = testsUtil.createUser(1, UserRole.TEACHER, new Cohort());
+    User teacher = createUser(1, UserRole.TEACHER, new Cohort());
     when(homeworkDao.find(Homework.class, 1)).thenReturn(null);
 
     assertThrows(
@@ -172,7 +165,7 @@ class HomeworkServiceTests {
 
   @Test
   void givenUpdateHomeworkCall_whenValid_thenSuccessfullyUpdate() {
-    Homework homework = testsUtil.createBackHomework();
+    Homework homework = createBackHomework();
     HomeworkPatchDto homeworkPatchDto = createHomeworkPatchDto(
         "NewDescription",
         "NewTopic",
