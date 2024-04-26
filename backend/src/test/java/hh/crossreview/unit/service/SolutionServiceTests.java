@@ -60,8 +60,7 @@ class SolutionServiceTests extends TestsUtil {
     User student = createUser(1, UserRole.STUDENT, homework.getCohorts().get(0));
 
     when(solutionDao.findByHomeworkAndStudent(homework, student)).thenReturn(Optional.empty());
-    when(solutionDao.findByBranchLink(any(String.class))).thenReturn(Optional.empty());
-    doNothing().when(gitlabService).checkBranchLink(any(String.class));
+    when(gitlabService.validateBranchLink(branchLink)).thenReturn(branchLink);
     doNothing().when(solutionDao).save(any(Solution.class));
     SolutionDto solutionDto = solutionService.createSolution(solutionPostDto, homework, student);
 
@@ -127,18 +126,17 @@ class SolutionServiceTests extends TestsUtil {
     Homework homework = createBackHomework();
     User student = createUser(1, UserRole.STUDENT, homework.getCohorts().get(0));
     String oldBranchLink = "gitlab/username/repository/-/tree/branch-name.with-dot/and-slash?abc=1&some=2";
-    Solution oldSolution = createSolution(1, SolutionStatus.IN_PROGRESS, student, oldBranchLink, Collections.emptyList());
     String newBranchLink = "gitlab/usernameNew/repositoryNew/-/tree/branch-name.with-dot/and-slash?abc=1&some=2";
+    String trimmedBranchLink = "gitlab/usernameNew/repositoryNew/-/tree/branch-name.with-dot/and-slash";
+    Solution oldSolution = createSolution(1, SolutionStatus.IN_PROGRESS, student, oldBranchLink, Collections.emptyList());
     SolutionPatchDto solutionPatchDto = createSolutionPatchDto(newBranchLink);
 
     when(solutionDao.findByHomeworkAndStudent(homework, student)).thenReturn(Optional.of(oldSolution));
-    when(solutionDao.findByBranchLink(any(String.class))).thenReturn(Optional.empty());
     when(solutionAttemptDao.findByHomeworkAndStudent(homework, student)).thenReturn(Collections.emptyList());
-    doNothing().when(gitlabService).checkBranchLink(any(String.class));
+    when(gitlabService.validateBranchLink(newBranchLink)).thenReturn(trimmedBranchLink);
     SolutionDto solutionDto = solutionService.updateSolution(solutionPatchDto, homework, student);
 
-    String trimmedBranch = "gitlab/usernameNew/repositoryNew/-/tree/branch-name.with-dot/and-slash";
-    assertEquals(trimmedBranch, solutionDto.getBranchLink());
+    assertEquals(trimmedBranchLink, solutionDto.getBranchLink());
   }
 
   SolutionPostDto createSolutionPostDto(String branchLink) {
