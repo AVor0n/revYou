@@ -56,7 +56,6 @@ public class SolutionService {
       User user
   ) {
     reqUtils.requireUserHasRole(user, UserRole.STUDENT);
-
     reqUtils.requireValidCohorts(user.getCohorts(), homework);
     requireSolutionNotExist(homework, user);
 
@@ -94,7 +93,6 @@ public class SolutionService {
       User user
   ) {
     reqUtils.requireUserHasRole(user, UserRole.STUDENT);
-
     reqUtils.requireValidCohorts(user.getCohorts(), homework);
 
     Solution solution = requireSolutionExist(homework, user);
@@ -154,7 +152,6 @@ public class SolutionService {
       User user
   ) {
     reqUtils.requireUserHasRole(user, UserRole.STUDENT);
-
     requireReviewAttemptNotExist(homework, user);
     Solution solution = requireSolutionExist(homework, user);
 

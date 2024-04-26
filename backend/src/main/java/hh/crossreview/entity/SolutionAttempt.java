@@ -53,4 +53,24 @@ public class SolutionAttempt {
     return solution;
   }
 
+  public SolutionAttempt setSolutionAttemptId(Integer solutionAttemptId) {
+    this.solutionAttemptId = solutionAttemptId;
+    return this;
+  }
+
+  public SolutionAttempt setCommitId(String commitId) {
+    this.commitId = commitId;
+    return this;
+  }
+
+  public SolutionAttempt setCreatedAt(LocalDateTime createdAt) {
+    this.createdAt = createdAt;
+    return this;
+  }
+
+  public SolutionAttempt setSolution(Solution solution) {
+    this.solution = solution;
+    return this;
+  }
+
 }
