@@ -12,6 +12,7 @@
 export interface SignInResponse {
   accessToken?: string;
   refreshToken?: string;
+  role?: string;
 }
 
 export interface Exception {

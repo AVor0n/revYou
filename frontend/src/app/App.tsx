@@ -3,6 +3,7 @@ import { ThemeProvider, ToasterComponent, ToasterProvider } from '@gravity-ui/ui
 import { type AxiosError } from 'axios';
 import { useEffect } from 'react';
 import { GetApi } from './api';
+import { type Role, userActions } from './entities';
 import { useAppDispatch } from './hooks';
 import { AuthProvider, RouterProvider, refreshAuthToken, useAuth } from './providers';
 
@@ -37,6 +38,10 @@ export const App = () => {
       },
     );
   }, [dispatch, setAccessToken, setRefreshToken]);
+
+  useEffect(() => {
+    dispatch(userActions.setUserRole(localStorage.getItem('role') as Role));
+  }, [dispatch]);
 
   return (
     <ThemeProvider theme="light">
