@@ -1,12 +1,13 @@
 import { configureStore, combineReducers } from '@reduxjs/toolkit';
 import { GetApi } from 'app/api';
-import { userReducer, homeworkReducer } from 'app/entities';
+import { userReducer, homeworkReducer, reviewReducer } from 'app/entities';
 import { type ThunkExtraArg, type StoreSchema } from './StoreSchema';
 
 export function createReduxStore(initialState?: StoreSchema) {
   const rootReducers = {
     user: userReducer,
     homework: homeworkReducer,
+    review: reviewReducer,
   };
 
   const extraArg: ThunkExtraArg = {

@@ -289,7 +289,7 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
    * @tags Solutions
    * @name ReadSolution
    * @summary Available only for students
-   * @request GET:/api/homeworks/{homeworkId}/solution
+   * @request GET:/api/homeworks/{homeworkId}/solutions/student-solution
    * @secure
    * @response `200` `Solution` Successful operation
    * @response `403` `Exception` Forbidden request
@@ -297,7 +297,7 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
    */
   readSolution = (homeworkId: number, params: RequestParams = {}) =>
     this.request<Solution, Exception>({
-      path: `/api/homeworks/${homeworkId}/solution`,
+      path: `/api/homeworks/${homeworkId}/solutions/student-solution`,
       method: 'GET',
       secure: true,
       format: 'json',

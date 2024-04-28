@@ -1,9 +1,10 @@
 import { type Api } from '@domains';
-import { type UserSchema, type HomeworkSchema } from 'app/entities';
+import { type UserSchema, type HomeworkSchema, type ReviewSchema } from 'app/entities';
 
 export interface StoreSchema {
   user: UserSchema;
   homework: HomeworkSchema;
+  review: ReviewSchema;
 }
 
 export interface ThunkExtraArg {

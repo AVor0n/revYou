@@ -1,0 +1,40 @@
+.FilesTree {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  inline-size: 250px;
+  block-size: 80vh;
+  overflow-y: auto;
+  user-select: none;
+
+  & .itemWithChildren {
+    display: flex;
+    padding: 4px;
+
+    &:hover {
+      background-color: var(--g-color-base-simple-hover);
+      cursor: pointer;
+    }
+
+    &.active {
+      background-color: var(--g-color-base-selection);
+
+      &:hover {
+        background-color: var(--g-color-base-selection-hover);
+      }
+    }
+
+    & .itemContainer {
+      display: flex;
+      gap: 4px;
+      align-items: center;
+      padding-inline: 4px;
+      overflow: hidden;
+
+      & .itemText {
+        text-overflow: ellipsis;
+        overflow: hidden;
+      }
+    }
+  }
+}

@@ -1,0 +1,26 @@
+import { type TreeNode } from './types';
+
+/**
+ * Обход дерева в глубину
+ * @param items - Корневые узлы дерева
+ * @param action - Действие которое нужно выполнить для каждого узла
+ */
+export const traversalTree = <T extends TreeNode, D extends T = T>(
+  items: TreeNode<T>[],
+  action: (item: TreeNode<T>) => void,
+): D[] => {
+  for (const item of items) {
+    action(item);
+    if (item.children) {
+      traversalTree(item.children, action);
+    }
+  }
+  return items as D[];
+};
+
+/** Возвращает массив id всех узлов дерева */
+export const getAllIds = <T extends TreeNode>(tree: T[]) => {
+  const allIds: string[] = [];
+  traversalTree(tree, item => allIds.push(item.id));
+  return allIds;
+};
