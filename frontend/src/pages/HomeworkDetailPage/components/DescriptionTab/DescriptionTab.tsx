@@ -7,21 +7,17 @@ interface DescriptionTabProps {
   homeworkInfo: Homework | null;
 }
 
-export const DescriptionTab = ({ homeworkInfo }: DescriptionTabProps) => (
-  <Card view="raised" style={{ padding: 20 }} className={styles.DescriptionTab}>
-    {(!!homeworkInfo?.topic || !!homeworkInfo?.lecture?.name || homeworkInfo?.departments) && (
+export const DescriptionTab = ({ homeworkInfo }: DescriptionTabProps) =>
+  homeworkInfo && (
+    <Card view="raised" style={{ padding: 20 }} className={styles.DescriptionTab}>
       <DescriptionHeader homeworkInfo={homeworkInfo} />
-    )}
 
-    {(!!homeworkInfo?.author ||
-      !!homeworkInfo?.startDate ||
-      !!homeworkInfo?.completionDeadline ||
-      homeworkInfo?.reviewDuration) && <AuthorAndDeadlines homeworkInfo={homeworkInfo} />}
+      <AuthorAndDeadlines homeworkInfo={homeworkInfo} />
 
-    {!!homeworkInfo?.description && <Desctiption homeworkInfo={homeworkInfo} />}
+      <Desctiption homeworkInfo={homeworkInfo} />
 
-    {!!homeworkInfo?.repositoryLink && <GitLabLink repositoryLink={homeworkInfo.repositoryLink} />}
+      <GitLabLink repositoryLink={homeworkInfo.repositoryLink} />
 
-    <SendSolutionForm />
-  </Card>
-);
+      <SendSolutionForm />
+    </Card>
+  );
