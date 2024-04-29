@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import java.util.List;
 
 @Entity
-@Table
+@Table(name = "review")
 public class Review {
 
   @Id
@@ -32,7 +32,7 @@ public class Review {
           cascade = CascadeType.ALL,
           mappedBy = "review",
           fetch = FetchType.EAGER)
-  private List<SolutionAttempt> reviewAttempts;
+  private List<ReviewAttempt> reviewAttempts;
 
 
   public Integer getReviewId() {
@@ -75,11 +75,11 @@ public class Review {
     this.solution = solution;
   }
 
-  public List<SolutionAttempt> getReviewAttempts() {
+  public List<ReviewAttempt> getReviewAttempts() {
     return reviewAttempts;
   }
 
-  public void setReviewAttempts(List<SolutionAttempt> reviewAttempts) {
+  public void setReviewAttempts(List<ReviewAttempt> reviewAttempts) {
     this.reviewAttempts = reviewAttempts;
   }
 }

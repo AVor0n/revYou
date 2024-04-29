@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 
+@Entity
+@Table(name = "review_attempt")
 public class ReviewAttempt {
   @Id
   @Column(name = "review_attempt_id")
@@ -12,11 +14,11 @@ public class ReviewAttempt {
 
   @ManyToOne
   @JoinColumn(name = "review_id")
-  private Solution review;
+  private Review review;
 
   @ManyToOne
   @JoinColumn(name = "solution_attempt_id")
-  private Solution solutionAttempt;
+  private SolutionAttempt solutionAttempt;
 
   @Column(name = "created_at")
   private LocalDateTime createdAt;
@@ -35,19 +37,19 @@ public class ReviewAttempt {
     this.reviewAttemptId = reviewAttemptId;
   }
 
-  public Solution getReview() {
+  public Review getReview() {
     return review;
   }
 
-  public void setReview(Solution review) {
+  public void setReview(Review review) {
     this.review = review;
   }
 
-  public Solution getSolutionAttempt() {
+  public SolutionAttempt getSolutionAttempt() {
     return solutionAttempt;
   }
 
-  public void setSolutionAttempt(Solution solutionAttempt) {
+  public void setSolutionAttempt(SolutionAttempt solutionAttempt) {
     this.solutionAttempt = solutionAttempt;
   }
 
