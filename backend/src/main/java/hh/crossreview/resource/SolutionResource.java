@@ -197,8 +197,8 @@ public class SolutionResource {
   @DELETE
   @Produces(MediaType.APPLICATION_JSON)
   @ApiResponse(
-      responseCode = "200",
-      description = "Successful operation"
+      responseCode = "204",
+      description = "No content"
   )
   public Response deleteSolution(
       @PathParam("homeworkId") Integer homeworkId,
@@ -208,7 +208,7 @@ public class SolutionResource {
     Homework homework = homeworkService.getHomeworkEntity(homeworkId);
     solutionService.deleteSolution(homework, user);
     return Response
-        .status(Response.Status.OK)
+        .status(Response.Status.NO_CONTENT)
         .build();
   }
 
