@@ -8,9 +8,10 @@ import java.util.List;
     name = "Homework",
     requiredProperties = {
         "id", "name", "topic",
-        "description", "departments", "author",
-        "lecture", "repositoryLink", "startDate",
-        "completionDeadline", "reviewDuration"
+        "departments", "author",
+        "lecture", "repositoryLink",
+        "startDate", "completionDeadline",
+        "reviewDuration"
     }
 )
 @SuppressWarnings({"unused"})
