@@ -3,7 +3,8 @@ package hh.crossreview.dto.exception;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.Date;
 
-@Schema(name = "Exception")
+@Schema(name = "Exception", requiredProperties = {"timestamp", "status", "message"})
+@SuppressWarnings({"unused", "FieldMayBeFinal"})
 public class ExceptionDto {
 
   private Date timestamp;
