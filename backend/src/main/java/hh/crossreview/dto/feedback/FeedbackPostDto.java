@@ -11,6 +11,8 @@ public class FeedbackPostDto {
   private Integer student;
   @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
   private Integer rating;
+  @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
+  private String description;
 
   public Integer getReview() {
     return review;
@@ -35,6 +37,14 @@ public class FeedbackPostDto {
 
   public void setRating(Integer rating) {
     this.rating = rating;
+  }
+
+  public String getDescription() {
+    return description;
+  }
+
+  public void setDescription(String description) {
+    this.description = description;
   }
 }
 

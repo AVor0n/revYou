@@ -46,7 +46,8 @@ public class FeedbackService extends GenericService{
   public FeedbackPostResponseDto createFeedback(FeedbackPostDto feedbackPostDto, UsernamePasswordAuthenticationToken token) {
     var student = feedbackDao.find(User.class, feedbackPostDto.getStudent());
     var review = feedbackDao.find(Review.class, feedbackPostDto.getReview());
-    var feedback = feedbackConverter.convertToFeedback(feedbackPostDto, review, student);
+    var description = feedbackPostDto.getDescription();
+    var feedback = feedbackConverter.convertToFeedback(feedbackPostDto, review, student,description);
     feedbackDao.save(feedback);
     return feedbackConverter.convertToFeedbackPostResponseDto(feedback.getFeedbackId());
   }

@@ -1,9 +1,7 @@
 package hh.crossreview.dto.feedback;
 
-import hh.crossreview.dto.review.ReviewDto;
 import hh.crossreview.dto.user.UserDto;
 import hh.crossreview.entity.Feedback;
-import hh.crossreview.entity.Review;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -14,7 +12,7 @@ import java.time.LocalDateTime;
 public class FeedbackDto implements Serializable {
 
   private Integer feedbackId;
-  private ReviewDto review;
+  private Integer reviewId;
   private UserDto student;
   private String description;
   private Integer rating;
@@ -22,7 +20,7 @@ public class FeedbackDto implements Serializable {
 
   public FeedbackDto() {
     this.feedbackId = null;
-    this.review = null;
+    this.reviewId = null;
     this.student = null;
     this.description = null;
     this.rating = null;
@@ -38,12 +36,12 @@ public class FeedbackDto implements Serializable {
     return this;
   }
 
-  public ReviewDto getReview() {
-    return review;
+  public Integer getReviewId() {
+    return reviewId;
   }
 
-  public FeedbackDto setReview(ReviewDto review) {
-    this.review = review;
+  public FeedbackDto setReviewId(Integer reviewId) {
+    this.reviewId = reviewId;
     return this;
   }
 

@@ -30,6 +30,9 @@ public class Feedback {
   @Column(name = "rating")
   private Integer rating;
 
+  @Column(name = "description")
+  private String description;
+
   @Column(name = "feedback_date")
   private LocalDateTime feedbackDate;
 
@@ -75,5 +78,14 @@ public class Feedback {
 
   public void setFeedbackId(Integer feedbackId) {
     this.feedbackId = feedbackId;
+  }
+
+  public String getDescription() {
+    return description;
+  }
+
+  public Feedback setDescription(String description) {
+    this.description = description;
+    return this;
   }
 }

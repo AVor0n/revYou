@@ -153,6 +153,7 @@ CREATE TABLE IF NOT EXISTS сode_review_feedback
     student_id  INTEGER,
     rating       INT,
     feedback_date TIMESTAMP,
+    description VARCHAR(255),
     FOREIGN KEY (review_id) REFERENCES review (review_id) ON DELETE CASCADE,
     FOREIGN KEY (student_id)  REFERENCES user_account (user_id)
 );
