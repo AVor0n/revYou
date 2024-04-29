@@ -28,9 +28,10 @@ export const App = () => {
           if (refreshToken) {
             dispatch(refreshAuthToken({ refreshToken }))
               .unwrap()
-              .then(({ accessToken, refreshToken: newRefreshToken }) => {
+              .then(({ accessToken, refreshToken: newRefreshToken, role }) => {
                 setAccessToken(accessToken ?? '');
                 setRefreshToken(newRefreshToken ?? '');
+                userActions.setUserRole((role || null) as Role);
               });
           }
         }
