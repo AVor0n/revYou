@@ -25,7 +25,7 @@ public class Review {
   private String status;
 
   @ManyToOne
-  @JoinColumn(name = "solutionId")
+  @JoinColumn(name = "solution_id")
   private Solution solution;
 
   @OneToMany(
