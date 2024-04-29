@@ -2,7 +2,6 @@ package hh.crossreview.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.ForeignKey;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -21,15 +20,12 @@ public class Feedback {
   private Integer feedbackId;
 
   @ManyToOne
-  @JoinColumn(name = "reviewer_id", referencedColumnName = "user_id", foreignKey = @ForeignKey(name = "fk_reviewer_id"))
-  private User reviewer;
+  @JoinColumn(name = "review_id")
+  private Review review;
 
   @ManyToOne
-  @JoinColumn(name = "student_id", referencedColumnName = "user_id", foreignKey = @ForeignKey(name = "fk_student_id"))
+  @JoinColumn(name = "student_id")
   private User student;
-
-  @Column(name = "description", length = 500)
-  private String description;
 
   @Column(name = "rating")
   private Integer rating;
@@ -37,12 +33,12 @@ public class Feedback {
   @Column(name = "feedback_date")
   private LocalDateTime feedbackDate;
 
-  public User getReviewer() {
-    return reviewer;
+  public Review getReview() {
+    return review;
   }
 
-  public Feedback setReviewer(User reviewer) {
-    this.reviewer = reviewer;
+  public Feedback setReview(Review review) {
+    this.review = review;
     return this;
   }
 
@@ -52,15 +48,6 @@ public class Feedback {
 
   public Feedback setStudent(User student) {
     this.student = student;
-    return this;
-  }
-
-  public String getDescription() {
-    return description;
-  }
-
-  public Feedback setDescription(String description) {
-    this.description = description;
     return this;
   }
 

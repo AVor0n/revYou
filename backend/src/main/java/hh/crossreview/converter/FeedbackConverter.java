@@ -3,8 +3,10 @@ package hh.crossreview.converter;
 import hh.crossreview.dto.feedback.FeedbackDto;
 import hh.crossreview.dto.feedback.FeedbackPostDto;
 import hh.crossreview.dto.feedback.FeedbackPostResponseDto;
+import hh.crossreview.dto.review.ReviewDto;
 import hh.crossreview.dto.user.UserDto;
 import hh.crossreview.entity.Feedback;
+import hh.crossreview.entity.Review;
 import hh.crossreview.entity.User;
 import jakarta.inject.Named;
 import jakarta.inject.Singleton;
@@ -19,9 +21,8 @@ public class FeedbackConverter {
   }
 
   public FeedbackDto convertToFeedbackDto(Feedback feedback) {
-    return new FeedbackDto().setFeedbackId(feedback.getFeedbackId()).setReviewer(converToUserDto(feedback.getReviewer()))
-        .setStudent(converToUserDto(feedback.getStudent())).
-        setDescription(feedback.getDescription()).setRating(feedback.getRating())
+    return new FeedbackDto().setFeedbackId(feedback.getFeedbackId()).setReview(converToReviewDto(feedback.getReview()))
+        .setStudent(converToUserDto(feedback.getStudent())).setRating(feedback.getRating())
         .setFeedbackDate(feedback.getFeedbackDate());
   }
 
@@ -30,9 +31,14 @@ public class FeedbackConverter {
         .setEmail(user.getEmail());
   }
 
-  public Feedback convertToFeedback(FeedbackPostDto feedbackPostDto, User reviwer, User student) {
-    return new Feedback().setReviewer(reviwer).setStudent(student)
-        .setDescription(feedbackPostDto.getDescription()).setRating(feedbackPostDto.getRating()).setFeedbackDate(
+  private ReviewDto converToReviewDto(Review review) {
+    return new ReviewDto().setReviewId(review.getReviewId()).setReviewer(converToUserDto(review.getReviewer()))
+        .setStatus(review.getStatus());
+
+  }
+
+  public Feedback convertToFeedback(FeedbackPostDto feedbackPostDto, Review review, User student) {
+    return new Feedback().setReview(review).setStudent(student).setRating(feedbackPostDto.getRating()).setFeedbackDate(
             LocalDateTime.now());
   }
   public FeedbackPostResponseDto convertToFeedbackPostResponseDto(Integer feedbackId) {

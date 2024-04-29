@@ -146,6 +146,17 @@ CREATE TABLE IF NOT EXISTS reviewers_pool
     FOREIGN KEY (user_id) REFERENCES user_account (user_id) ON DELETE CASCADE,
     FOREIGN KEY (homework_id) REFERENCES homework (homework_id)
 );
+CREATE TABLE IF NOT EXISTS сode_review_feedback
+(
+    feedback_id SERIAL PRIMARY KEY,
+    review_id INTEGER,
+    student_id  INTEGER,
+    rating       INT,
+    feedback_date TIMESTAMP,
+    FOREIGN KEY (review_id) REFERENCES review (review_id) ON DELETE CASCADE,
+    FOREIGN KEY (student_id)  REFERENCES user_account (user_id)
+);
+
 
 -- Вставка данных в таблицу cohort
 INSERT INTO cohort (cohort_number, education_start_date, education_end_date, mm_channel_link, study_direction)

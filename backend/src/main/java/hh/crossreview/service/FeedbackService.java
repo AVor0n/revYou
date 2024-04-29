@@ -8,6 +8,7 @@ import hh.crossreview.dto.feedback.FeedbackDto;
 import hh.crossreview.dto.feedback.FeedbackPostDto;
 import hh.crossreview.dto.feedback.FeedbackPostResponseDto;
 import hh.crossreview.entity.Feedback;
+import hh.crossreview.entity.Review;
 import hh.crossreview.entity.User;
 import jakarta.inject.Named;
 import jakarta.inject.Singleton;
@@ -43,9 +44,9 @@ public class FeedbackService extends GenericService{
 
   @Transactional
   public FeedbackPostResponseDto createFeedback(FeedbackPostDto feedbackPostDto, UsernamePasswordAuthenticationToken token) {
-    var reviewer = retrieveUserFromToken(token);
     var student = feedbackDao.find(User.class, feedbackPostDto.getStudent());
-    var feedback = feedbackConverter.convertToFeedback(feedbackPostDto, reviewer,student);
+    var review = feedbackDao.find(Review.class, feedbackPostDto.getReview());
+    var feedback = feedbackConverter.convertToFeedback(feedbackPostDto, review, student);
     feedbackDao.save(feedback);
     return feedbackConverter.convertToFeedbackPostResponseDto(feedback.getFeedbackId());
   }
