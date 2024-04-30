@@ -1,7 +1,9 @@
 package hh.crossreview.dto.gitlab;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
 
+@Schema(name = "DiffsWrapper", requiredProperties = {"diffs"})
 @SuppressWarnings({"unused", "UnusedReturnValue"})
 public class DiffsWrapperDto {
 

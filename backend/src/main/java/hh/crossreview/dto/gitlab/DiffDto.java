@@ -1,7 +1,12 @@
 package hh.crossreview.dto.gitlab;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 
+@Schema(name = "Diff", requiredProperties = {
+    "new_path", "old_path", "new_file",
+    "renamed_file", "deleted_file", "generated_file"}
+)
 @SuppressWarnings({"unused", "UnusedReturnValue"})
 public class DiffDto {
 

@@ -3,6 +3,7 @@ package hh.crossreview.resource;
 import hh.crossreview.dto.exception.ExceptionDto;
 import hh.crossreview.dto.gitlab.DiffsWrapperDto;
 import hh.crossreview.external.gitlab.service.GitlabService;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -41,10 +42,15 @@ public class GitlabResource {
   @GET
   @Produces(MediaType.APPLICATION_JSON)
   @Path("/projects/{projectId}/repository/compare")
+  @ApiResponse(
+      responseCode = "200",
+      description = "Successful operation",
+      content = @Content(schema = @Schema(implementation = DiffsWrapperDto.class))
+  )
   public Response getDiffs(
       @PathParam("projectId") Integer projectId,
-      @QueryParam("from") String from,
-      @QueryParam("to") String to) {
+      @Parameter(description = "Commit SHA", required = true) @QueryParam("from") String from,
+      @Parameter(description = "Commit SHA", required = true) @QueryParam("to") String to) {
     DiffsWrapperDto diffsWrapperDto = gitlabService.retrieveDiffs(projectId, from, to);
     return Response
         .status(Response.Status.OK)
@@ -55,10 +61,15 @@ public class GitlabResource {
   @GET
   @Produces(MediaType.TEXT_PLAIN)
   @Path("/projects/{projectId}/repository/files/{filePath:.+}/raw")
+  @ApiResponse(
+      responseCode = "200",
+      description = "Successful operation",
+      content = @Content(mediaType = "plain/text")
+  )
   public Response getRawFile(
       @PathParam("projectId") Integer projectId,
-      @PathParam("filePath") String filePath,
-      @QueryParam("ref") String ref
+      @Parameter(description = "File path (not URL-encoded)", required = true) @PathParam("filePath") String filePath,
+      @Parameter(description = "Commit SHA", required = true) @QueryParam("ref") String ref
   ) {
     String rawFile = gitlabService.retrieveRawFile(projectId, filePath, ref);
     return Response
