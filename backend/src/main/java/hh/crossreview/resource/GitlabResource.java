@@ -52,4 +52,18 @@ public class GitlabResource {
         .build();
   }
 
+  @GET
+  @Produces(MediaType.TEXT_PLAIN)
+  @Path("/projects/{projectId}/repository/files/{filePath:.+}/raw")
+  public Response getRawFile(
+      @PathParam("projectId") Integer projectId,
+      @PathParam("filePath") String filePath,
+      @QueryParam("ref") String ref
+  ) {
+    String rawFile = gitlabService.retrieveRawFile(projectId, filePath, ref);
+    return Response
+        .status(Response.Status.OK)
+        .entity(rawFile)
+        .build();
+  }
 }

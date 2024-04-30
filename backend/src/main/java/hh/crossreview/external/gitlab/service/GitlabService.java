@@ -96,6 +96,10 @@ public class GitlabService {
     }
   }
 
+  public String retrieveRawFile(Integer projectId, String filePath, String ref) {
+    filePath = urlEncodeFullPath(filePath);
+    return getRawFileRequest(projectId, filePath, ref);
+  }
 
   private String getBranchRequest(ParsedGitlabLink parsedGitlabLink) {
     String repository = urlEncodeSlashes(parsedGitlabLink.repository());
@@ -121,6 +125,21 @@ public class GitlabService {
             .add("repository")
             .add("compare") +
             String.format("from=%s&to=%s", from, to));
+    return getRequest(uri);
+  }
+
+
+  private String getRawFileRequest(Integer projectId, String filePath, String ref) {
+    URI uri = URI
+        .create(new StringJoiner("/", "", "?")
+            .add(gitlabApiUrl)
+            .add("projects")
+            .add(projectId.toString())
+            .add("repository")
+            .add("files")
+            .add(filePath)
+            .add("raw") +
+            String.format("ref=%s", ref));
     return getRequest(uri);
   }
 
@@ -170,6 +189,11 @@ public class GitlabService {
 
   private String urlEncodeSlashes(String param) {
     return param.replace("/", "%2F");
+  }
+
+  private String urlEncodeFullPath(String param) {
+    param = urlEncodeSlashes(param);
+    return param.replace(".", "%2E");
   }
 
 }
