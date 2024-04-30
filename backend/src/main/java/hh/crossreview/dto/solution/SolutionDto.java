@@ -9,6 +9,10 @@ public class SolutionDto {
 
   private String status;
 
+  private String repository;
+
+  private String branch;
+
   private Integer approveScore;
 
   private Integer reviewScore;
@@ -21,6 +25,14 @@ public class SolutionDto {
 
   public String getStatus() {
     return status;
+  }
+
+  public String getRepository() {
+    return repository;
+  }
+
+  public String getBranch() {
+    return branch;
   }
 
   public Integer getApproveScore() {
@@ -45,6 +57,16 @@ public class SolutionDto {
 
   public SolutionDto setStatus(String status) {
     this.status = status;
+    return this;
+  }
+
+  public SolutionDto setRepository(String repository) {
+    this.repository = repository;
+    return this;
+  }
+
+  public SolutionDto setBranch(String branch) {
+    this.branch = branch;
     return this;
   }
 

@@ -14,22 +14,18 @@ import hh.crossreview.entity.Solution;
 import hh.crossreview.entity.SolutionAttempt;
 import hh.crossreview.entity.User;
 import hh.crossreview.entity.enums.UserRole;
-import hh.crossreview.external.gitlab.GitlabService;
+import hh.crossreview.external.gitlab.service.GitlabService;
 import hh.crossreview.utils.RequirementsUtils;
 import jakarta.inject.Named;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.BadRequestException;
 import java.util.List;
 import java.util.Optional;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.transaction.annotation.Transactional;
 
 @Named
 @Singleton
 public class SolutionService {
-
-  @Value("${gitlab.url}")
-  private String gitlabUrl;
   private final GitlabService gitlabService;
   private final SolutionAttemptDao solutionAttemptDao;
   private final SolutionDao solutionDao;
@@ -60,10 +56,13 @@ public class SolutionService {
     reqUtils.requireValidCohorts(user.getCohorts(), homework);
     requireSolutionNotExist(homework, user);
 
-    String branchLink = gitlabService.validateBranchLink(solutionPostDto.getBranchLink());
-    solutionPostDto.setBranchLink(branchLink);
+    var parsedGitlabLink = gitlabService.validateBranchLink(solutionPostDto.getBranchLink());
 
-    Solution solution = solutionConverter.convertToSolution(solutionPostDto, homework, user);
+    Solution solution = solutionConverter.convertToSolution(
+        parsedGitlabLink,
+        homework,
+        user
+    );
     solutionDao.save(solution);
     return solutionConverter.convertToSolutionDto(solution);
   }
@@ -84,7 +83,7 @@ public class SolutionService {
     reqUtils.requireValidCohorts(user.getCohorts(), homework);
 
     Solution solution = requireSolutionExist(homework, user);
-    String commitId = gitlabService.retrieveCommitId(solution.getBranchLink());
+    String commitId = gitlabService.retrieveCommitId(solution.getRepository(), solution.getBranch());
     SolutionAttempt solutionAttempt = new SolutionAttempt(commitId, solution);
     solutionAttemptDao.save(solutionAttempt);
     return new SolutionAttemptDto(
@@ -133,10 +132,9 @@ public class SolutionService {
     requireReviewAttemptNotExist(homework, user);
     Solution solution = requireSolutionExist(homework, user);
 
-    String branchLink = gitlabService.validateBranchLink(solutionPatchDto.getBranchLink());
-    solutionPatchDto.setBranchLink(branchLink);
+    var parsedGitlabLink = gitlabService.validateBranchLink(solutionPatchDto.getBranchLink());
 
-    solutionConverter.merge(solution, solutionPatchDto);
+    solutionConverter.merge(solution, parsedGitlabLink);
     return solutionConverter.convertToSolutionDto(solution);
   }
 
