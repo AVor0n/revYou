@@ -65,6 +65,8 @@ CREATE TABLE IF NOT EXISTS solution
 (
     solution_id   SERIAL PRIMARY KEY,
     status        VARCHAR(20),
+    repository    VARCHAR(255) NOT NULL,
+    branch        VARCHAR(255) NOT NULL,
     approve_score INTEGER      NOT NULL,
     review_score  INTEGER      NOT NULL,
     branch_link   VARCHAR(500) NOT NULL UNIQUE,
@@ -86,46 +88,46 @@ CREATE TABLE IF NOT EXISTS solution_attempt
 
 CREATE TABLE IF NOT EXISTS review
 (
-    review_id SERIAL PRIMARY KEY,
-    student_id INTEGER NOT NULL,
+    review_id   SERIAL PRIMARY KEY,
+    student_id  INTEGER NOT NULL,
     reviewer_id INTEGER,
-    status VARCHAR(20),
+    status      VARCHAR(20),
     solution_id INTEGER NOT NULL,
-    FOREIGN KEY (student_id) REFERENCES user_account (user_id)  ON DELETE CASCADE,
+    FOREIGN KEY (student_id) REFERENCES user_account (user_id) ON DELETE CASCADE,
     FOREIGN KEY (reviewer_id) REFERENCES user_account (user_id),
     FOREIGN KEY (solution_id) REFERENCES solution (solution_id)
 );
 
 CREATE TABLE IF NOT EXISTS review_attempt
 (
-    review_attempt_id SERIAL PRIMARY KEY,
-    review_id INTEGER NOT NULL,
-    solution_attempt_id  INTEGER NOT NULL,
-    created_at TIMESTAMP DEFAULT NOW(),
-    finished_at TIMESTAMP,
-    resolution VARCHAR(500),
+    review_attempt_id   SERIAL PRIMARY KEY,
+    review_id           INTEGER NOT NULL,
+    solution_attempt_id INTEGER NOT NULL,
+    created_at          TIMESTAMP DEFAULT NOW(),
+    finished_at         TIMESTAMP,
+    resolution          VARCHAR(500),
     FOREIGN KEY (review_id) REFERENCES review (review_id) ON DELETE CASCADE,
     FOREIGN KEY (solution_attempt_id) REFERENCES solution_attempt (solution_attempt_id)
 );
 
 CREATE TABLE IF NOT EXISTS thread
 (
-    thread_id SERIAL PRIMARY KEY,
-    review_id INTEGER NOT NULL,
-    file_path VARCHAR(1000) NOT NULL,
-    start_line INTEGER NOT NULL,
-    start_symbol INTEGER NOT NULL,
-    end_line INTEGER NOT NULL,
-    end_symbol INTEGER NOT NULL,
+    thread_id    SERIAL PRIMARY KEY,
+    review_id    INTEGER       NOT NULL,
+    file_path    VARCHAR(1000) NOT NULL,
+    start_line   INTEGER       NOT NULL,
+    start_symbol INTEGER       NOT NULL,
+    end_line     INTEGER       NOT NULL,
+    end_symbol   INTEGER       NOT NULL,
     FOREIGN KEY (review_id) REFERENCES review (review_id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS comment
 (
     comment_id SERIAL PRIMARY KEY,
-    thread_id INTEGER NOT NULL,
-    author_id INTEGER NOT NULL,
-    content VARCHAR(255),
+    thread_id  INTEGER NOT NULL,
+    author_id  INTEGER NOT NULL,
+    content    VARCHAR(255),
     created_at TIMESTAMP DEFAULT NOW(),
     updated_at TIMESTAMP,
     FOREIGN KEY (thread_id) REFERENCES thread (thread_id) ON DELETE CASCADE,

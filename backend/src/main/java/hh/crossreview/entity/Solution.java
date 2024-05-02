@@ -31,6 +31,12 @@ public class Solution implements Authorable {
   @Enumerated(EnumType.STRING)
   private SolutionStatus status;
 
+  @Column
+  private String repository;
+
+  @Column
+  private String branch;
+
   @Column(name = "branch_link")
   private String branchLink;
 
@@ -67,6 +73,14 @@ public class Solution implements Authorable {
     return status;
   }
 
+  public String getRepository() {
+    return repository;
+  }
+
+  public String getBranch() {
+    return branch;
+  }
+
   public String getBranchLink() {
     return branchLink;
   }
@@ -98,6 +112,16 @@ public class Solution implements Authorable {
 
   public Solution setStatus(SolutionStatus status) {
     this.status = status;
+    return this;
+  }
+
+  public Solution setRepository(String repository) {
+    this.repository = repository;
+    return this;
+  }
+
+  public Solution setBranch(String branch) {
+    this.branch = branch;
     return this;
   }
 

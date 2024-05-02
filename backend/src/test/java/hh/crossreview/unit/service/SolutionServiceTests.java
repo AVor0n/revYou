@@ -13,7 +13,8 @@ import hh.crossreview.entity.SolutionAttempt;
 import hh.crossreview.entity.User;
 import hh.crossreview.entity.enums.SolutionStatus;
 import hh.crossreview.entity.enums.UserRole;
-import hh.crossreview.external.gitlab.GitlabService;
+import hh.crossreview.external.gitlab.service.GitlabService;
+import hh.crossreview.external.gitlab.entity.ParsedGitlabLink;
 import hh.crossreview.service.SolutionService;
 import hh.crossreview.unit.TestsUtil;
 import hh.crossreview.utils.RequirementsUtils;
@@ -56,18 +57,22 @@ class SolutionServiceTests extends TestsUtil {
   @Test
   void givenCreateSolutionCall_whenValid_thenSuccessfullyCreate() {
     Homework homework = createBackHomework();
-    String branchLink = "gitlab/username/repository/-/tree/branch-name.with-dot/and-slash?abc=1&some=2";
+    String repository = "/username/repository";
+    String branch = "branch-name.with-dot/and-slash";
+    String branchLink = String.format("gitlab/%s/-/tree/%s?abc=1&some=2", repository, branch);
+    ParsedGitlabLink parsedGitlabLink = new ParsedGitlabLink(repository, branch, branchLink);
     SolutionPostDto solutionPostDto = createSolutionPostDto(branchLink);
     User student = createUser(1, UserRole.STUDENT, homework.getCohorts().get(0));
 
     when(solutionDao.findByHomeworkAndStudent(homework, student)).thenReturn(Optional.empty());
-    when(solutionDao.findByBranchLink(any(String.class))).thenReturn(Optional.empty());
-    doNothing().when(gitlabService).checkBranchLink(any(String.class));
+    when(gitlabService.validateBranchLink(branchLink)).thenReturn(parsedGitlabLink);
     doNothing().when(solutionDao).save(any(Solution.class));
     SolutionDto solutionDto = solutionService.createSolution(solutionPostDto, homework, student);
 
     assertTrue(solutionDto.getSolutionAttempts().isEmpty());
-    assertEquals(solutionPostDto.getBranchLink(), solutionDto.getBranchLink());
+    assertEquals(repository, solutionDto.getRepository());
+    assertEquals(branch, solutionDto.getBranch());
+    assertEquals(branchLink, solutionDto.getBranchLink());
     assertEquals(SolutionStatus.IN_PROGRESS.toString(), solutionDto.getStatus());
     assertEquals(student.getUserId(), solutionDto.getStudentId());
     assertEquals(0, solutionDto.getApproveScore());
@@ -78,12 +83,14 @@ class SolutionServiceTests extends TestsUtil {
   void givenCreateSolutionAttemptCall_whenValid_thenSuccessfullyCreate() {
     Homework homework = createBackHomework();
     User student = createUser(1, UserRole.STUDENT, homework.getCohorts().get(0));
-    String branchLink = "gitlab/username/repository/-/tree/branch-name.with-dot/and-slash?abc=1&some=2";
+    String repository = "username/repository";
+    String branch = "branch-name.with-dot/and-slash";
+    String branchLink = String.format("gitlab/%s/-/tree/%s?abc=1&some=2", repository, branch);
     String commitId = "aabbccddeeff";
-    Solution solution = createSolution(1, SolutionStatus.IN_PROGRESS, student, branchLink, Collections.emptyList());
+    Solution solution = createSolution(1, SolutionStatus.IN_PROGRESS, student, repository, branch, branchLink, Collections.emptyList());
 
     when(solutionDao.findByHomeworkAndStudent(homework, student)).thenReturn(Optional.of(solution));
-    when(gitlabService.retrieveCommitId(branchLink)).thenReturn(commitId);
+    when(gitlabService.retrieveCommitId(repository, branch)).thenReturn(commitId);
     doNothing().when(solutionAttemptDao).save(any(SolutionAttempt.class));
     SolutionAttemptDto solutionAttemptDto = solutionService.createSolutionAttempt(homework, student);
 
@@ -95,9 +102,11 @@ class SolutionServiceTests extends TestsUtil {
   void givenGetSolutionCall_whenValid_thenSuccessfullyGet() {
     Homework homework = createBackHomework();
     User student = createUser(1, UserRole.STUDENT, homework.getCohorts().get(0));
-    String branchLink = "gitlab/username/repository/-/tree/branch-name.with-dot/and-slash?abc=1&some=2";
+    String repository = "username/repository";
+    String branch = "branch-name.with-dot/and-slash";
+    String branchLink = String.format("gitlab/%s/-/tree/%s?abc=1&some=2", repository, branch);
     SolutionAttempt solutionAttempt = createSolutionAttempt("commitId", LocalDateTime.parse("2024-04-26T10:15:30"));
-    Solution solution = createSolution(1, SolutionStatus.IN_PROGRESS, student, branchLink, List.of(solutionAttempt));
+    Solution solution = createSolution(1, SolutionStatus.IN_PROGRESS, student, repository, branch, branchLink, List.of(solutionAttempt));
 
     when(solutionDao.findByHomeworkAndStudent(homework, student)).thenReturn(Optional.of(solution));
     SolutionDto solutionDto = solutionService.getSolution(homework, student);
@@ -110,9 +119,11 @@ class SolutionServiceTests extends TestsUtil {
   void givenGetSolutionsCall_whenValid_thenSuccessfullyGet() {
     Homework homework = createBackHomework();
     User student = createUser(1, UserRole.TEACHER, homework.getCohorts().get(0));
-    String branchLink = "gitlab/username/repository/-/tree/branch-name.with-dot/and-slash?abc=1&some=2";
+    String repository = "username/repository";
+    String branch = "branch-name.with-dot/and-slash";
+    String branchLink = String.format("gitlab/%s/-/tree/%s?abc=1&some=2", repository, branch);
     SolutionAttempt solutionAttempt = createSolutionAttempt("commitId", LocalDateTime.parse("2024-04-26T10:15:30"));
-    Solution solution = createSolution(1, SolutionStatus.IN_PROGRESS, student, branchLink, List.of(solutionAttempt));
+    Solution solution = createSolution(1, SolutionStatus.IN_PROGRESS, student, repository, branch, branchLink, List.of(solutionAttempt));
 
     when(solutionDao.findByHomework(homework)).thenReturn(List.of(solution));
     List<SolutionDto> solutionsDto = solutionService.getSolutions(homework, student).getData();
@@ -127,19 +138,25 @@ class SolutionServiceTests extends TestsUtil {
   void givenUpdateSolutionCall_whenValid_thenSuccessfullyUpdate() {
     Homework homework = createBackHomework();
     User student = createUser(1, UserRole.STUDENT, homework.getCohorts().get(0));
-    String oldBranchLink = "gitlab/username/repository/-/tree/branch-name.with-dot/and-slash?abc=1&some=2";
-    Solution oldSolution = createSolution(1, SolutionStatus.IN_PROGRESS, student, oldBranchLink, Collections.emptyList());
-    String newBranchLink = "gitlab/usernameNew/repositoryNew/-/tree/branch-name.with-dot/and-slash?abc=1&some=2";
+    String oldRepository = "username/repository";
+    String oldBranch = "branch-name.with-dot/and-slash";
+    String oldBranchLink = String.format("gitlab/%s/-/tree/%s?abc=1&some=2", oldRepository, oldBranch);
+    String newRepository = "repositoryNew";
+    String newBranch = "branch-name.with-dot/and-slash";
+    String newBranchLink = String.format("gitlab/%s/-/tree/%s?abc=1&some=2", newRepository, newBranch);
+    String trimmedBranchLink = "gitlab/usernameNew/repositoryNew/-/tree/branch-name.with-dot/and-slash";
+    ParsedGitlabLink newParsedBranchLink = new ParsedGitlabLink(newRepository, newBranch, trimmedBranchLink);
+    Solution oldSolution = createSolution(1, SolutionStatus.IN_PROGRESS, student, oldRepository, oldBranch, oldBranchLink, Collections.emptyList());
     SolutionPatchDto solutionPatchDto = createSolutionPatchDto(newBranchLink);
 
     when(solutionDao.findByHomeworkAndStudent(homework, student)).thenReturn(Optional.of(oldSolution));
-    when(solutionDao.findByBranchLink(any(String.class))).thenReturn(Optional.empty());
     when(solutionAttemptDao.findByHomeworkAndStudent(homework, student)).thenReturn(Collections.emptyList());
-    doNothing().when(gitlabService).checkBranchLink(any(String.class));
+    when(gitlabService.validateBranchLink(newBranchLink)).thenReturn(newParsedBranchLink);
     SolutionDto solutionDto = solutionService.updateSolution(solutionPatchDto, homework, student);
 
-    String trimmedBranch = "gitlab/usernameNew/repositoryNew/-/tree/branch-name.with-dot/and-slash";
-    assertEquals(trimmedBranch, solutionDto.getBranchLink());
+    assertEquals(trimmedBranchLink, solutionDto.getBranchLink());
+    assertEquals(newRepository, solutionDto.getRepository());
+    assertEquals(newBranch, solutionDto.getBranch());
   }
 
   @Test
@@ -172,6 +189,8 @@ class SolutionServiceTests extends TestsUtil {
       Integer solutionId,
       SolutionStatus solutionStatus,
       User student,
+      String repository,
+      String branch,
       String branchLink,
       List<SolutionAttempt> solutionAttempts
   ) {
@@ -179,6 +198,8 @@ class SolutionServiceTests extends TestsUtil {
         .setSolutionId(solutionId)
         .setStatus(solutionStatus)
         .setStudent(student)
+        .setRepository(repository)
+        .setBranch(branch)
         .setBranchLink(branchLink)
         .setSolutionAttempts(solutionAttempts);
   }
