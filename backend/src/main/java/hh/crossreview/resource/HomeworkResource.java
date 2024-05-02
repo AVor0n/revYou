@@ -162,8 +162,8 @@ public class HomeworkResource {
   @Path("{homeworkId}")
   @Produces(MediaType.APPLICATION_JSON)
   @ApiResponse(
-      responseCode = "200",
-      description = "Successful operation"
+      responseCode = "204",
+      description = "No content"
   )
   public Response deleteHomework(
       @PathParam("homeworkId") Integer homeworkId,
@@ -174,7 +174,7 @@ public class HomeworkResource {
         user
     );
     return Response
-        .status(Response.Status.OK)
+        .status(Response.Status.NO_CONTENT)
         .build();
   }
 
