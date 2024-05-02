@@ -66,7 +66,7 @@ CREATE TABLE IF NOT EXISTS solution
 (
     solution_id      SERIAL PRIMARY KEY,
     status           VARCHAR(20),
-    project_id       INTEGER      NOT NULL UNIQUE,
+    project_id       INTEGER      NOT NULL,
     branch           VARCHAR(255) NOT NULL,
     source_commit_id VARCHAR(255) NOT NULL,
     approve_score    INTEGER      NOT NULL,
@@ -75,7 +75,8 @@ CREATE TABLE IF NOT EXISTS solution
     student_id       INTEGER      NOT NULL,
     FOREIGN KEY (homework_id) REFERENCES homework (homework_id) ON DELETE CASCADE,
     FOREIGN KEY (student_id) REFERENCES user_account (user_id),
-    UNIQUE (homework_id, student_id)
+    UNIQUE (homework_id, student_id),
+    UNIQUE (project_id, branch)
 );
 
 CREATE TABLE IF NOT EXISTS solution_attempt
@@ -194,7 +195,8 @@ VALUES ('https://158.160.88.104/gitlab/teacher_1/test_homewrok', 'Домашка
 
 
 -- Вставка данных в таблицу solution
-INSERT INTO solution (status, approve_score, review_score, project_id, branch, source_commit_id, homework_id, student_id)
+INSERT INTO solution (status, approve_score, review_score, project_id, branch, source_commit_id, homework_id,
+                      student_id)
 VALUES ('IN_PROGRESS', 0, 0, 9, 'user_1_solved_hw_1', 'e814adb5c6f82e32c8ff40b945d9ee7273e9b810', 1, 1),
        ('REVIEW_STAGE', 0, 0, 4, 'user_2_solved_hw_1', 'e814adb5c6f82e32c8ff40b945d9ee7273e9b810', 1, 2),
        ('REVIEWER_STAGE', 2, 0, 10, 'user_3_solved_hw_1', 'e814adb5c6f82e32c8ff40b945d9ee7273e9b810', 1, 3),
