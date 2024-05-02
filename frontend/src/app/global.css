@@ -1,5 +1,6 @@
 @import '@gravity-ui/uikit/styles/fonts.css';
 @import '@gravity-ui/uikit/styles/styles.css';
+@import '@vscode/codicons/dist/codicon.css';
 
 .g-root {
   /* цвета */
@@ -13,6 +14,8 @@
   --g-color-text-link-hover: #0358d8;
   --g-color-text-link-visited: #9054ea;
   --g-color-text-link-visited-hover: #5a18bf;
+  --g-color-base-selection: #a4ccff;
+  --g-color-base-selection-hover: #7eb6ff;
 
   /* радиусы */
   --g-border-radius-xs: 1px;

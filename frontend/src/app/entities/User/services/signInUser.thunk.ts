@@ -15,6 +15,7 @@ export const signInUser = createAsyncThunk<SignInResponse, SignInRequest, ThunkC
       if (!response.data.accessToken) {
         throw new Error('no data');
       }
+      localStorage.setItem('role', response.data.role || '');
 
       return response.data;
     } catch (e) {

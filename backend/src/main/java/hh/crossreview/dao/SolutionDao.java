@@ -43,4 +43,8 @@ public class SolutionDao extends GenericDao {
         .getResultList();
   }
 
+  public void deleteSolution(Solution solution) {
+    getEntityManager().remove(solution);
+  }
+
 }

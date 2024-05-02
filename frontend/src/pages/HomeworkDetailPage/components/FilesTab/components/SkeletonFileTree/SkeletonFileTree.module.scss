@@ -1,0 +1,9 @@
+.SkeletonFileTree {
+  & .tree {
+    inline-size: 250px;
+
+    & .skeleton {
+      block-size: 16px;
+    }
+  }
+}

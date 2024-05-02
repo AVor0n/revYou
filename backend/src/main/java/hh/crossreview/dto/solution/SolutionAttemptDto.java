@@ -3,7 +3,7 @@ package hh.crossreview.dto.solution;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;
 
-@Schema(name = "SolutionAttempt")
+@Schema(name = "SolutionAttempt", requiredProperties = {"commitId", "createdAt"})
 @SuppressWarnings({"unused"})
 public class SolutionAttemptDto {
 

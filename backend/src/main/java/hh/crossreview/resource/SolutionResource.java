@@ -23,6 +23,7 @@ import jakarta.inject.Named;
 import jakarta.inject.Singleton;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.PATCH;
 import jakarta.ws.rs.POST;
@@ -190,6 +191,24 @@ public class SolutionResource {
     return Response
         .status(Response.Status.CREATED)
         .entity(solutionAttemptDto)
+        .build();
+  }
+
+  @DELETE
+  @Produces(MediaType.APPLICATION_JSON)
+  @ApiResponse(
+      responseCode = "204",
+      description = "No content"
+  )
+  public Response deleteSolution(
+      @PathParam("homeworkId") Integer homeworkId,
+      @Context SecurityContext securityContext
+  ) {
+    User user = userService.findByPrincipal(securityContext.getUserPrincipal());
+    Homework homework = homeworkService.getHomeworkEntity(homeworkId);
+    solutionService.deleteSolution(homework, user);
+    return Response
+        .status(Response.Status.NO_CONTENT)
         .build();
   }
 

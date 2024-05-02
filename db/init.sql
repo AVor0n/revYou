@@ -180,10 +180,37 @@ VALUES (1, 1),
 -- Вставка данных в таблицу homework
 INSERT INTO homework (repository_link, name, topic, description, start_date, completion_deadline, review_duration,
                       lecture_id, author_id)
-VALUES ('https://gitlab.com/homework1', 'Домашка по гиту', 'Git',
+VALUES ('https://158.160.88.104/gitlab/teacher_1/test_homewrok', 'Домашка по гиту', 'Git',
         'Создайте пул реквест в свой репозиторий и сделайте необходимые мерджи', '2023-10-05 23:59:59',
         '2023-10-12 23:59:59', 24, 2, 5),
-       ('https://gitlab.com/homework2', 'Домашка по реакту', 'React',
+       ('https://158.160.88.104/gitlab/teacher_2/test_homework_2', 'Домашка по реакту', 'React',
         'Напишите компоненты, сделайте лендинг', '2023-10-10 23:59:59', '2023-10-17 23:59:59', 48, 1, 3),
-       ('https://gitlab.com/homework3', 'Домашка по кафке', 'Kafka',
+       ('https://158.160.88.104/gitlab/teacher_3/test_homework_3', 'Домашка по кафке', 'Kafka',
         'Напишите реализацию AtLeastOnce', '2023-10-10 23:59:59', '2023-10-17 23:59:59', 48, 3, 5);
+
+
+-- Вставка данных в таблицу solution
+INSERT INTO solution (status, approve_score, review_score, branch_link, homework_id, student_id)
+VALUES ('IN_PROGRESS', 0, 0,
+        'https://158.160.88.104/gitlab/user_1/test_homewrok/-/tree/user_1_solved_hw_1?ref_type=heads', 1, 1),
+       ('REVIEW_STAGE', 0, 0,
+        'https://158.160.88.104/gitlab/user_2/test_homewrok/-/tree/user_2_solved_hw_1?ref_type=heads', 1, 2),
+       ('REVIEWER_STAGE', 2, 0,
+        'https://158.160.88.104/gitlab/user_4/test_homewrok/-/tree/user_3_solved_hw_1?ref_type=heads', 1, 3),
+       ('COMPLETE', 2, 2,
+        'https://158.160.88.104/gitlab/user_4/test_homewrok/-/tree/user_4_solved_hw_1?ref_type=heads', 1, 4);
+
+-- Вставка данных в таблицу solution_attempt
+INSERT INTO solution_attempt (commit_id, created_at, solution_id)
+VALUES ('4b0e9b16', '2024-04-10 23:59:59', 1),
+       ('7f174f55', '2024-04-11 23:59:59', 2),
+       ('28219898', '2024-04-12 23:59:59', 3),
+       ('43a0740a', '2024-04-09 23:59:59', 4);
+
+-- Вставка данных в таблицу review
+INSERT INTO review (student_id, reviewer_id, status, solution_id)
+VALUES (2, 3, 'REVIEWER_FOUND', 2);
+
+-- Вставка данных в таблицу review_attempt
+INSERT INTO review_attempt (review_id, solution_attempt_id, created_at, finished_at, resolution)
+VALUES (1, 2, '2024-04-12 23:59:59', null, null);

@@ -31,6 +31,7 @@ import static org.mockito.ArgumentMatchers.any;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -156,6 +157,19 @@ class SolutionServiceTests extends TestsUtil {
     assertEquals(trimmedBranchLink, solutionDto.getBranchLink());
     assertEquals(newRepository, solutionDto.getRepository());
     assertEquals(newBranch, solutionDto.getBranch());
+  }
+
+  @Test
+  void givenDeleteSolutionCall_whenValid_thenSuccessfullyDelete() {
+    Homework homework = createBackHomework();
+    User student = createUser(1, UserRole.STUDENT, homework.getCohorts().get(0));
+    Solution solution = createSolution(1, SolutionStatus.IN_PROGRESS, student, "branch", Collections.emptyList());
+
+    when(solutionDao.findByHomeworkAndStudent(homework, student)).thenReturn(Optional.of(solution));
+    doNothing().when(solutionDao).deleteSolution(solution);
+    solutionService.deleteSolution(homework, student);
+
+    verify(solutionDao).deleteSolution(solution);
   }
 
   SolutionPostDto createSolutionPostDto(String branchLink) {

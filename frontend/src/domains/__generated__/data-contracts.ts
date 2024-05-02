@@ -12,14 +12,15 @@
 export interface SignInResponse {
   accessToken?: string;
   refreshToken?: string;
+  role?: string;
 }
 
 export interface Exception {
   /** @format date-time */
-  timestamp?: string;
+  timestamp: string;
   /** @format int32 */
-  status?: number;
-  message?: string;
+  status: number;
+  message: string;
 }
 
 export interface RefreshAccessTokenRequestDto {
@@ -47,16 +48,16 @@ export interface SignUpRequest {
 
 export interface HomeworkPostResponse {
   /** @format int32 */
-  id?: number;
+  id: number;
 }
 
 export interface ExceptionValidation {
   /** @format date-time */
-  timestamp?: string;
+  timestamp: string;
   /** @format int32 */
-  status?: number;
-  message?: string;
-  validationMessages?: string[];
+  status: number;
+  message: string;
+  validationMessages: string[];
 }
 
 export interface HomeworkPost {
@@ -76,37 +77,37 @@ export interface HomeworkPost {
 
 export interface Homework {
   /** @format int32 */
-  id?: number;
-  name?: string;
-  topic?: string;
+  id: number;
+  name: string;
+  topic: string;
   description?: string;
-  departments?: string[];
-  author?: HomeworkAuthor;
-  lecture?: HomeworkLecture;
-  repositoryLink?: string;
+  departments: string[];
+  author: HomeworkAuthor;
+  lecture: HomeworkLecture;
+  repositoryLink: string;
   /** @format date-time */
-  startDate?: string;
+  startDate: string;
   /** @format date-time */
-  completionDeadline?: string;
+  completionDeadline: string;
   /** @format int32 */
-  reviewDuration?: HomeworkReviewDurationEnum;
+  reviewDuration: HomeworkReviewDurationEnum;
 }
 
 export interface HomeworkAuthor {
   /** @format int32 */
-  id?: number;
-  firstName?: string;
-  lastName?: string;
+  id: number;
+  firstName: string;
+  lastName: string;
 }
 
 export interface HomeworkLecture {
   /** @format int32 */
-  id?: number;
-  name?: string;
+  id: number;
+  name: string;
 }
 
 export interface HomeworksWrapper {
-  data?: Homework[];
+  data: Homework[];
 }
 
 export interface HomeworkPatch {
@@ -123,21 +124,21 @@ export interface HomeworkPatch {
 }
 
 export interface Solution {
-  status?: string;
+  status: string;
   /** @format int32 */
-  approveScore?: number;
+  approveScore: number;
   /** @format int32 */
-  reviewScore?: number;
-  branchLink?: string;
+  reviewScore: number;
+  branchLink: string;
   /** @format int32 */
-  studentId?: number;
-  solutionAttempts?: SolutionAttempt[];
+  studentId: number;
+  solutionAttempts: SolutionAttempt[];
 }
 
 export interface SolutionAttempt {
-  commitId?: string;
+  commitId: string;
   /** @format date-time */
-  createdAt?: string;
+  createdAt: string;
 }
 
 export interface SolutionPost {
@@ -145,7 +146,7 @@ export interface SolutionPost {
 }
 
 export interface SolutionWrapper {
-  data?: Solution[];
+  data: Solution[];
 }
 
 export interface SolutionPatch {

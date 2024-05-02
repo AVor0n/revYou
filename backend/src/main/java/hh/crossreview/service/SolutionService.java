@@ -145,4 +145,16 @@ public class SolutionService {
     }
   }
 
+  @Transactional
+  public void deleteSolution(
+      Homework homework,
+      User user
+  ) {
+    reqUtils.requireUserHasRole(user, UserRole.STUDENT);
+    reqUtils.requireValidCohorts(user.getCohorts(), homework);
+    solutionDao
+        .findByHomeworkAndStudent(homework, user)
+        .ifPresent(solutionDao::deleteSolution);
+  }
+
 }

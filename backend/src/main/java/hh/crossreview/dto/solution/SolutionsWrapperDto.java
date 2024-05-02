@@ -3,7 +3,7 @@ package hh.crossreview.dto.solution;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
 
-@Schema(name = "SolutionWrapper")
+@Schema(name = "SolutionWrapper", requiredProperties = {"data"})
 @SuppressWarnings({"unused", "FieldMayBeFinal"})
 public class SolutionsWrapperDto {
 

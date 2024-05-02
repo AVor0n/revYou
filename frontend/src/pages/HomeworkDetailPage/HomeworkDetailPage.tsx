@@ -1,9 +1,10 @@
 import { Skeleton, Tabs } from '@gravity-ui/uikit';
-import { useEffect, useMemo, type ReactNode } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
-import { getSelectedHomework, homeworkActions, loadHomework, useAppDispatch } from 'app';
-import { DescriptionTab, Header } from './components';
+import { getSelectedHomework, getSolutionInfo, selectHomework, useAppDispatch } from 'app';
+import { loadSolution } from 'app/entities/Review/services';
+import { DescriptionTab, FilesTab, Header } from './components';
 import styles from './HomeworkDetailPage.module.scss';
 
 export const HomeworkDetailPage = () => {
@@ -11,33 +12,40 @@ export const HomeworkDetailPage = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const homeworkInfo = useSelector(getSelectedHomework);
+  const solutionInfo = useSelector(getSolutionInfo);
   const activeTab = tab ?? 'about';
 
   useEffect(() => {
     if (homeworkId !== undefined) {
-      dispatch(loadHomework(+homeworkId))
-        .unwrap()
-        .then(homework => dispatch(homeworkActions.setSelectedHomework(homework)));
+      dispatch(selectHomework(+homeworkId));
+      dispatch(loadSolution(+homeworkId));
     }
   }, [dispatch, homeworkId]);
 
   const tabs = useMemo(
-    () =>
-      ({
-        about: {
-          title: 'Описание',
-          content: <DescriptionTab homeworkInfo={homeworkInfo} />,
-        },
-        solution: {
-          title: 'Мое решение',
-          content: <div>Solution</div>,
-        },
-        solutions: {
-          title: 'Решения',
-          content: <div>Solutions</div>,
-        },
-      }) satisfies Record<string, { title: string; content: ReactNode }>,
-    [homeworkInfo],
+    () => ({
+      about: {
+        title: 'Описание',
+        content: <DescriptionTab homeworkInfo={homeworkInfo} />,
+      },
+      ...(solutionInfo
+        ? {
+            solution: {
+              title: 'Мое решение',
+              content: <div>Solution</div>,
+            },
+            files: {
+              title: 'Файлы',
+              content: <FilesTab />,
+            },
+          }
+        : {}),
+      solutions: {
+        title: 'Решения',
+        content: <div>Solutions</div>,
+      },
+    }),
+    [homeworkInfo, solutionInfo],
   );
 
   return (
@@ -52,7 +60,7 @@ export const HomeworkDetailPage = () => {
         />
 
         <div className={styles.tabContent}>
-          {homeworkInfo ? tabs[activeTab].content : <Skeleton className={styles.contentSkeleton} />}
+          {homeworkInfo ? tabs[activeTab]?.content : <Skeleton className={styles.contentSkeleton} />}
         </div>
       </div>
     </div>
