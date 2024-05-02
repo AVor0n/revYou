@@ -33,7 +33,7 @@ public class HomeworkDto {
 
   private HomeworkLectureDto lecture;
 
-  private String branchLink;
+  private String repositoryLink;
 
   private Date startDate;
 
@@ -82,8 +82,8 @@ public class HomeworkDto {
     return this;
   }
 
-  public HomeworkDto setBranchLink(String branchLink) {
-    this.branchLink = branchLink;
+  public HomeworkDto setRepositoryLink(String repositoryLink) {
+    this.repositoryLink = repositoryLink;
     return this;
   }
 
@@ -134,8 +134,8 @@ public class HomeworkDto {
     return lecture;
   }
 
-  public String getBranchLink() {
-    return branchLink;
+  public String getRepositoryLink() {
+    return repositoryLink;
   }
 
   public Date getStartDate() {

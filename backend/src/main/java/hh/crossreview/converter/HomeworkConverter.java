@@ -41,7 +41,7 @@ public class HomeworkConverter {
         .setDepartments(studyDirections)
         .setAuthor(homeworkAuthorDto)
         .setLecture(homeworkLectureDto)
-        .setBranchLink(homework.getRepositoryLink())
+        .setRepositoryLink(homework.getRepositoryLink())
         .setStartDate(homework.getStartDate())
         .setCompletionDeadline(homework.getCompletionDeadline())
         .setReviewDuration(homework.getReviewDuration().getHours());
