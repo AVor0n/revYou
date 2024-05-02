@@ -190,14 +190,14 @@ VALUES ('https://158.160.88.104/gitlab/teacher_1/test_homewrok', 'Домашка
 
 
 -- Вставка данных в таблицу solution
-INSERT INTO solution (status, approve_score, review_score, branch_link, homework_id, student_id)
-VALUES ('IN_PROGRESS', 0, 0,
+INSERT INTO solution (status, approve_score, review_score, repository, branch, branch_link, homework_id, student_id)
+VALUES ('IN_PROGRESS', 0, 0, 'user_1/test_homewrok', 'user_1_solved_hw_1',
         'https://158.160.88.104/gitlab/user_1/test_homewrok/-/tree/user_1_solved_hw_1?ref_type=heads', 1, 1),
-       ('REVIEW_STAGE', 0, 0,
+       ('REVIEW_STAGE', 0, 0, 'user_2/test_homewrok', 'user_2_solved_hw_1',
         'https://158.160.88.104/gitlab/user_2/test_homewrok/-/tree/user_2_solved_hw_1?ref_type=heads', 1, 2),
-       ('REVIEWER_STAGE', 2, 0,
+       ('REVIEWER_STAGE', 2, 0, 'user_4/test_homewrok', 'user_3_solved_hw_1',
         'https://158.160.88.104/gitlab/user_4/test_homewrok/-/tree/user_3_solved_hw_1?ref_type=heads', 1, 3),
-       ('COMPLETE', 2, 2,
+       ('COMPLETE', 2, 2, 'user_4/test_homewrok', 'user_4_solved_hw_1',
         'https://158.160.88.104/gitlab/user_4/test_homewrok/-/tree/user_4_solved_hw_1?ref_type=heads', 1, 4);
 
 -- Вставка данных в таблицу solution_attempt
