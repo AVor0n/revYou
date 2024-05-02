@@ -12,22 +12,28 @@ import java.util.Optional;
 @Singleton
 public class SolutionDao extends GenericDao {
 
-  public Optional<Solution> findByBranchLink(String branchLink) {
+  public Optional<Solution> findByProjectIdAndBranch(Integer projectId, String branch) {
     return getEntityManager()
-        .createQuery("SELECT s FROM Solution s " +
-            "WHERE s.branchLink = :branchLink ",
-            Solution.class)
-        .setParameter("branchLink", branchLink)
+        .createQuery(
+            "SELECT s FROM Solution s " +
+                "WHERE s.projectId = :projectId " +
+                "AND s.branch = :branch ",
+            Solution.class
+        )
+        .setParameter("projectId", projectId)
+        .setParameter("branch", branch)
         .getResultStream()
         .findFirst();
   }
 
   public Optional<Solution> findByHomeworkAndStudent(Homework homework, User student) {
     return getEntityManager()
-        .createQuery("SELECT s FROM Solution s " +
+        .createQuery(
+            "SELECT s FROM Solution s " +
                 "WHERE s.homework = :homework " +
                 "AND s.student = :student ",
-            Solution.class)
+            Solution.class
+        )
         .setParameter("homework", homework)
         .setParameter("student", student)
         .getResultStream()
@@ -36,9 +42,11 @@ public class SolutionDao extends GenericDao {
 
   public List<Solution> findByHomework(Homework homework) {
     return getEntityManager()
-        .createQuery("SELECT s FROM Solution s " +
-            "WHERE s.homework = :homework",
-            Solution.class)
+        .createQuery(
+            "SELECT s FROM Solution s " +
+                "WHERE s.homework = :homework",
+            Solution.class
+        )
         .setParameter("homework", homework)
         .getResultList();
   }

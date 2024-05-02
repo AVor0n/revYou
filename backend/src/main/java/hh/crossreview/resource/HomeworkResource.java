@@ -8,6 +8,7 @@ import hh.crossreview.dto.homework.HomeworkPostDto;
 import hh.crossreview.dto.homework.HomeworkPostResponseDto;
 import hh.crossreview.dto.homework.HomeworksWrapperDto;
 import hh.crossreview.entity.User;
+import hh.crossreview.external.gitlab.service.GitlabService;
 import hh.crossreview.service.HomeworkService;
 import hh.crossreview.service.UserService;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -45,11 +46,17 @@ public class HomeworkResource {
 
   private final HomeworkService homeworkService;
   private final UserService userService;
+  private final GitlabService gitlabService;
 
   @Inject
-  public HomeworkResource(HomeworkService homeworkService, UserService userService) {
+  public HomeworkResource(
+      HomeworkService homeworkService,
+      UserService userService,
+      GitlabService gitlabService
+  ) {
     this.homeworkService = homeworkService;
     this.userService = userService;
+    this.gitlabService = gitlabService;
   }
 
   @GET
@@ -85,9 +92,11 @@ public class HomeworkResource {
       HomeworkPostDto homeworkPostDto,
       @Context SecurityContext securityContext) {
     User user = userService.findByPrincipal(securityContext.getUserPrincipal());
+    String commitId = gitlabService.validateHomeworkBranchLink(homeworkPostDto.getRepositoryLink());
     HomeworkPostResponseDto homeworkPostResponseDto = homeworkService.createHomework(
         homeworkPostDto,
-        user
+        user,
+        commitId
     );
     return Response
         .status(Response.Status.CREATED)

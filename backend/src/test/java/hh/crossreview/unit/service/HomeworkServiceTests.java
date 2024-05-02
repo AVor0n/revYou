@@ -111,22 +111,25 @@ class HomeworkServiceTests extends TestsUtil {
     Cohort cohort = createCohort(StudyDirection.BACK);
     User lector = createUser(1, UserRole.TEACHER, cohort);
     Lecture lecture = createLecture(1, List.of(cohort), lector);
+    String sourceCommitId = "abcdefabcdefabcd";
 
     when(homeworkDao.find(Lecture.class, 1)).thenReturn(lecture);
     doNothing().when(homeworkDao).save(any());
-    HomeworkPostResponseDto homeworkPostResponseDto = homeworkService.createHomework(homeworkPostDto, lector);
+    HomeworkPostResponseDto homeworkPostResponseDto = homeworkService.createHomework(homeworkPostDto, lector, sourceCommitId);
 
-    verify(homeworkConverter).convertToHomework(homeworkPostDto, lecture);
+    verify(homeworkConverter).convertToHomework(homeworkPostDto, lecture, sourceCommitId);
     assertNotNull(homeworkPostResponseDto);
   }
 
   @Test
   void givenCreateHomeworkCall_whenNotAuthor_thenNotFoundErrorThrow() {
     User teacher = createUser(1, UserRole.TEACHER, new Cohort());
+    HomeworkPostDto homeworkPostDto = new HomeworkPostDto();
+    String sourceCommitId = "abcdefabcdefabcd";
 
     assertThrows(
         NotFoundException.class,
-        () -> homeworkService.createHomework(new HomeworkPostDto(), teacher)
+        () -> homeworkService.createHomework(homeworkPostDto, teacher, sourceCommitId)
     );
   }
 
@@ -134,10 +137,15 @@ class HomeworkServiceTests extends TestsUtil {
   void givenCreateHomeworkCall_whenAdmin_thenSuccessfullyCreate() {
     User admin = createUser(1, UserRole.ADMIN, new Cohort());
     Lecture lecture = createLecture(1, Collections.emptyList(), new User());
+    String sourceCommitId = "abcdefabcdefabcd";
 
     when(homeworkDao.find(Lecture.class, 1)).thenReturn(lecture);
     doNothing().when(homeworkDao).save(any());
-    HomeworkPostResponseDto homeworkPostResponseDto = homeworkService.createHomework(createHomeworkPostDto(1), admin);
+    HomeworkPostResponseDto homeworkPostResponseDto = homeworkService.createHomework(
+        createHomeworkPostDto(1),
+        admin,
+        sourceCommitId
+    );
 
     assertNotNull(homeworkPostResponseDto);
   }
@@ -170,7 +178,6 @@ class HomeworkServiceTests extends TestsUtil {
         "NewDescription",
         "NewTopic",
         "NewName",
-        "NewLink",
         24,
         Date.from(Instant.parse("2024-04-25T00:00:00Z")),
         Date.from(Instant.parse("2024-04-30T00:00:00Z"))
@@ -182,7 +189,6 @@ class HomeworkServiceTests extends TestsUtil {
 
     assertEquals(homework.getName(), homeworkPatchDto.getName());
     assertEquals(homework.getDescription(), homeworkPatchDto.getDescription());
-    assertEquals(homework.getRepositoryLink(), homeworkPatchDto.getRepositoryLink());
     assertEquals(homework.getTopic(), homeworkPatchDto.getTopic());
     assertEquals(homework.getStartDate(), homeworkPatchDto.getStartDate());
     assertEquals(homework.getCompletionDeadline(), homeworkPatchDto.getCompletionDeadline());
@@ -202,7 +208,6 @@ class HomeworkServiceTests extends TestsUtil {
       String description,
       String topic,
       String name,
-      String repositoryLink,
       Integer reviewDuration,
       Date startDate,
       Date completionDeadline
@@ -211,7 +216,6 @@ class HomeworkServiceTests extends TestsUtil {
     homeworkPatchDto.setDescription(description);
     homeworkPatchDto.setTopic(topic);
     homeworkPatchDto.setName(name);
-    homeworkPatchDto.setRepositoryLink(repositoryLink);
     homeworkPatchDto.setReviewDuration(reviewDuration);
     homeworkPatchDto.setStartDate(startDate);
     homeworkPatchDto.setCompletionDeadline(completionDeadline);

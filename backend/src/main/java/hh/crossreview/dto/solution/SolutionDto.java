@@ -15,15 +15,15 @@ public class SolutionDto {
 
   private String status;
 
-  private String repository;
+  private Integer projectId;
 
   private String branch;
+
+  private String sourceCommitId;
 
   private Integer approveScore;
 
   private Integer reviewScore;
-
-  private String branchLink;
 
   private Integer studentId;
 
@@ -33,12 +33,16 @@ public class SolutionDto {
     return status;
   }
 
-  public String getRepository() {
-    return repository;
+  public Integer getProjectId() {
+    return projectId;
   }
 
   public String getBranch() {
     return branch;
+  }
+
+  public String getSourceCommitId() {
+    return sourceCommitId;
   }
 
   public Integer getApproveScore() {
@@ -47,10 +51,6 @@ public class SolutionDto {
 
   public Integer getReviewScore() {
     return reviewScore;
-  }
-
-  public String getBranchLink() {
-    return branchLink;
   }
 
   public Integer getStudentId() {
@@ -66,13 +66,18 @@ public class SolutionDto {
     return this;
   }
 
-  public SolutionDto setRepository(String repository) {
-    this.repository = repository;
+  public SolutionDto setProjectId(Integer projectId) {
+    this.projectId = projectId;
     return this;
   }
 
   public SolutionDto setBranch(String branch) {
     this.branch = branch;
+    return this;
+  }
+
+  public SolutionDto setSourceCommitId(String sourceCommitId) {
+    this.sourceCommitId = sourceCommitId;
     return this;
   }
 
@@ -83,11 +88,6 @@ public class SolutionDto {
 
   public SolutionDto setReviewScore(Integer reviewScore) {
     this.reviewScore = reviewScore;
-    return this;
-  }
-
-  public SolutionDto setBranchLink(String branchLink) {
-    this.branchLink = branchLink;
     return this;
   }
 

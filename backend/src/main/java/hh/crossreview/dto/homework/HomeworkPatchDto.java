@@ -8,7 +8,6 @@ public class HomeworkPatchDto {
   private String name;
   private String topic;
   private String description;
-  private String repositoryLink;
   private Date startDate;
   private Date completionDeadline;
   @Schema(
@@ -26,10 +25,6 @@ public class HomeworkPatchDto {
 
   public String getDescription() {
     return description;
-  }
-
-  public String getRepositoryLink() {
-    return repositoryLink;
   }
 
   public Date getStartDate() {
@@ -54,10 +49,6 @@ public class HomeworkPatchDto {
 
   public void setDescription(String description) {
     this.description = description;
-  }
-
-  public void setRepositoryLink(String repositoryLink) {
-    this.repositoryLink = repositoryLink;
   }
 
   public void setStartDate(Date startDate) {

@@ -37,10 +37,11 @@ public class HomeworkConverter {
         .setName(homework.getName())
         .setTopic(homework.getTopic())
         .setDescription(homework.getDescription())
+        .setSourceCommitId(homework.getSourceCommitId())
         .setDepartments(studyDirections)
         .setAuthor(homeworkAuthorDto)
         .setLecture(homeworkLectureDto)
-        .setRepositoryLink(homework.getRepositoryLink())
+        .setBranchLink(homework.getRepositoryLink())
         .setStartDate(homework.getStartDate())
         .setCompletionDeadline(homework.getCompletionDeadline())
         .setReviewDuration(homework.getReviewDuration().getHours());
@@ -75,7 +76,10 @@ public class HomeworkConverter {
     );
   }
 
-  public Homework convertToHomework(HomeworkPostDto homeworkPostDto, Lecture lecture) {
+  public Homework convertToHomework(
+      HomeworkPostDto homeworkPostDto,
+      Lecture lecture,
+      String commitId) {
     return new Homework()
         .setStartDate(homeworkPostDto.getStartDate())
         .setTopic(homeworkPostDto.getTopic())
@@ -85,6 +89,7 @@ public class HomeworkConverter {
         .setReviewDuration(ReviewDuration.ofHours(homeworkPostDto.getReviewDuration()))
         .setLecture(lecture)
         .setDescription(homeworkPostDto.getDescription())
+        .setSourceCommitId(commitId)
         .setAuthor(lecture.getLector());
   }
 
@@ -101,9 +106,6 @@ public class HomeworkConverter {
     }
     if (homeworkPatchDto.getDescription() != null) {
       homework.setDescription(homeworkPatchDto.getDescription());
-    }
-    if (homeworkPatchDto.getRepositoryLink() != null) {
-      homework.setRepositoryLink(homeworkPatchDto.getRepositoryLink());
     }
     if (homeworkPatchDto.getStartDate() != null) {
       homework.setStartDate(homeworkPatchDto.getStartDate());

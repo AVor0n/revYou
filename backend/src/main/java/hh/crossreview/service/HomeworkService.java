@@ -49,13 +49,16 @@ public class HomeworkService {
   }
 
   @Transactional
-  public HomeworkPostResponseDto createHomework(HomeworkPostDto homeworkPostDto, User user) {
+  public HomeworkPostResponseDto createHomework(
+      HomeworkPostDto homeworkPostDto,
+      User user,
+      String commitId) {
     Integer lectureId = homeworkPostDto.getLectureId();
     Lecture lecture = homeworkDao.find(Lecture.class, lectureId);
     reqUtils.requireEntityNotNull(lecture, String.format("Lecture with id %d was not found", lectureId));
     reqUtils.requireAuthorPermissionOrAdmin(user, lecture);
 
-    Homework homework = homeworkConverter.convertToHomework(homeworkPostDto, lecture);
+    Homework homework = homeworkConverter.convertToHomework(homeworkPostDto, lecture, commitId);
     homeworkDao.save(homework);
     return homeworkConverter.convertToHomeworkPostResponseDto(homework.getHomeworkId());
   }

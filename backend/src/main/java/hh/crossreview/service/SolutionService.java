@@ -56,7 +56,7 @@ public class SolutionService {
     reqUtils.requireValidCohorts(user.getCohorts(), homework);
     requireSolutionNotExist(homework, user);
 
-    var parsedGitlabLink = gitlabService.validateBranchLink(solutionPostDto.getBranchLink());
+    var parsedGitlabLink = gitlabService.validateSolutionBranchLink(solutionPostDto.getBranchLink());
 
     Solution solution = solutionConverter.convertToSolution(
         parsedGitlabLink,
@@ -83,7 +83,7 @@ public class SolutionService {
     reqUtils.requireValidCohorts(user.getCohorts(), homework);
 
     Solution solution = requireSolutionExist(homework, user);
-    String commitId = gitlabService.retrieveCommitId(solution.getRepository(), solution.getBranch());
+    String commitId = gitlabService.retrieveCommitId(solution.getProjectId(), solution.getBranch());
     SolutionAttempt solutionAttempt = new SolutionAttempt(commitId, solution);
     solutionAttemptDao.save(solutionAttempt);
     return new SolutionAttemptDto(
@@ -132,7 +132,7 @@ public class SolutionService {
     requireReviewAttemptNotExist(homework, user);
     Solution solution = requireSolutionExist(homework, user);
 
-    var parsedGitlabLink = gitlabService.validateBranchLink(solutionPatchDto.getBranchLink());
+    var parsedGitlabLink = gitlabService.validateSolutionBranchLink(solutionPatchDto.getBranchLink());
 
     solutionConverter.merge(solution, parsedGitlabLink);
     return solutionConverter.convertToSolutionDto(solution);
