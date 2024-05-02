@@ -1,6 +1,8 @@
 spring:
   application:
     name: backend
+  config:
+    import: optional:file:../.env[.properties]
   datasource:
     url: jdbc:postgresql://localhost:5432/cross_review
     username: ${POSTGRES_USER:postgres}
@@ -27,4 +29,4 @@ springdoc:
 gitlab:
   url: "https://158.160.88.104/gitlab"
   api-url: "https://158.160.88.104/gitlab/api/v4"
-  token: "glpat-ZQbUz8tz1cNdKZzpmVCu"
+  token: "glpat-ZQbUz8tz1cNdKZzpmVCu" #${GITLAB_TOKEN}

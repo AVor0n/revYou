@@ -18,7 +18,6 @@ import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.StringJoiner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.springframework.beans.factory.annotation.Value;
@@ -47,9 +46,8 @@ public class GitlabService {
 
   public ParsedGitlabLink validateBranchLink(String branchLink) {
     try {
-      branchLink = trimBranchLink(branchLink);
-      requireBranchLinkUnique(branchLink);
       ParsedGitlabLink parsedGitlabLink = parseBranchLink(branchLink);
+      requireBranchLinkUnique(parsedGitlabLink.branchLink());
       getBranchRequest(parsedGitlabLink);
       return parsedGitlabLink;
     } catch (HttpClientErrorException | HttpServerErrorException e) {
@@ -78,7 +76,7 @@ public class GitlabService {
       ArrayNode diffs = (ArrayNode) objectMapper
           .readTree(jsonTree)
           .get("diffs");
-      for(JsonNode diff : diffs) {
+      for (JsonNode diff : diffs) {
         DiffDto diffDto = new DiffDto();
         diffDto
             .setOldPath(diff.get("old_path").asText())
@@ -104,42 +102,35 @@ public class GitlabService {
   private String getBranchRequest(ParsedGitlabLink parsedGitlabLink) {
     String repository = urlEncodeSlashes(parsedGitlabLink.repository());
     String branch = urlEncodeSlashes(parsedGitlabLink.branch());
-    URI uri = URI
-        .create(new StringJoiner("/")
-            .add(gitlabApiUrl)
-            .add("projects")
-            .add(repository)
-            .add("repository")
-            .add("branches")
-            .add(branch)
-            .toString());
+    URI uri = URI.create(String.format(
+        "%s/projects/%s/repository/branches/%s",
+        gitlabApiUrl,
+        repository,
+        branch
+    ));
     return getRequest(uri);
   }
 
   private String getDiffsRequest(Integer repositoryId, String from, String to) {
-    URI uri = URI
-        .create(new StringJoiner("/", "", "?")
-            .add(gitlabApiUrl)
-            .add("projects")
-            .add(repositoryId.toString())
-            .add("repository")
-            .add("compare") +
-            String.format("from=%s&to=%s", from, to));
+    URI uri = URI.create(String.format(
+        "%s/projects/%d/repository/compare?from=%s&to=%s",
+        gitlabApiUrl,
+        repositoryId,
+        from,
+        to
+    ));
     return getRequest(uri);
   }
 
 
   private String getRawFileRequest(Integer projectId, String filePath, String ref) {
-    URI uri = URI
-        .create(new StringJoiner("/", "", "?")
-            .add(gitlabApiUrl)
-            .add("projects")
-            .add(projectId.toString())
-            .add("repository")
-            .add("files")
-            .add(filePath)
-            .add("raw") +
-            String.format("ref=%s", ref));
+    URI uri = URI.create(String.format(
+        "%s/projects/%d/repository/files/%s/raw?ref=%s",
+        gitlabApiUrl,
+        projectId,
+        filePath,
+        ref
+    ));
     return getRequest(uri);
   }
 
@@ -157,24 +148,8 @@ public class GitlabService {
     }
   }
 
-  private String trimBranchLink(String branchLink) {
-    String branchLinkRegex = String.format("(%s/[^/]+/[^/]+/-/tree/[\\w\\-./]+).*", gitlabUrl);
-    Pattern pattern = Pattern.compile(branchLinkRegex);
-    Matcher matcher = pattern.matcher(branchLink);
-    if (matcher.find()) {
-      return matcher.group(1);
-    }
-    throw new BadRequestException("Branch link isn't valid");
-  }
-
-  private void requireBranchLinkUnique(String branchLink) {
-    if (solutionDao.findByBranchLink(branchLink).isPresent()) {
-      throw new BadRequestException("Branch link already send by another user or to another homework");
-    }
-  }
-
   private ParsedGitlabLink parseBranchLink(String branchLink) {
-    String branchLinkRegex = "/([^/]+/[^/]+)/-/tree/([\\w\\-./]+)";
+    String branchLinkRegex = String.format("%s/([^/]+/[^/]+)/-/tree/([\\w\\-./]+).*", gitlabUrl);
     Pattern pattern = Pattern.compile(branchLinkRegex);
     Matcher matcher = pattern.matcher(branchLink);
     if (!matcher.find()) {
@@ -185,6 +160,12 @@ public class GitlabService {
         matcher.group(2),
         branchLink
     );
+  }
+
+  private void requireBranchLinkUnique(String branchLink) {
+    if (solutionDao.findByBranchLink(branchLink).isPresent()) {
+      throw new BadRequestException("Branch link already send by another user or to another homework");
+    }
   }
 
   private String urlEncodeSlashes(String param) {
