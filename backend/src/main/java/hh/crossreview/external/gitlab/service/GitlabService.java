@@ -59,18 +59,19 @@ public class GitlabService {
 
   public String validateHomeworkBranchLink(String branchLink) {
     try {
-      RepositoryInfo parsedGitlabLink = parseBranchLink(branchLink);
-      return retrieveCommitId(parsedGitlabLink.getProjectId(), parsedGitlabLink.getBranch());
+      RepositoryInfo repositoryInfo = parseBranchLink(branchLink);
+      Integer projectId = retrieveProjectId(repositoryInfo.getProjectPath());
+      return retrieveCommitId(projectId, repositoryInfo.getBranch());
     } catch (HttpClientErrorException | HttpServerErrorException e) {
       throw new BadRequestException("Branch link is not accessible");
     }
   }
 
   public String retrieveCommitId(Integer projectId, String branch) {
-    RepositoryInfo parsedGitlabLink = new RepositoryInfo(projectId, branch);
+    RepositoryInfo repositoryInfo = new RepositoryInfo(projectId, branch);
     try {
       return objectMapper
-          .readTree(getBranchRequest(parsedGitlabLink))
+          .readTree(getBranchRequest(repositoryInfo))
           .get("commit")
           .get("id")
           .asText();
