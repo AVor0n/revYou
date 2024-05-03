@@ -2,14 +2,13 @@ package hh.crossreview.converter;
 
 import hh.crossreview.dto.solution.SolutionAttemptDto;
 import hh.crossreview.dto.solution.SolutionDto;
-import hh.crossreview.dto.solution.SolutionPatchDto;
-import hh.crossreview.dto.solution.SolutionPostDto;
 import hh.crossreview.dto.solution.SolutionsWrapperDto;
 import hh.crossreview.entity.Homework;
 import hh.crossreview.entity.Solution;
 import hh.crossreview.entity.SolutionAttempt;
 import hh.crossreview.entity.User;
 import hh.crossreview.entity.enums.SolutionStatus;
+import hh.crossreview.external.gitlab.entity.RepositoryInfo;
 import jakarta.inject.Named;
 import jakarta.inject.Singleton;
 import java.util.ArrayList;
@@ -20,15 +19,17 @@ import java.util.List;
 public class SolutionConverter {
 
   public Solution convertToSolution(
-      SolutionPostDto solutionPostDto,
+      RepositoryInfo parsedGitlabLink,
       Homework homework,
       User student
   ) {
     return new Solution()
-        .setBranchLink(solutionPostDto.getBranchLink())
         .setStatus(SolutionStatus.IN_PROGRESS)
         .setApproveScore(0)
         .setReviewScore(0)
+        .setProjectId(parsedGitlabLink.getProjectId())
+        .setBranch(parsedGitlabLink.getBranch())
+        .setSourceCommitId(homework.getSourceCommitId())
         .setHomework(homework)
         .setStudent(student)
         .setSolutionAttempts(new ArrayList<>());
@@ -42,9 +43,11 @@ public class SolutionConverter {
         .toList();
     return new SolutionDto()
         .setStatus(solution.getStatus().toString())
+        .setProjectId(solution.getProjectId())
+        .setBranch(solution.getBranch())
+        .setSourceCommitId(solution.getSourceCommitId())
         .setApproveScore(solution.getApproveScore())
         .setReviewScore(solution.getReviewScore())
-        .setBranchLink(solution.getBranchLink())
         .setStudentId(solution.getAuthorId())
         .setSolutionAttempts(solutionAttemptsDto);
   }
@@ -64,9 +67,12 @@ public class SolutionConverter {
     return new SolutionsWrapperDto(solutionsDto);
   }
 
-  public void merge(Solution solution, SolutionPatchDto solutionPatchDto) {
-    if (solutionPatchDto.getBranchLink() != null) {
-      solution.setBranchLink(solutionPatchDto.getBranchLink());
+  public void merge(Solution solution, RepositoryInfo parsedGitlabLink) {
+    if (parsedGitlabLink.getBranch() != null) {
+      solution.setBranch(parsedGitlabLink.getBranch());
+    }
+    if (parsedGitlabLink.getProjectId() != null) {
+      solution.setProjectId(parsedGitlabLink.getProjectId());
     }
   }
 

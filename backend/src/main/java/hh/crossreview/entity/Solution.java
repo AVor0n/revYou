@@ -32,8 +32,14 @@ public class Solution implements Authorable, Statusable {
   @Enumerated(EnumType.STRING)
   private SolutionStatus status;
 
-  @Column(name = "branch_link")
-  private String branchLink;
+  @Column(name = "project_id")
+  private Integer projectId;
+
+  @Column
+  private String branch;
+
+  @Column(name = "source_commit_id")
+  private String sourceCommitId;
 
   @Column(name = "approve_score")
   private Integer approveScore;
@@ -69,8 +75,16 @@ public class Solution implements Authorable, Statusable {
     return status;
   }
 
-  public String getBranchLink() {
-    return branchLink;
+  public Integer getProjectId() {
+    return projectId;
+  }
+
+  public String getBranch() {
+    return branch;
+  }
+
+  public String getSourceCommitId() {
+    return sourceCommitId;
   }
 
   public Integer getApproveScore() {
@@ -103,8 +117,18 @@ public class Solution implements Authorable, Statusable {
     return this;
   }
 
-  public Solution setBranchLink(String branchLink) {
-    this.branchLink = branchLink;
+  public Solution setProjectId(Integer projectId) {
+    this.projectId = projectId;
+    return this;
+  }
+
+  public Solution setBranch(String branch) {
+    this.branch = branch;
+    return this;
+  }
+
+  public Solution setSourceCommitId(String sourceCommitId) {
+    this.sourceCommitId = sourceCommitId;
     return this;
   }
 

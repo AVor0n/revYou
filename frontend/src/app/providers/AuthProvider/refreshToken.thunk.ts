@@ -8,6 +8,8 @@ export const refreshAuthToken = createAsyncThunk<SignInResponse, RefreshAccessTo
   async ({ refreshToken }, { extra, rejectWithValue }) => {
     try {
       const resp = await extra.api.refreshAccessToken({ refreshToken });
+
+      localStorage.setItem('role', resp.data.role || '');
       return resp.data;
     } catch (e) {
       return rejectWithValue((e as AxiosError).message);

@@ -14,21 +14,18 @@ import hh.crossreview.entity.Solution;
 import hh.crossreview.entity.SolutionAttempt;
 import hh.crossreview.entity.User;
 import hh.crossreview.entity.enums.UserRole;
-import hh.crossreview.external.gitlab.GitlabService;
+import hh.crossreview.external.gitlab.service.GitlabService;
 import hh.crossreview.utils.RequirementsUtils;
 import jakarta.inject.Named;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.BadRequestException;
 import java.util.List;
 import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import org.springframework.transaction.annotation.Transactional;
 
 @Named
 @Singleton
 public class SolutionService {
-
   private final GitlabService gitlabService;
   private final SolutionAttemptDao solutionAttemptDao;
   private final SolutionDao solutionDao;
@@ -59,24 +56,15 @@ public class SolutionService {
     reqUtils.requireValidCohorts(user.getCohorts(), homework);
     requireSolutionNotExist(homework, user);
 
-    String branchLink = trimBranchLink(solutionPostDto.getBranchLink());
-    requireBranchLinkUnique(branchLink);
-    requireBranchLinkExist(branchLink);
-    solutionPostDto.setBranchLink(trimBranchLink(solutionPostDto.getBranchLink()));
+    var parsedGitlabLink = gitlabService.validateSolutionBranchLink(solutionPostDto.getBranchLink());
 
-    Solution solution = solutionConverter.convertToSolution(solutionPostDto, homework, user);
+    Solution solution = solutionConverter.convertToSolution(
+        parsedGitlabLink,
+        homework,
+        user
+    );
     solutionDao.save(solution);
     return solutionConverter.convertToSolutionDto(solution);
-  }
-
-  private void requireBranchLinkExist(String branchLink) {
-    gitlabService.checkBranchLink(branchLink);
-  }
-
-  private void requireBranchLinkUnique(String branchLink) {
-    if (solutionDao.findByBranchLink(branchLink).isPresent()) {
-      throw new BadRequestException("Branch link already send by another user or to another homework");
-    }
   }
 
   private void requireSolutionNotExist(Homework homework, User user) {
@@ -85,7 +73,6 @@ public class SolutionService {
       throw new BadRequestException("User has already created solution");
     }
   }
-
 
   @Transactional
   public SolutionAttemptDto createSolutionAttempt(
@@ -96,7 +83,7 @@ public class SolutionService {
     reqUtils.requireValidCohorts(user.getCohorts(), homework);
 
     Solution solution = requireSolutionExist(homework, user);
-    String commitId = gitlabService.retrieveCommitId(solution.getBranchLink());
+    String commitId = gitlabService.retrieveCommitId(solution.getProjectId(), solution.getBranch());
     SolutionAttempt solutionAttempt = new SolutionAttempt(commitId, solution);
     solutionAttemptDao.save(solutionAttempt);
     return new SolutionAttemptDto(
@@ -111,16 +98,6 @@ public class SolutionService {
       throw new BadRequestException("User has not created a solution yet");
     }
     return solution.get();
-  }
-
-  private String trimBranchLink(String branchLink) {
-    String branchLinkRegex = "(.+/[^/]+/[^/]+/-/tree/[\\w\\-./]+).*";
-    Pattern pattern = Pattern.compile(branchLinkRegex);
-    Matcher matcher = pattern.matcher(branchLink);
-    if (matcher.find()) {
-      return matcher.group(1);
-    }
-    throw new BadRequestException("Branch link isn't valid");
   }
 
   @Transactional
@@ -155,12 +132,9 @@ public class SolutionService {
     requireReviewAttemptNotExist(homework, user);
     Solution solution = requireSolutionExist(homework, user);
 
-    String branchLink = trimBranchLink(solutionPatchDto.getBranchLink());
-    requireBranchLinkUnique(branchLink);
-    requireBranchLinkExist(branchLink);
-    solutionPatchDto.setBranchLink(trimBranchLink(solutionPatchDto.getBranchLink()));
+    var parsedGitlabLink = gitlabService.validateSolutionBranchLink(solutionPatchDto.getBranchLink());
 
-    solutionConverter.merge(solution, solutionPatchDto);
+    solutionConverter.merge(solution, parsedGitlabLink);
     return solutionConverter.convertToSolutionDto(solution);
   }
 

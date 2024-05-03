@@ -2,7 +2,7 @@ import { toaster } from '@gravity-ui/uikit/toaster-singleton';
 import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { signInUser } from '../services/signInUser.thunk';
 import { signUpUser } from '../services/signUpUser.thunk';
-import { type UserSchema } from '../types/User.types';
+import { type Role, type UserSchema } from '../types/User.types';
 
 const initialState: UserSchema = {
   authData: {
@@ -10,17 +10,23 @@ const initialState: UserSchema = {
     username: '',
     email: '',
   },
+  role: null,
   error: '',
 };
 
 export const userSlice = createSlice({
   name: 'User',
   initialState,
-  reducers: {},
+  reducers: {
+    setUserRole(state, { payload }: PayloadAction<Role>) {
+      state.role = payload;
+    },
+  },
   extraReducers(builder) {
     builder
-      .addCase(signInUser.fulfilled, state => {
+      .addCase(signInUser.fulfilled, (state, { payload }) => {
         state.error = '';
+        state.role = (payload.role || null) as Role;
         toaster.remove('authError');
       })
       .addCase(signInUser.rejected, (state, action: PayloadAction<string | undefined>) => {

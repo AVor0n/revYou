@@ -52,6 +52,7 @@ CREATE TABLE IF NOT EXISTS homework
     name                VARCHAR(100)  NOT NULL,
     topic               VARCHAR(100)  NOT NULL,
     description         VARCHAR(500),
+    source_commit_id    VARCHAR(255)  NOT NULL,
     start_date          TIMESTAMP     NOT NULL DEFAULT NOW(),
     completion_deadline TIMESTAMP     NOT NULL,
     review_duration     INTEGER       NOT NULL,
@@ -63,16 +64,19 @@ CREATE TABLE IF NOT EXISTS homework
 
 CREATE TABLE IF NOT EXISTS solution
 (
-    solution_id   SERIAL PRIMARY KEY,
-    status        VARCHAR(20),
-    approve_score INTEGER      NOT NULL,
-    review_score  INTEGER      NOT NULL,
-    branch_link   VARCHAR(500) NOT NULL UNIQUE,
-    homework_id   INTEGER      NOT NULL,
-    student_id    INTEGER      NOT NULL,
+    solution_id      SERIAL PRIMARY KEY,
+    status           VARCHAR(20),
+    project_id       INTEGER      NOT NULL,
+    branch           VARCHAR(255) NOT NULL,
+    source_commit_id VARCHAR(255) NOT NULL,
+    approve_score    INTEGER      NOT NULL,
+    review_score     INTEGER      NOT NULL,
+    homework_id      INTEGER      NOT NULL,
+    student_id       INTEGER      NOT NULL,
     FOREIGN KEY (homework_id) REFERENCES homework (homework_id) ON DELETE CASCADE,
     FOREIGN KEY (student_id) REFERENCES user_account (user_id),
-    UNIQUE (homework_id, student_id)
+    UNIQUE (homework_id, student_id),
+    UNIQUE (project_id, branch)
 );
 
 CREATE TABLE IF NOT EXISTS solution_attempt
@@ -86,46 +90,46 @@ CREATE TABLE IF NOT EXISTS solution_attempt
 
 CREATE TABLE IF NOT EXISTS review
 (
-    review_id SERIAL PRIMARY KEY,
-    student_id INTEGER NOT NULL,
+    review_id   SERIAL PRIMARY KEY,
+    student_id  INTEGER NOT NULL,
     reviewer_id INTEGER,
-    status VARCHAR(20),
+    status      VARCHAR(20),
     solution_id INTEGER NOT NULL,
-    FOREIGN KEY (student_id) REFERENCES user_account (user_id)  ON DELETE CASCADE,
+    FOREIGN KEY (student_id) REFERENCES user_account (user_id) ON DELETE CASCADE,
     FOREIGN KEY (reviewer_id) REFERENCES user_account (user_id),
     FOREIGN KEY (solution_id) REFERENCES solution (solution_id)
 );
 
 CREATE TABLE IF NOT EXISTS review_attempt
 (
-    review_attempt_id SERIAL PRIMARY KEY,
-    review_id INTEGER NOT NULL,
-    solution_attempt_id  INTEGER NOT NULL,
-    created_at TIMESTAMP DEFAULT NOW(),
-    finished_at TIMESTAMP,
-    resolution VARCHAR(500),
+    review_attempt_id   SERIAL PRIMARY KEY,
+    review_id           INTEGER NOT NULL,
+    solution_attempt_id INTEGER NOT NULL,
+    created_at          TIMESTAMP DEFAULT NOW(),
+    finished_at         TIMESTAMP,
+    resolution          VARCHAR(500),
     FOREIGN KEY (review_id) REFERENCES review (review_id) ON DELETE CASCADE,
     FOREIGN KEY (solution_attempt_id) REFERENCES solution_attempt (solution_attempt_id)
 );
 
 CREATE TABLE IF NOT EXISTS thread
 (
-    thread_id SERIAL PRIMARY KEY,
-    review_id INTEGER NOT NULL,
-    file_path VARCHAR(1000) NOT NULL,
-    start_line INTEGER NOT NULL,
-    start_symbol INTEGER NOT NULL,
-    end_line INTEGER NOT NULL,
-    end_symbol INTEGER NOT NULL,
+    thread_id    SERIAL PRIMARY KEY,
+    review_id    INTEGER       NOT NULL,
+    file_path    VARCHAR(1000) NOT NULL,
+    start_line   INTEGER       NOT NULL,
+    start_symbol INTEGER       NOT NULL,
+    end_line     INTEGER       NOT NULL,
+    end_symbol   INTEGER       NOT NULL,
     FOREIGN KEY (review_id) REFERENCES review (review_id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS comment
 (
     comment_id SERIAL PRIMARY KEY,
-    thread_id INTEGER NOT NULL,
-    author_id INTEGER NOT NULL,
-    content VARCHAR(255),
+    thread_id  INTEGER NOT NULL,
+    author_id  INTEGER NOT NULL,
+    content    VARCHAR(255),
     created_at TIMESTAMP DEFAULT NOW(),
     updated_at TIMESTAMP,
     FOREIGN KEY (thread_id) REFERENCES thread (thread_id) ON DELETE CASCADE,
@@ -176,27 +180,27 @@ VALUES (1, 1),
        (3, 2);
 
 -- Вставка данных в таблицу homework
-INSERT INTO homework (repository_link, name, topic, description, start_date, completion_deadline, review_duration,
-                      lecture_id, author_id)
+INSERT INTO homework (repository_link, name, topic, description, source_commit_id, start_date, completion_deadline,
+                      review_duration, lecture_id, author_id)
 VALUES ('https://158.160.88.104/gitlab/teacher_1/test_homewrok', 'Домашка по гиту', 'Git',
-        'Создайте пул реквест в свой репозиторий и сделайте необходимые мерджи', '2023-10-05 23:59:59',
+        'Создайте пул реквест в свой репозиторий и сделайте необходимые мерджи',
+        'e814adb5c6f82e32c8ff40b945d9ee7273e9b810', '2023-10-05 23:59:59',
         '2023-10-12 23:59:59', 24, 2, 5),
        ('https://158.160.88.104/gitlab/teacher_2/test_homework_2', 'Домашка по реакту', 'React',
-        'Напишите компоненты, сделайте лендинг', '2023-10-10 23:59:59', '2023-10-17 23:59:59', 48, 1, 3),
+        'Напишите компоненты, сделайте лендинг', '9e927be85edaa82a166f91584ed4793a77232622', '2023-10-10 23:59:59',
+        '2023-10-17 23:59:59', 48, 1, 3),
        ('https://158.160.88.104/gitlab/teacher_3/test_homework_3', 'Домашка по кафке', 'Kafka',
-        'Напишите реализацию AtLeastOnce', '2023-10-10 23:59:59', '2023-10-17 23:59:59', 48, 3, 5);
+        'Напишите реализацию AtLeastOnce', 'ff3ed0210655c0593b5060fb07cf8c712a14cce5', '2023-10-10 23:59:59',
+        '2023-10-17 23:59:59', 48, 3, 5);
 
 
 -- Вставка данных в таблицу solution
-INSERT INTO solution (status, approve_score, review_score, branch_link, homework_id, student_id)
-VALUES ('IN_PROGRESS', 0, 0,
-        'https://158.160.88.104/gitlab/user_1/test_homewrok/-/tree/user_1_solved_hw_1?ref_type=heads', 1, 1),
-       ('REVIEW_STAGE', 0, 0,
-        'https://158.160.88.104/gitlab/user_2/test_homewrok/-/tree/user_2_solved_hw_1?ref_type=heads', 1, 2),
-       ('REVIEWER_STAGE', 2, 0,
-        'https://158.160.88.104/gitlab/user_4/test_homewrok/-/tree/user_3_solved_hw_1?ref_type=heads', 1, 3),
-       ('COMPLETE', 2, 2,
-        'https://158.160.88.104/gitlab/user_4/test_homewrok/-/tree/user_4_solved_hw_1?ref_type=heads', 1, 4);
+INSERT INTO solution (status, approve_score, review_score, project_id, branch, source_commit_id, homework_id,
+                      student_id)
+VALUES ('IN_PROGRESS', 0, 0, 9, 'user_1_solved_hw_1', 'e814adb5c6f82e32c8ff40b945d9ee7273e9b810', 1, 1),
+       ('REVIEW_STAGE', 0, 0, 4, 'user_2_solved_hw_1', 'e814adb5c6f82e32c8ff40b945d9ee7273e9b810', 1, 2),
+       ('REVIEWER_STAGE', 2, 0, 10, 'user_3_solved_hw_1', 'e814adb5c6f82e32c8ff40b945d9ee7273e9b810', 1, 3),
+       ('COMPLETE', 2, 2, 10, 'user_4_solved_hw_1', 'e814adb5c6f82e32c8ff40b945d9ee7273e9b810', 1, 4);
 
 -- Вставка данных в таблицу solution_attempt
 INSERT INTO solution_attempt (commit_id, created_at, solution_id)

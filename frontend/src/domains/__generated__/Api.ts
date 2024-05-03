@@ -244,6 +244,24 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
    * No description
    *
    * @tags Solutions
+   * @name DeleteSolution
+   * @request DELETE:/api/homeworks/{homeworkId}/solutions
+   * @secure
+   * @response `204` `void` No content
+   * @response `403` `Exception` Forbidden request
+   * @response `404` `Exception` Not found
+   */
+  deleteSolution = (homeworkId: number, params: RequestParams = {}) =>
+    this.request<void, Exception>({
+      path: `/api/homeworks/${homeworkId}/solutions`,
+      method: 'DELETE',
+      secure: true,
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags Solutions
    * @name UpdateSolution
    * @summary Updating the solution branch is only available if no attempts have been made
    * @request PATCH:/api/homeworks/{homeworkId}/solutions

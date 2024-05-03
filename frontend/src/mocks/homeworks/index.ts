@@ -19,7 +19,9 @@ const homeworkConverter = (homework: MockHomework): Homework => ({
   startDate: homework.startDate,
   topic: homework.topic,
   departments: homework.departments,
+  // @ts-expect-error все норм
   author: authors.get(homework.authorId),
+  // @ts-expect-error все норм
   lecture: lectures.get(homework.lectureId),
 });
 
@@ -41,7 +43,7 @@ export const homeworksHandlers = [
       authorId: 1,
       departments: ['frontend', 'backend'],
       description: body.description ?? '',
-      repositoryLink: body.repositoryLink ?? '',
+      repositoryLink: body.repositoryLink,
       reviewDuration: body.reviewDuration,
     });
 
