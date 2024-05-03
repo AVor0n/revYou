@@ -5,6 +5,7 @@ import hh.crossreview.entity.User;
 import hh.crossreview.entity.enums.UserRole;
 import hh.crossreview.entity.interfaces.Authorable;
 import hh.crossreview.entity.interfaces.Cohortable;
+import hh.crossreview.entity.interfaces.Statusable;
 import jakarta.inject.Named;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.ForbiddenException;
@@ -59,6 +60,12 @@ public class RequirementsUtils {
   public void requireUserHasRoles(User user, List<UserRole> userRoles) {
     if (!userRoles.contains(user.getRole())) {
       throw new ForbiddenException(String.format("Action not available for %s", user.getRole().toString()));
+    }
+  }
+
+  public void requireEntityHasStatus(Statusable entity, String status) {
+    if (!entity.getStatus().equals(status)) {
+      throw new ForbiddenException("This action is not available to you!");
     }
   }
 }
