@@ -105,7 +105,7 @@ public class SolutionService {
     );
   }
 
-  private Solution requireSolutionExist(Homework homework, User user) {
+  public Solution requireSolutionExist(Homework homework, User user) {
     Optional<Solution> solution = solutionDao.findByHomeworkAndStudent(homework, user);
     if (solution.isEmpty()) {
       throw new BadRequestException("User has not created a solution yet");

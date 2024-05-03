@@ -1,12 +1,25 @@
 package hh.crossreview.entity;
 
-import jakarta.persistence.*;
-
+import hh.crossreview.entity.enums.ReviewStatus;
+import hh.crossreview.entity.interfaces.Statusable;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import java.util.List;
 
 @Entity
 @Table(name = "review")
-public class Review {
+public class Review implements Statusable {
 
   @Id
   @Column(name = "review_id")
@@ -22,7 +35,8 @@ public class Review {
   private User reviewer;
 
   @Column(name = "status")
-  private String status;
+  @Enumerated(EnumType.STRING)
+  private ReviewStatus status;
 
   @ManyToOne
   @JoinColumn(name = "solution_id")
@@ -33,6 +47,16 @@ public class Review {
           mappedBy = "review",
           fetch = FetchType.EAGER)
   private List<ReviewAttempt> reviewAttempts;
+
+  public Review(User student, Solution solution) {
+    this.student = student;
+    this.solution = solution;
+    this.status = ReviewStatus.REVIEWER_SEARCH;
+  }
+
+  public Review() {
+
+  }
 
 
   public Integer getReviewId() {
@@ -59,11 +83,12 @@ public class Review {
     this.reviewer = reviewer;
   }
 
-  public String getStatus() {
+  @Override
+  public ReviewStatus getStatus() {
     return status;
   }
 
-  public void setStatus(String status) {
+  public void setStatus(ReviewStatus status) {
     this.status = status;
   }
 

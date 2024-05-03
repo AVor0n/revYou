@@ -2,6 +2,7 @@ package hh.crossreview.entity;
 
 import hh.crossreview.entity.enums.SolutionStatus;
 import hh.crossreview.entity.interfaces.Authorable;
+import hh.crossreview.entity.interfaces.Statusable;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -20,7 +21,7 @@ import java.util.List;
 @Entity
 @Table
 @SuppressWarnings({"unused"})
-public class Solution implements Authorable {
+public class Solution implements Authorable, Statusable {
 
   @Id
   @Column(name = "solution_id")
@@ -63,6 +64,7 @@ public class Solution implements Authorable {
     return solutionId;
   }
 
+  @Override
   public SolutionStatus getStatus() {
     return status;
   }
