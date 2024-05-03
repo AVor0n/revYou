@@ -1,9 +1,5 @@
 package hh.crossreview.entity;
 
-<<<<<<< HEAD
-
-=======
->>>>>>> f25ae998699374bb306e064fe9dfc166f691b043
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
