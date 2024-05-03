@@ -42,6 +42,9 @@ public class Homework implements Authorable, Cohortable {
   @Column
   private String description;
 
+  @Column(name = "source_commit_id")
+  private String sourceCommitId;
+
   @NotNull(message = "Homework 'startDate' couldn't be empty")
   @Column(name = "start_date")
   private Date startDate;
@@ -83,6 +86,10 @@ public class Homework implements Authorable, Cohortable {
 
   public String getDescription() {
     return description;
+  }
+
+  public String getSourceCommitId() {
+    return sourceCommitId;
   }
 
   public Date getStartDate() {
@@ -127,6 +134,11 @@ public class Homework implements Authorable, Cohortable {
 
   public Homework setDescription(String description) {
     this.description = description;
+    return this;
+  }
+
+  public Homework setSourceCommitId(String sourceCommitId) {
+    this.sourceCommitId = sourceCommitId;
     return this;
   }
 

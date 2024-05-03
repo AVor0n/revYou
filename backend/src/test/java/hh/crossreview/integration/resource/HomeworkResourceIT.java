@@ -94,13 +94,15 @@ class HomeworkResourceIT extends BaseIT {
     Lecture lecture = createLecture(teacher, List.of(backCohort));
     insertLectureInDb(lecture);
     HomeworkPostDto homeworkPostDto = createHomeworkPostDto("RepositoryLink", 48, lecture.getLectureId());
+    String sourceCommitId = "aabbccddeeff";
 
-    homeworkService.createHomework(homeworkPostDto, teacher);
+    homeworkService.createHomework(homeworkPostDto, teacher, sourceCommitId);
     Homework homework = homeworkDao.findByAuthor(teacher).get(0);
 
     assertEquals(homeworkPostDto.getRepositoryLink(), homework.getRepositoryLink());
     assertEquals(homeworkPostDto.getReviewDuration(), homework.getReviewDuration().getHours());
     assertEquals(homeworkPostDto.getLectureId(), homework.getLecture().getLectureId());
+    assertEquals(sourceCommitId, homework.getSourceCommitId());
   }
 
   @Test
@@ -109,7 +111,6 @@ class HomeworkResourceIT extends BaseIT {
         "NewName",
         "NewTopic",
         "NewDesc",
-        "NewLink",
         Date.from(Instant.parse("2024-04-25T00:00:00Z")),
         Date.from(Instant.parse("2024-04-30T00:00:00Z")),
         24
@@ -125,7 +126,6 @@ class HomeworkResourceIT extends BaseIT {
     assertEquals(homeworkPatchDto.getStartDate(), homework.getStartDate());
     assertEquals(homeworkPatchDto.getCompletionDeadline(), homework.getCompletionDeadline());
     assertEquals(homeworkPatchDto.getReviewDuration(), homework.getReviewDuration().getHours());
-    assertEquals(homeworkPatchDto.getRepositoryLink(), homework.getRepositoryLink());
   }
 
   Homework createBackendHomework() {
@@ -217,7 +217,6 @@ class HomeworkResourceIT extends BaseIT {
       String name,
       String topic,
       String description,
-      String repositoryLink,
       Date startDate,
       Date completionDeadline,
       Integer reviewDuration
@@ -226,7 +225,6 @@ class HomeworkResourceIT extends BaseIT {
     homeworkPatchDto.setName(name);
     homeworkPatchDto.setTopic(topic);
     homeworkPatchDto.setDescription(description);
-    homeworkPatchDto.setRepositoryLink(repositoryLink);
     homeworkPatchDto.setStartDate(startDate);
     homeworkPatchDto.setCompletionDeadline(completionDeadline);
     homeworkPatchDto.setReviewDuration(reviewDuration);

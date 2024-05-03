@@ -7,7 +7,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import hh.crossreview.dao.SolutionDao;
 import hh.crossreview.dto.gitlab.DiffDto;
 import hh.crossreview.dto.gitlab.DiffsWrapperDto;
-import hh.crossreview.external.gitlab.entity.ParsedGitlabLink;
+import hh.crossreview.external.gitlab.entity.RepositoryInfo;
 import hh.crossreview.utils.ExternalUtils;
 import jakarta.inject.Named;
 import jakarta.inject.Singleton;
@@ -44,22 +44,34 @@ public class GitlabService {
     this.solutionDao = solutionDao;
   }
 
-  public ParsedGitlabLink validateBranchLink(String branchLink) {
+  public RepositoryInfo validateSolutionBranchLink(String branchLink) {
     try {
-      ParsedGitlabLink parsedGitlabLink = parseBranchLink(branchLink);
-      requireBranchLinkUnique(parsedGitlabLink.branchLink());
-      getBranchRequest(parsedGitlabLink);
-      return parsedGitlabLink;
+      RepositoryInfo repositoryInfo = parseBranchLink(branchLink);
+      Integer projectId = retrieveProjectId(repositoryInfo.getProjectPath());
+      repositoryInfo.setProjectId(projectId);
+      requireBranchUnique(repositoryInfo);
+      getBranchRequest(repositoryInfo);
+      return repositoryInfo;
     } catch (HttpClientErrorException | HttpServerErrorException e) {
       throw new BadRequestException("Branch link is not accessible");
     }
   }
 
-  public String retrieveCommitId(String repository, String branch) {
-    ParsedGitlabLink parsedGitlabLink = new ParsedGitlabLink(repository, branch, "");
+  public String validateHomeworkBranchLink(String branchLink) {
+    try {
+      RepositoryInfo repositoryInfo = parseBranchLink(branchLink);
+      Integer projectId = retrieveProjectId(repositoryInfo.getProjectPath());
+      return retrieveCommitId(projectId, repositoryInfo.getBranch());
+    } catch (HttpClientErrorException | HttpServerErrorException e) {
+      throw new BadRequestException("Branch link is not accessible");
+    }
+  }
+
+  public String retrieveCommitId(Integer projectId, String branch) {
+    RepositoryInfo repositoryInfo = new RepositoryInfo(projectId, branch);
     try {
       return objectMapper
-          .readTree(getBranchRequest(parsedGitlabLink))
+          .readTree(getBranchRequest(repositoryInfo))
           .get("commit")
           .get("id")
           .asText();
@@ -68,15 +80,26 @@ public class GitlabService {
     }
   }
 
-  public DiffsWrapperDto retrieveDiffs(Integer repositoryId, String from, String to) {
-    String jsonTree = getDiffsRequest(repositoryId, from, to);
+  public Integer retrieveProjectId(String projectPath) {
+    try {
+      return objectMapper
+          .readTree(getProjectRequest(projectPath))
+          .get("id")
+          .asInt();
+    } catch (JsonProcessingException e) {
+      throw new InternalServerErrorException(e);
+    }
+  }
+
+  public DiffsWrapperDto retrieveDiffs(Integer projectId, String from, String to) {
+    String jsonTree = getDiffsRequest(projectId, from, to);
     DiffsWrapperDto diffsWrapperDto = new DiffsWrapperDto();
     List<DiffDto> diffsDto = new ArrayList<>();
     try {
       ArrayNode diffs = (ArrayNode) objectMapper
           .readTree(jsonTree)
           .get("diffs");
-      for (JsonNode diff : diffs) {
+      for(JsonNode diff : diffs) {
         DiffDto diffDto = new DiffDto();
         diffDto
             .setOldPath(diff.get("old_path").asText())
@@ -99,23 +122,23 @@ public class GitlabService {
     return getRawFileRequest(projectId, filePath, ref);
   }
 
-  private String getBranchRequest(ParsedGitlabLink parsedGitlabLink) {
-    String repository = urlEncodeSlashes(parsedGitlabLink.repository());
-    String branch = urlEncodeSlashes(parsedGitlabLink.branch());
+  private String getBranchRequest(RepositoryInfo repositoryInfo) {
+    Integer projectId = repositoryInfo.getProjectId();
+    String branch = urlEncodeSlashes(repositoryInfo.getBranch());
     URI uri = URI.create(String.format(
-        "%s/projects/%s/repository/branches/%s",
+        "%s/projects/%d/repository/branches/%s",
         gitlabApiUrl,
-        repository,
+        projectId,
         branch
     ));
     return getRequest(uri);
   }
 
-  private String getDiffsRequest(Integer repositoryId, String from, String to) {
+  private String getDiffsRequest(Integer projectId, String from, String to) {
     URI uri = URI.create(String.format(
         "%s/projects/%d/repository/compare?from=%s&to=%s",
         gitlabApiUrl,
-        repositoryId,
+        projectId,
         from,
         to
     ));
@@ -134,6 +157,16 @@ public class GitlabService {
     return getRequest(uri);
   }
 
+  private String getProjectRequest(String projectPath) {
+    projectPath = urlEncodeSlashes(projectPath);
+    URI uri = URI.create(String.format(
+        "%s/projects/%s",
+        gitlabApiUrl,
+        projectPath
+    ));
+    return getRequest(uri);
+  }
+
   private String getRequest(URI uri) {
     try {
       return RestClient
@@ -148,22 +181,23 @@ public class GitlabService {
     }
   }
 
-  private ParsedGitlabLink parseBranchLink(String branchLink) {
+  private RepositoryInfo parseBranchLink(String branchLink) {
     String branchLinkRegex = String.format("%s/([^/]+/[^/]+)/-/tree/([\\w\\-./]+).*", gitlabUrl);
     Pattern pattern = Pattern.compile(branchLinkRegex);
     Matcher matcher = pattern.matcher(branchLink);
     if (!matcher.find()) {
       throw new BadRequestException("Branch link isn't valid");
     }
-    return new ParsedGitlabLink(
+    return new RepositoryInfo(
         matcher.group(1),
-        matcher.group(2),
-        branchLink
+        matcher.group(2)
     );
   }
 
-  private void requireBranchLinkUnique(String branchLink) {
-    if (solutionDao.findByBranchLink(branchLink).isPresent()) {
+  private void requireBranchUnique(RepositoryInfo repositoryInfo) {
+    Integer projectId = repositoryInfo.getProjectId();
+    String branch = repositoryInfo.getBranch();
+    if (solutionDao.findByProjectIdAndBranch(projectId, branch).isPresent()) {
       throw new BadRequestException("Branch link already send by another user or to another homework");
     }
   }

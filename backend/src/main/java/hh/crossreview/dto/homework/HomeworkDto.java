@@ -18,14 +18,25 @@ import java.util.List;
 public class HomeworkDto {
 
   private Integer id;
+
   private String name;
+
   private String topic;
+
   private String description;
+
+  private String sourceCommitId;
+
   private List<String> departments;
+
   private HomeworkAuthorDto author;
+
   private HomeworkLectureDto lecture;
+
   private String repositoryLink;
+
   private Date startDate;
+
   private Date completionDeadline;
 
   @Schema(allowableValues =  {"24", "48"})
@@ -48,6 +59,11 @@ public class HomeworkDto {
 
   public HomeworkDto setDescription(String description) {
     this.description = description;
+    return this;
+  }
+
+  public HomeworkDto setSourceCommitId(String sourceCommitId) {
+    this.sourceCommitId = sourceCommitId;
     return this;
   }
 
@@ -86,8 +102,6 @@ public class HomeworkDto {
     return this;
   }
 
-
-
   public Integer getId() {
     return id;
   }
@@ -102,6 +116,10 @@ public class HomeworkDto {
 
   public String getDescription() {
     return description;
+  }
+
+  public String getSourceCommitId() {
+    return sourceCommitId;
   }
 
   public List<String> getDepartments() {
