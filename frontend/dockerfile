@@ -10,5 +10,5 @@ COPY . .
 
 RUN yarn build
 
-CMD cp -r build result_build
+COPY --from=builder result_build
 
