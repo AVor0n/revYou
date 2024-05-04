@@ -6,6 +6,7 @@ services:
     container_name: frontend
     ports:
       - "${FRONT_PORT:-3000}:80"
+
   backend:
     image: semashkevichea/cross_review_back:latest
     container_name: backend
