@@ -4,8 +4,9 @@ services:
   frontend:
     image: semashkevichea/cross_review_front:latest
     container_name: frontend
-    ports:
-      - "${FRONT_PORT:-3000}:80"
+    volumes:
+      - ./frontend/:/app/result_build/
+
   backend:
     image: semashkevichea/cross_review_back:latest
     container_name: backend
@@ -61,6 +62,7 @@ services:
       - backend
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./frontend/build:/usr/share/nginx/html/
     ports:
       - "${NGINX_PORT:-80}:80"
     depends_on:
