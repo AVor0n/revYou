@@ -10,5 +10,5 @@ COPY . .
 
 RUN yarn build
 
-COPY --from=builder result_build
+COPY --from=builder /app/dist /result_build
 
