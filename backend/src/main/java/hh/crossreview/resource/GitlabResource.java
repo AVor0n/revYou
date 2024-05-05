@@ -64,7 +64,7 @@ public class GitlabResource {
   @ApiResponse(
       responseCode = "200",
       description = "Successful operation",
-      content = @Content(mediaType = "plain/text")
+      content = @Content(mediaType = MediaType.TEXT_PLAIN)
   )
   public Response getRawFile(
       @PathParam("projectId") Integer projectId,
