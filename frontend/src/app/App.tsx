@@ -5,7 +5,7 @@ import { useEffect } from 'react';
 import { GetApi } from './api';
 import { type Role, userActions } from './entities';
 import { useAppDispatch } from './hooks';
-import { AuthProvider, RouterProvider, refreshAuthToken, useAuth } from './providers';
+import { RouterProvider, refreshAuthToken, useAuth } from './providers';
 
 import './global.css';
 
@@ -22,7 +22,7 @@ export const App = () => {
       response => response,
       async (error: AxiosError) => {
         const originalRequest: (AxiosError['config'] & { _retry?: boolean }) | undefined = error.config;
-        if (error.response?.status === 401 && originalRequest && !originalRequest._retry) {
+        if (error.response?.status === 403 && originalRequest && !originalRequest._retry) {
           originalRequest._retry = true;
           const refreshToken = localStorage.getItem('refreshToken');
           if (refreshToken) {
@@ -47,9 +47,7 @@ export const App = () => {
   return (
     <ThemeProvider theme="light">
       <ToasterProvider>
-        <AuthProvider>
-          <RouterProvider />
-        </AuthProvider>
+        <RouterProvider />
 
         <ToasterComponent />
       </ToasterProvider>
