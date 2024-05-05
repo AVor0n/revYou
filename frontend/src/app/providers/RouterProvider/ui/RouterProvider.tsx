@@ -1,6 +1,6 @@
 import { Route, Routes } from 'react-router-dom';
 import { HomeworkDetailPage } from '@pages/HomeworkDetailPage';
-import { AuthPage, HomeworksPage, NotFoundPage } from 'pages';
+import { AuthPage, HomeworksPage, NotFoundPage, SolutionDetailPage } from 'pages';
 import { Layout } from '../../../components';
 import { AuthRequire } from './AuthRequire';
 
@@ -24,6 +24,7 @@ export const RouterProvider = () => (
               <Route element={<HomeworksPage />} path="/homeworks/create?" />
               <Route element={<HomeworksPage />} path="/homeworks/:id/edit" />
               <Route element={<HomeworkDetailPage />} path="/homeworks/:id/:tab?" />
+              <Route element={<SolutionDetailPage />} path="/solutions/:id/:tab?" />
               <Route element={<NotFoundPage />} path="/*" />
             </Routes>
           </AuthRequire>

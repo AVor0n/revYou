@@ -33,7 +33,6 @@ export const EditHomeworkWindow = ({ record, open }: EditHomeworkWindowProps) =>
       name: record?.name ?? defaultHomework.name,
       topic: record?.topic ?? defaultHomework.topic,
       description: record?.description ?? defaultHomework.description,
-      repositoryLink: record?.repositoryLink ?? defaultHomework.repositoryLink,
       reviewDuration: record?.reviewDuration ?? defaultHomework.reviewDuration,
       startDate: record?.startDate ?? defaultHomework.startDate,
       completionDeadline: record?.completionDeadline ?? defaultHomework.completionDeadline,

@@ -1,2 +1,2 @@
 export * from './loadFileDiff';
-export * from './loadSolution';
+export * from './loadReview';

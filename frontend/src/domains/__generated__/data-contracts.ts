@@ -46,6 +46,19 @@ export interface SignUpRequest {
   email: string;
 }
 
+export interface Diff {
+  new_path: string;
+  old_path: string;
+  new_file: boolean;
+  renamed_file: boolean;
+  deleted_file: boolean;
+  generated_file: boolean;
+}
+
+export interface DiffsWrapper {
+  diffs: Diff[];
+}
+
 export interface HomeworkPostResponse {
   /** @format int32 */
   id: number;
@@ -81,6 +94,7 @@ export interface Homework {
   name: string;
   topic: string;
   description?: string;
+  sourceCommitId?: string;
   departments: string[];
   author: HomeworkAuthor;
   lecture: HomeworkLecture;
@@ -114,7 +128,6 @@ export interface HomeworkPatch {
   name?: string;
   topic?: string;
   description?: string;
-  repositoryLink?: string;
   /** @format date-time */
   startDate?: string;
   /** @format date-time */
@@ -123,13 +136,43 @@ export interface HomeworkPatch {
   reviewDuration?: HomeworkPatchReviewDurationEnum;
 }
 
+export interface Review {
+  /** @format int32 */
+  reviewId?: number;
+  /** @format int32 */
+  studentId?: number;
+  /** @format int32 */
+  reviewerId?: number;
+  status?: string;
+  /** @format int32 */
+  solutionId?: number;
+  reviewAttempts?: ReviewAttempt[];
+}
+
+export interface ReviewAttempt {
+  /** @format int32 */
+  reviewAttemptId?: number;
+  /** @format int32 */
+  reviewId?: number;
+  /** @format int32 */
+  solutionAttemptId?: number;
+  /** @format date-time */
+  createdAt?: string;
+  /** @format date-time */
+  finishedAt?: string;
+  resolution?: string;
+}
+
 export interface Solution {
   status: string;
+  /** @format int32 */
+  projectId: number;
+  branch: string;
+  sourceCommitId: string;
   /** @format int32 */
   approveScore: number;
   /** @format int32 */
   reviewScore: number;
-  branchLink: string;
   /** @format int32 */
   studentId: number;
   solutionAttempts: SolutionAttempt[];
@@ -161,3 +204,24 @@ export type HomeworkReviewDurationEnum = 24 | 48;
 
 /** @format int32 */
 export type HomeworkPatchReviewDurationEnum = 24 | 48;
+
+export interface GetDiffsParams {
+  /** Commit SHA */
+  from: string;
+  /** Commit SHA */
+  to: string;
+  /** @format int32 */
+  projectId: number;
+}
+
+export interface GetRawFileParams {
+  /** Commit SHA */
+  ref: string;
+  /** @format int32 */
+  projectId: number;
+  /**
+   * File path (not URL-encoded)
+   * @pattern .+
+   */
+  filePath: string;
+}
