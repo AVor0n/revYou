@@ -21,7 +21,7 @@ export const DescriptionTab = ({ homeworkInfo, solutionInfo }: DescriptionTabPro
 
   const onSendAttempt = () => {
     dispatch(createSolutionAttempt(homeworkInfo.id)).then(() => {
-      toaster.add({ name: 'sendAttempt', title: 'Попытка успешно отправлена', theme: 'success' });
+      toaster.add({ name: 'sendAttempt', title: 'Решение отправлено', theme: 'success' });
       dispatch(loadSolution(homeworkInfo.id));
     });
   };
