@@ -25,7 +25,6 @@ export const reviewSlice = createSlice({
   },
   extraReducers(builder) {
     builder.addCase(loadReview.fulfilled, (state, { payload }) => {
-      state.solutionInfo = payload.solutionInfo;
       state.filesTree = payload.diffFileTree;
       state.error = '';
     });
