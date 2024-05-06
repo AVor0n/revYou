@@ -22,7 +22,12 @@ export const App = () => {
       response => response,
       async (error: AxiosError) => {
         const originalRequest: (AxiosError['config'] & { _retry?: boolean }) | undefined = error.config;
-        if (error.response?.status === 403 && originalRequest && !originalRequest._retry) {
+        // я тут до конца не понял но пусть пока будет так, потому что когда прилетает 401 а когда то 403
+        if (
+          (error.response?.status === 401 || error.response?.status === 403) &&
+          originalRequest &&
+          !originalRequest._retry
+        ) {
           originalRequest._retry = true;
           const refreshToken = localStorage.getItem('refreshToken');
           if (refreshToken) {
