@@ -2,13 +2,16 @@ package hh.crossreview.converter;
 
 import hh.crossreview.dto.review.ReviewAttemptDto;
 import hh.crossreview.dto.review.ReviewDto;
+import hh.crossreview.dto.review.ReviewWrapperDto;
 import hh.crossreview.entity.Review;
 import hh.crossreview.entity.ReviewAttempt;
 import hh.crossreview.entity.User;
+import hh.crossreview.entity.enums.ReviewStatus;
 import jakarta.inject.Named;
 import jakarta.inject.Singleton;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Named
 @Singleton
@@ -48,5 +51,22 @@ public class ReviewConverter {
         .setCreatedAt(reviewAttempt.getCreatedAt())
         .setFinishedAt(reviewAttempt.getFinishedAt())
         .setResolution(reviewAttempt.getResolution());
+  }
+
+  public ReviewWrapperDto convertToReviewWrapperDto(List<Review> reviews) {
+    List<ReviewDto> reviewsDto = reviews
+            .stream()
+            .map(this::convertToReviewDto)
+            .toList();
+    return new ReviewWrapperDto(reviewsDto);
+  }
+
+
+  public void setStatus(Review review, ReviewStatus status) {
+    review.setStatus(status);
+  }
+
+  public void setReviewer(Review review, User reviewer) {
+    review.setReviewer(reviewer);
   }
 }

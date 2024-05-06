@@ -2,12 +2,19 @@ package hh.crossreview.resource;
 
 import hh.crossreview.dto.exception.ExceptionDto;
 import hh.crossreview.dto.exception.ExceptionValidationDto;
+import hh.crossreview.dto.review.ReviewAttemptDto;
 import hh.crossreview.dto.review.ReviewDto;
+import hh.crossreview.dto.review.ReviewWrapperDto;
+import hh.crossreview.dto.solution.SolutionAttemptDto;
+import hh.crossreview.dto.solution.SolutionDto;
+import hh.crossreview.dto.solution.SolutionsWrapperDto;
 import hh.crossreview.entity.Homework;
+import hh.crossreview.entity.Review;
 import hh.crossreview.entity.User;
 import hh.crossreview.service.HomeworkService;
 import hh.crossreview.service.ReviewService;
 import hh.crossreview.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -17,6 +24,7 @@ import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
@@ -76,4 +84,70 @@ public class ReviewResource {
             .entity(reviewDto)
             .build();
   }
+
+  @GET
+  @Produces(MediaType.APPLICATION_JSON)
+  @ApiResponse(
+          responseCode = "200",
+          description = "Successful operation",
+          content = @Content(schema = @Schema(implementation = ReviewWrapperDto.class)))
+  public Response getReviews(
+          @PathParam("homeworkId") Integer homeworkId,
+          @Context SecurityContext securityContext
+  ) {
+    User user = userService.findByPrincipal(securityContext.getUserPrincipal());
+    Homework homework = homeworkService.getHomeworkEntity(homeworkId);
+    ReviewWrapperDto reviewWrapperDto = reviewService.getReviews(homework, user);
+    return Response
+            .status(Response.Status.OK)
+            .entity(reviewWrapperDto)
+            .build();
+  }
+
+  @GET
+  @Path("{reviewId}")
+  @Produces(MediaType.APPLICATION_JSON)
+  @ApiResponse(
+          responseCode = "200",
+          description = "Successful operation",
+          content = @Content(schema = @Schema(implementation = ReviewDto.class)))
+  public Response getReview(
+          @PathParam("reviewId") Integer reviewId,
+          @Context SecurityContext securityContext
+  ) {
+    User user = userService.findByPrincipal(securityContext.getUserPrincipal());
+    ReviewDto reviewDto = reviewService.getReview(reviewId, user);
+    return Response
+            .status(Response.Status.OK)
+            .entity(reviewDto)
+            .build();
+  }
+
+  @POST
+  @Path("{reviewId}/start-review")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  @ApiResponse(
+          responseCode = "201",
+          description = "Created",
+          content = @Content(schema = @Schema(implementation = ReviewAttemptDto.class)))
+  @ApiResponse(
+          responseCode = "400",
+          description = "Bad request",
+          content = @Content(schema = @Schema(implementation = ExceptionValidationDto.class)))
+  public Response startReview(
+          @PathParam("homeworkId") Integer homeworkId,
+          @PathParam("reviewId") Integer reviewId,
+          @Context SecurityContext securityContext
+  ) {
+    User user = userService.findByPrincipal(securityContext.getUserPrincipal());
+    Homework homework = homeworkService.getHomeworkEntity(homeworkId);
+    reviewService.startReview(homework, user, reviewId);
+    ReviewDto reviewDto = reviewService.getReview(reviewId, user);
+    return Response
+            .status(Response.Status.OK)
+            .entity(reviewDto)
+            .build();
+  }
+
 }
