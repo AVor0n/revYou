@@ -11,7 +11,6 @@ import jakarta.inject.Named;
 import jakarta.inject.Singleton;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Named
 @Singleton

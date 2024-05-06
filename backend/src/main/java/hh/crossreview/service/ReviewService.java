@@ -3,7 +3,6 @@ package hh.crossreview.service;
 import hh.crossreview.converter.ReviewConverter;
 import hh.crossreview.dao.ReviewAttemptDao;
 import hh.crossreview.dao.ReviewDao;
-import hh.crossreview.dto.review.ReviewAttemptDto;
 import hh.crossreview.dto.review.ReviewDto;
 import hh.crossreview.dto.review.ReviewWrapperDto;
 import hh.crossreview.entity.Homework;
@@ -15,14 +14,12 @@ import hh.crossreview.entity.User;
 import hh.crossreview.entity.enums.ReviewStatus;
 import hh.crossreview.entity.enums.SolutionStatus;
 import hh.crossreview.entity.enums.UserRole;
-import hh.crossreview.entity.interfaces.Authorable;
 import hh.crossreview.utils.RequirementsUtils;
 import jakarta.inject.Named;
 import jakarta.inject.Singleton;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.ForbiddenException;
-
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -40,7 +37,12 @@ public class ReviewService {
 
   private final ReviewConverter reviewConverter;
 
-  public ReviewService(RequirementsUtils reqUtils, SolutionService solutionService, ReviewDao reviewDao, ReviewAttemptDao reviewAttemptDao, ReviewConverter reviewConverter) {
+  public ReviewService(
+          RequirementsUtils reqUtils,
+          SolutionService solutionService,
+          ReviewDao reviewDao,
+          ReviewAttemptDao reviewAttemptDao,
+          ReviewConverter reviewConverter) {
     this.reqUtils = reqUtils;
     this.solutionService = solutionService;
     this.reviewDao = reviewDao;
@@ -107,7 +109,7 @@ public class ReviewService {
       throw new ForbiddenException("You already have active reviews for this homework");
     }
   }
-  public Review requireReviewExist (Integer reviewId) {
+  public Review requireReviewExist(Integer reviewId) {
     Review review = reviewDao.find(Review.class, reviewId);
     if (review == null) {
       throw new BadRequestException("Review with this ID does not exist");
