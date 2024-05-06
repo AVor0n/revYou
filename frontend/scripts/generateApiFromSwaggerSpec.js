@@ -22,7 +22,7 @@ generateApi({
   extractRequestParams: true,
   extractRequestBody: true,
   extractEnums: true,
-  defaultResponseType: 'void',
+  defaultResponseType: 'unknown',
   singleHttpClient: false,
   cleanOutput: true,
   enumNamesAsValues: false,

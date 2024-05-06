@@ -1,17 +1,12 @@
+import type { Solution } from '@domains';
+
 export interface ReviewSchema {
-  solutionInfo: SolutionInfo | null;
+  solutionInfo: Solution | null;
   filesTree: FilesTree | null;
   activeFilePath: string;
   sourceActiveFileContent: string | null;
   targetActiveFileContent: string | null;
   error: string;
-}
-
-export interface SolutionInfo {
-  projectId: string;
-  authorId: string;
-  sourceCommitHash: string;
-  targetCommitHash: string;
 }
 
 export type FilesTree = (FolderNode | FileNode)[];
@@ -31,17 +26,4 @@ export interface FileNode {
   renamed: boolean;
   deleted: boolean;
   children?: never;
-}
-
-export interface FileTreeDiff {
-  diffs: FileDiff[];
-}
-
-export interface FileDiff {
-  new_path: string;
-  old_path: string;
-  new_file: boolean;
-  renamed_file: boolean;
-  deleted_file: boolean;
-  generated_file: null;
 }

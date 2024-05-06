@@ -3,8 +3,8 @@ import { useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { getSelectedHomework, getSolutionInfo, selectHomework, useAppDispatch } from 'app';
-import { loadSolution } from 'app/entities/Review/services';
-import { DescriptionTab, FilesTab, Header } from './components';
+import { loadReview } from 'app/entities/Review/services';
+import { DescriptionTab, FilesTab, SolutionTab, Header } from './components';
 import styles from './HomeworkDetailPage.module.scss';
 
 export const HomeworkDetailPage = () => {
@@ -18,7 +18,7 @@ export const HomeworkDetailPage = () => {
   useEffect(() => {
     if (homeworkId !== undefined) {
       dispatch(selectHomework(+homeworkId));
-      dispatch(loadSolution(+homeworkId));
+      dispatch(loadReview(+homeworkId));
     }
   }, [dispatch, homeworkId]);
 
@@ -42,7 +42,7 @@ export const HomeworkDetailPage = () => {
         : {}),
       solutions: {
         title: 'Решения',
-        content: <div>Solutions</div>,
+        content: <SolutionTab homeworkInfo={homeworkInfo} />,
       },
     }),
     [homeworkInfo, solutionInfo],

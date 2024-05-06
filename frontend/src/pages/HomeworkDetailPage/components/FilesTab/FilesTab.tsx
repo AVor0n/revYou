@@ -30,13 +30,15 @@ export const FilesTab = () => {
     const filePath = activeFilePath === treeItem.path ? '' : treeItem.path;
     dispatch(reviewActions.setActiveFilePath(filePath));
 
-    if (filePath && solutionInfo) {
+    const targetCommitId = solutionInfo?.solutionAttempts.at(-1)?.commitId;
+
+    if (filePath && solutionInfo && targetCommitId) {
       dispatch(
         loadFileDiff({
           path: filePath,
           projectId: solutionInfo.projectId,
-          fromRef: solutionInfo.sourceCommitHash,
-          toRef: solutionInfo.targetCommitHash,
+          fromRef: solutionInfo.sourceCommitId,
+          toRef: targetCommitId,
         }),
       );
     }

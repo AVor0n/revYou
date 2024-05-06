@@ -1,5 +1,5 @@
 import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
-import { loadFileDiff, loadSolution } from '../services';
+import { loadFileDiff, loadReview } from '../services';
 import { type ReviewSchema } from '../types';
 
 const initialState: ReviewSchema = {
@@ -24,7 +24,7 @@ export const reviewSlice = createSlice({
     },
   },
   extraReducers(builder) {
-    builder.addCase(loadSolution.fulfilled, (state, { payload }) => {
+    builder.addCase(loadReview.fulfilled, (state, { payload }) => {
       state.solutionInfo = payload.solutionInfo;
       state.filesTree = payload.diffFileTree;
       state.error = '';
@@ -38,7 +38,7 @@ export const reviewSlice = createSlice({
       state.sourceActiveFileContent = null;
       state.targetActiveFileContent = null;
     });
-    builder.addCase(loadSolution.rejected, state => {
+    builder.addCase(loadReview.rejected, state => {
       state.error = 'Не удалось загрузить решение';
     });
   },

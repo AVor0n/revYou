@@ -10,14 +10,18 @@
  */
 
 import {
+  DiffsWrapper,
   Exception,
   ExceptionValidation,
+  GetDiffsParams,
+  GetRawFileParams,
   Homework,
   HomeworkPatch,
   HomeworkPost,
   HomeworkPostResponse,
   HomeworksWrapper,
   RefreshAccessTokenRequestDto,
+  Review,
   SignInRequest,
   SignInResponse,
   SignUpRequest,
@@ -83,6 +87,43 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
       body: data,
       type: ContentType.Json,
       format: 'json',
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags Gitlab
+   * @name GetDiffs
+   * @request GET:/api/gitlab/projects/{projectId}/repository/compare
+   * @secure
+   * @response `200` `DiffsWrapper` Successful operation
+   * @response `403` `Exception` Forbidden request
+   */
+  getDiffs = ({ projectId, ...query }: GetDiffsParams, params: RequestParams = {}) =>
+    this.request<DiffsWrapper, Exception>({
+      path: `/api/gitlab/projects/${projectId}/repository/compare`,
+      method: 'GET',
+      query: query,
+      secure: true,
+      format: 'json',
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags Gitlab
+   * @name GetRawFile
+   * @request GET:/api/gitlab/projects/{projectId}/repository/files/{filePath}/raw
+   * @secure
+   * @response `200` `unknown` Successful operation
+   * @response `403` `Exception` Forbidden request
+   */
+  getRawFile = ({ projectId, filePath, ...query }: GetRawFileParams, params: RequestParams = {}) =>
+    this.request<unknown, Exception>({
+      path: `/api/gitlab/projects/${projectId}/repository/files/${filePath}/raw`,
+      method: 'GET',
+      query: query,
+      secure: true,
       ...params,
     });
   /**
@@ -166,11 +207,11 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
    * @name DeleteHomework
    * @request DELETE:/api/homeworks/{homeworkId}
    * @secure
-   * @response `200` `void` Successful operation
+   * @response `204` `unknown` No content
    * @response `403` `Exception` Forbidden request
    */
   deleteHomework = (homeworkId: number, params: RequestParams = {}) =>
-    this.request<void, Exception>({
+    this.request<unknown, Exception>({
       path: `/api/homeworks/${homeworkId}`,
       method: 'DELETE',
       secure: true,
@@ -183,18 +224,38 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
    * @name UpdateHomework
    * @request PATCH:/api/homeworks/{homeworkId}
    * @secure
-   * @response `200` `void` Successful operation
+   * @response `200` `unknown` Successful operation
    * @response `400` `ExceptionValidation` Bad request
    * @response `403` `Exception` Forbidden request
    * @response `404` `Exception` Not found
    */
   updateHomework = (homeworkId: number, data: HomeworkPatch, params: RequestParams = {}) =>
-    this.request<void, ExceptionValidation | Exception>({
+    this.request<unknown, ExceptionValidation | Exception>({
       path: `/api/homeworks/${homeworkId}`,
       method: 'PATCH',
       body: data,
       secure: true,
       type: ContentType.Json,
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags Reviews
+   * @name CreateReview
+   * @request POST:/api/homeworks/{homeworkId}/reviews
+   * @secure
+   * @response `201` `Review` Created
+   * @response `400` `ExceptionValidation` Bad request
+   * @response `403` `Exception` Forbidden request
+   * @response `404` `Exception` Not found
+   */
+  createReview = (homeworkId: number, params: RequestParams = {}) =>
+    this.request<Review, ExceptionValidation | Exception>({
+      path: `/api/homeworks/${homeworkId}/reviews`,
+      method: 'POST',
+      secure: true,
+      format: 'json',
       ...params,
     });
   /**
@@ -247,12 +308,12 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
    * @name DeleteSolution
    * @request DELETE:/api/homeworks/{homeworkId}/solutions
    * @secure
-   * @response `204` `void` No content
+   * @response `204` `unknown` No content
    * @response `403` `Exception` Forbidden request
    * @response `404` `Exception` Not found
    */
   deleteSolution = (homeworkId: number, params: RequestParams = {}) =>
-    this.request<void, Exception>({
+    this.request<unknown, Exception>({
       path: `/api/homeworks/${homeworkId}/solutions`,
       method: 'DELETE',
       secure: true,

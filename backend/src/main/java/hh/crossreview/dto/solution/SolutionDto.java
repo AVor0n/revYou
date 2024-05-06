@@ -6,9 +6,9 @@ import java.util.List;
 @Schema(
     name = "Solution",
     requiredProperties = {
-        "status", "branch", "sourceCommitId",
-        "approveScore", "reviewScore", "studentId",
-        "solutionAttempts"
+        "status", "projectId", "branch",
+        "sourceCommitId", "approveScore", "reviewScore",
+        "studentId", "solutionAttempts"
     }
 )
 @SuppressWarnings({"unused"})

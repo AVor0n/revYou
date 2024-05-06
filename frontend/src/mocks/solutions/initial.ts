@@ -1,15 +1,48 @@
-import { type SolutionInfo } from 'app';
+import { type Solution } from '@domains';
 
-export interface MockSolution extends SolutionInfo {
-  id: number;
-}
-
-export const initialSolutions: MockSolution[] = [
+export const initialSolutions: Solution[] = [
   {
-    id: 1,
-    authorId: '1',
-    projectId: '57233481',
-    sourceCommitHash: 'main',
-    targetCommitHash: 'develop',
+    status: 'search_reviewer',
+    studentId: 1,
+    branch: 'http:/solutions/1',
+    projectId: 57233480,
+    sourceCommitId: 'main',
+    approveScore: 0,
+    reviewScore: 0,
+    solutionAttempts: [],
+  },
+  {
+    status: 'review',
+    studentId: 2,
+    branch: 'http:/solutions/2',
+    approveScore: 1,
+    reviewScore: 2,
+    projectId: 57233481,
+    sourceCommitId: 'main',
+    solutionAttempts: [
+      {
+        commitId: 'unknown',
+        createdAt: '2024-03-04T10:29:28.265Z',
+      },
+      {
+        commitId: 'develop',
+        createdAt: '2024-03-12T10:29:28.265Z',
+      },
+    ],
+  },
+  {
+    status: 'wait_correction',
+    studentId: 3,
+    branch: 'http:/solutions/2',
+    approveScore: 0,
+    reviewScore: 2,
+    projectId: 57233483,
+    sourceCommitId: 'main',
+    solutionAttempts: [
+      {
+        commitId: '1',
+        createdAt: '2024-03-04T10:29:28.265Z',
+      },
+    ],
   },
 ];
