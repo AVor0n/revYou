@@ -2,7 +2,6 @@ package hh.crossreview.resource;
 
 import hh.crossreview.dto.exception.ExceptionDto;
 import hh.crossreview.dto.exception.ExceptionValidationDto;
-import hh.crossreview.dto.solution.SolutionAttemptDto;
 import hh.crossreview.dto.solution.SolutionDto;
 import hh.crossreview.dto.solution.SolutionPatchDto;
 import hh.crossreview.dto.solution.SolutionPostDto;
@@ -166,33 +165,33 @@ public class SolutionResource {
         .build();
   }
 
-  @POST
-  @Path("/attempts")
-  @Consumes(MediaType.APPLICATION_JSON)
-  @Produces(MediaType.APPLICATION_JSON)
-  @ApiResponse(
-      responseCode = "201",
-      description = "Created",
-      content = @Content(schema = @Schema(implementation = SolutionAttemptDto.class)))
-  @ApiResponse(
-      responseCode = "400",
-      description = "Bad request",
-      content = @Content(schema = @Schema(implementation = ExceptionValidationDto.class)))
-  public Response createSolutionAttempt(
-      @PathParam("homeworkId") Integer homeworkId,
-      @Context SecurityContext securityContext
-  ) {
-    User user = userService.findByPrincipal(securityContext.getUserPrincipal());
-    Homework homework = homeworkService.getHomeworkEntity(homeworkId);
-    SolutionAttemptDto solutionAttemptDto =  solutionService.createSolutionAttempt(
-        homework,
-        user
-    );
-    return Response
-        .status(Response.Status.CREATED)
-        .entity(solutionAttemptDto)
-        .build();
-  }
+//  @POST
+//  @Path("/attempts")
+//  @Consumes(MediaType.APPLICATION_JSON)
+//  @Produces(MediaType.APPLICATION_JSON)
+//  @ApiResponse(
+//      responseCode = "201",
+//      description = "Created",
+//      content = @Content(schema = @Schema(implementation = SolutionAttemptDto.class)))
+//  @ApiResponse(
+//      responseCode = "400",
+//      description = "Bad request",
+//      content = @Content(schema = @Schema(implementation = ExceptionValidationDto.class)))
+//  public Response createSolutionAttempt(
+//      @PathParam("homeworkId") Integer homeworkId,
+//      @Context SecurityContext securityContext
+//  ) {
+//    User user = userService.findByPrincipal(securityContext.getUserPrincipal());
+//    Homework homework = homeworkService.getHomeworkEntity(homeworkId);
+//    SolutionAttemptDto solutionAttemptDto =  solutionService.createSolutionAttempt(
+//        homework,
+//        user
+//    );
+//    return Response
+//        .status(Response.Status.CREATED)
+//        .entity(solutionAttemptDto)
+//        .build();
+//  }
 
   @DELETE
   @Produces(MediaType.APPLICATION_JSON)

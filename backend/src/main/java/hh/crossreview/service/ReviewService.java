@@ -3,7 +3,7 @@ package hh.crossreview.service;
 import hh.crossreview.converter.ReviewConverter;
 import hh.crossreview.dao.ReviewAttemptDao;
 import hh.crossreview.dao.ReviewDao;
-import hh.crossreview.dto.review.ReviewDto;
+import hh.crossreview.dto.review.ReviewResolutionDto;
 import hh.crossreview.dto.review.ReviewWrapperDto;
 import hh.crossreview.entity.Homework;
 import hh.crossreview.entity.Review;
@@ -20,6 +20,7 @@ import jakarta.inject.Singleton;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.ForbiddenException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -51,14 +52,15 @@ public class ReviewService {
   }
 
   @Transactional
-  public ReviewDto createReview(Homework homework, User user){
+  public void createReview(Homework homework, User user){
     reqUtils.requireUserHasRole(user, UserRole.STUDENT);
+    reqUtils.requireValidCohorts(user.getCohorts(), homework);
     Solution solution = solutionService.requireSolutionExist(homework, user);
     reqUtils.requireEntityHasStatus(solution, String.valueOf(SolutionStatus.REVIEW_STAGE));
     requireReviewInProgressAlreadyExist(solution, user);
+    solutionService.createSolutionAttempt(solution);
     Review review = new Review(user, solution);
     reviewDao.save(review);
-    return reviewConverter.convertToReviewDto(review);
   }
 
   @Transactional
@@ -69,6 +71,21 @@ public class ReviewService {
   }
 
   @Transactional
+  public void addReviewResolution(User user, Integer reviewId, ReviewResolutionDto reviewResolutionDto) {
+    Review review = requireReviewExist(reviewId);
+    String status = reviewResolutionDto.getStatus();
+    String resolution = reviewResolutionDto.getResolution();
+    if (!List.of(ReviewStatus.CORRECTIONS_REQUIRED.toString(), ReviewStatus.APPROVED.toString()).contains(status)) {
+      throw new BadRequestException("Invalid status!");
+    }
+    review.setStatus(ReviewStatus.valueOf(status));
+    ReviewAttempt reviewAttempt = reviewAttemptDao.findLastReviewAttemptByReview(review);
+    reviewAttempt.setResolution(resolution);
+    if (status.equals(ReviewStatus.APPROVED.toString())){
+      reviewAttempt.setFinishedAt(LocalDateTime.now());
+    }
+  }
+
   public void createReviewAttempt(Homework homework, User user, Review review) {
     reqUtils.requireUserHasRole(user, UserRole.STUDENT);
     Solution solution = solutionService.requireSolutionExist(homework, user);
@@ -76,26 +93,33 @@ public class ReviewService {
     ReviewAttempt reviewAttempt = new ReviewAttempt(review, solutionAttempt);
     reviewAttemptDao.save(reviewAttempt);
   }
+  public ReviewWrapperDto wrapReviews(Homework homework, User user, List<Review> reviews) {
+    Solution solution = solutionService.requireSolutionExist(homework, user);
+    String commitId = solution.getSolutionAttempts().getLast().getCommitId();
+    Integer projectId = homework.getHomeworkId();
+    String sourceCommitId = homework.getSourceCommitId();
+    return reviewConverter.convertToReviewWrapperDto(
+            reviews, commitId, projectId, sourceCommitId
+    );
+  }
 
   @Transactional
-  public ReviewWrapperDto getReviews(Homework homework, User user) {
+  public ReviewWrapperDto getMyReviews(Homework homework, User user) {
     List<Review> reviews = reviewDao.findByHomeworkAndStudent(homework, user);
-    return reviewConverter.convertToReviewWrapperDto(reviews);
+    return wrapReviews(homework, user, reviews);
   }
 
   @Transactional
-  public ReviewDto getReview(Integer reviewId, User user) {
-    Review review = requireReviewExist(reviewId);
-    checkAdminStudentOrReviewerPermission(user, review);
-    return reviewConverter.convertToReviewDto(review);
+  public ReviewWrapperDto getReviewsToDo(Homework homework, User user) {
+    List<Review> reviews = reviewDao.findByHomeworkAndReviewer(homework, user);
+    return wrapReviews(homework, user, reviews);
   }
 
-  @Transactional
   public void setStatus(Review review, ReviewStatus status) {
     reviewConverter.setStatus(review, status);
   }
 
-  @Transactional
+
   public void setReviewer(Review review, User reviewer) {
     reviewConverter.setReviewer(review, reviewer);
   }
@@ -120,8 +144,8 @@ public class ReviewService {
   public void checkAdminStudentOrReviewerPermission(User user, Review review) {
     Integer userId = user.getUserId();
     if (!Objects.equals(userId, review.getReviewer().getUserId())
-            & !Objects.equals(userId, review.getStudent().getUserId())
-            & user.getRole() != UserRole.ADMIN) {
+            && !Objects.equals(userId, review.getStudent().getUserId())
+            && user.getRole() != UserRole.ADMIN) {
       throw new ForbiddenException("User doesn't have permissions for this action");
     }
   }

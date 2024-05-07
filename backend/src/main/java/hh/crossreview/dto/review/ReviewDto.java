@@ -7,13 +7,14 @@ import java.util.List;
 public class ReviewDto {
   private Integer reviewId;
 
-  private Integer studentId;
-
-  private Integer reviewerId;
-
   private String status;
 
-  private Integer solutionId;
+  private Integer projectId;
+
+  private String sourceCommitId;
+
+  private String commitId;
+
 
   private List<ReviewAttemptDto> reviewAttempts;
 
@@ -27,24 +28,6 @@ public class ReviewDto {
     return this;
   }
 
-  public Integer getStudentId() {
-    return studentId;
-  }
-
-  public ReviewDto setStudentId(Integer studentId) {
-    this.studentId = studentId;
-    return this;
-  }
-
-  public Integer getReviewerId() {
-    return reviewerId;
-  }
-
-  public ReviewDto setReviewerId(Integer reviewerId) {
-    this.reviewerId = reviewerId;
-    return this;
-  }
-
   public String getStatus() {
     return status;
   }
@@ -54,21 +37,39 @@ public class ReviewDto {
     return this;
   }
 
-  public Integer getSolutionId() {
-    return solutionId;
-  }
-
-  public ReviewDto setSolutionId(Integer solutionId) {
-    this.solutionId = solutionId;
-    return this;
-  }
-
   public List<ReviewAttemptDto> getReviewAttempts() {
     return reviewAttempts;
   }
 
   public ReviewDto setReviewAttempts(List<ReviewAttemptDto> reviewAttempts) {
     this.reviewAttempts = reviewAttempts;
+    return this;
+  }
+
+  public Integer getProjectId() {
+    return projectId;
+  }
+
+  public ReviewDto setProjectId(Integer projectId) {
+    this.projectId = projectId;
+    return this;
+  }
+
+  public String getSourceCommitId() {
+    return sourceCommitId;
+  }
+
+  public ReviewDto setSourceCommitId(String sourceCommitId) {
+    this.sourceCommitId = sourceCommitId;
+    return this;
+  }
+
+  public String getCommitId() {
+    return commitId;
+  }
+
+  public ReviewDto setCommitId(String commitId) {
+    this.commitId = commitId;
     return this;
   }
 }
