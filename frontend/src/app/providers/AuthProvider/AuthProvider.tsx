@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { type FC, type PropsWithChildren, useEffect, useMemo, useState } from 'react';
+import { type FC, type PropsWithChildren, useEffect, useMemo, useState, useCallback } from 'react';
 import { AuthContext } from './authContext';
 
 export const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
@@ -8,13 +8,19 @@ export const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
   const [refreshToken, SET_REFRESH_TOKEN] = useState(localStorage.getItem('refreshToken'));
 
   // Function to set the authentication accessToken
-  const setAccessToken = (newToken: string) => {
-    SET_ACCESS_TOKEN(newToken);
-  };
+  const setAccessToken = useCallback(
+    (newToken: string) => {
+      SET_ACCESS_TOKEN(newToken);
+    },
+    [SET_ACCESS_TOKEN],
+  );
 
-  const setRefreshToken = (newToken: string) => {
-    SET_REFRESH_TOKEN(newToken);
-  };
+  const setRefreshToken = useCallback(
+    (newToken: string) => {
+      SET_REFRESH_TOKEN(newToken);
+    },
+    [SET_REFRESH_TOKEN],
+  );
 
   useEffect(() => {
     if (accessToken) {
@@ -42,7 +48,7 @@ export const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
       accessToken,
       setAccessToken,
     }),
-    [accessToken, refreshToken],
+    [accessToken, refreshToken, setAccessToken, setRefreshToken],
   );
 
   // Provide the authentication context to the children components

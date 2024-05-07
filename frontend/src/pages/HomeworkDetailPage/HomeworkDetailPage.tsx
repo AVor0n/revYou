@@ -26,7 +26,7 @@ export const HomeworkDetailPage = () => {
     () => ({
       about: {
         title: 'Описание',
-        content: <DescriptionTab homeworkInfo={homeworkInfo} />,
+        content: <DescriptionTab homeworkInfo={homeworkInfo} solutionInfo={solutionInfo} />,
       },
       ...(solutionInfo
         ? {

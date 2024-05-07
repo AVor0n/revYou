@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
+import { AuthProvider } from 'app/providers';
 import { App, StoreProvider } from './app';
 
 async function runMockServer() {
@@ -17,7 +18,9 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <BrowserRouter>
       <StoreProvider>
-        <App />
+        <AuthProvider>
+          <App />
+        </AuthProvider>
       </StoreProvider>
     </BrowserRouter>
   </React.StrictMode>,
