@@ -4,7 +4,6 @@ package hh.crossreview.service;
 import hh.crossreview.converter.SolutionConverter;
 import hh.crossreview.dao.SolutionAttemptDao;
 import hh.crossreview.dao.SolutionDao;
-import hh.crossreview.dto.solution.SolutionAttemptDto;
 import hh.crossreview.dto.solution.SolutionDto;
 import hh.crossreview.dto.solution.SolutionPatchDto;
 import hh.crossreview.dto.solution.SolutionPostDto;
@@ -75,21 +74,11 @@ public class SolutionService {
   }
 
   @Transactional
-  public SolutionAttemptDto createSolutionAttempt(
-      Homework homework,
-      User user
-  ) {
-    reqUtils.requireUserHasRole(user, UserRole.STUDENT);
-    reqUtils.requireValidCohorts(user.getCohorts(), homework);
+  public void createSolutionAttempt(Solution solution) {
 
-    Solution solution = requireSolutionExist(homework, user);
     String commitId = gitlabService.retrieveCommitId(solution.getProjectId(), solution.getBranch());
     SolutionAttempt solutionAttempt = new SolutionAttempt(commitId, solution);
     solutionAttemptDao.save(solutionAttempt);
-    return new SolutionAttemptDto(
-        solutionAttempt.getCommitId(),
-        solutionAttempt.getCreatedAt()
-    );
   }
 
   public Solution requireSolutionExist(Homework homework, User user) {

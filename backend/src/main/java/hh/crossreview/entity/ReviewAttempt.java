@@ -35,6 +35,16 @@ public class ReviewAttempt {
   @Column(name = "resolution")
   private String resolution;
 
+  public ReviewAttempt(Review review, SolutionAttempt solutionAttempt) {
+    this.review = review;
+    this.solutionAttempt = solutionAttempt;
+    this.createdAt = LocalDateTime.now();
+  }
+
+  public ReviewAttempt() {
+
+  }
+
   public Integer getReviewAttemptId() {
     return reviewAttemptId;
   }
