@@ -28,8 +28,6 @@ public class Reviewer implements Statusable {
   private ReviewerStatus status;
   @Column(name = "appointed_at")
   private LocalDateTime appointedAt;
-  @Column(name = "appointed_reviews")
-  private Integer appointedReviews;
   @ManyToOne
   @JoinColumn(name = "user_id")
   private User user;
@@ -48,10 +46,6 @@ public class Reviewer implements Statusable {
 
   public LocalDateTime getAppointedAt() {
     return appointedAt;
-  }
-
-  public Integer getAppointedReviews() {
-    return appointedReviews;
   }
 
   public User getUser() {
@@ -74,11 +68,6 @@ public class Reviewer implements Statusable {
 
   public Reviewer setAppointedAt(LocalDateTime availableAt) {
     this.appointedAt = availableAt;
-    return this;
-  }
-
-  public Reviewer setAppointedReviews(Integer appointedReviews) {
-    this.appointedReviews = appointedReviews;
     return this;
   }
 

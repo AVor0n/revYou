@@ -138,12 +138,11 @@ CREATE TABLE IF NOT EXISTS comment
 
 CREATE TABLE IF NOT EXISTS reviewers_pool
 (
-    id                SERIAL PRIMARY KEY,
-    status            VARCHAR(20) NOT NULL,
-    appointed_at      TIMESTAMP   NOT NULL DEFAULT NOW(),
-    appointed_reviews INTEGER     NOT NULL DEFAULT 0,
-    user_id           INTEGER     NOT NULL,
-    homework_id       INTEGER     NOT NULL,
+    id           INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    status       VARCHAR(20) NOT NULL,
+    appointed_at TIMESTAMP   NOT NULL DEFAULT NOW(),
+    user_id      INTEGER     NOT NULL,
+    homework_id  INTEGER     NOT NULL,
     FOREIGN KEY (user_id) REFERENCES user_account (user_id) ON DELETE CASCADE,
     FOREIGN KEY (homework_id) REFERENCES homework (homework_id)
 );
