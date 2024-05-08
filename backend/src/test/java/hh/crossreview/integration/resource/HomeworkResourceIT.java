@@ -8,7 +8,6 @@ import hh.crossreview.entity.Cohort;
 import hh.crossreview.entity.Homework;
 import hh.crossreview.entity.Lecture;
 import hh.crossreview.entity.User;
-import hh.crossreview.entity.enums.ReviewDuration;
 import hh.crossreview.entity.enums.StudyDirection;
 import hh.crossreview.entity.enums.UserRole;
 import hh.crossreview.integration.BaseIT;
@@ -126,59 +125,6 @@ class HomeworkResourceIT extends BaseIT {
     assertEquals(homeworkPatchDto.getStartDate(), homework.getStartDate());
     assertEquals(homeworkPatchDto.getCompletionDeadline(), homework.getCompletionDeadline());
     assertEquals(homeworkPatchDto.getReviewDuration(), homework.getReviewDuration().getHours());
-  }
-
-  Homework createBackendHomework() {
-    Cohort backCohort = createCohort(StudyDirection.BACK);
-    User backendTeacher = createUser(UserRole.TEACHER, backCohort, "user1", "email1");
-    Lecture backendLecture = createLecture(backendTeacher, List.of(backCohort));
-    return createHomework(backendTeacher, backendLecture);
-  }
-
-  Homework createFrontendHomework() {
-    Cohort frontCohort = createCohort(StudyDirection.FRONT);
-    User frontendTeacher = createUser(UserRole.TEACHER, frontCohort, "user2", "email2");
-    Lecture frontendLecture = createLecture(frontendTeacher, List.of(frontCohort));
-    return createHomework(frontendTeacher, frontendLecture);
-  }
-
-  Homework createHomework(
-      User author,
-      Lecture lecture) {
-    return new Homework()
-        .setAuthor(author)
-        .setLecture(lecture)
-        .setName("Name")
-        .setCompletionDeadline(Date.from(Instant.parse("2024-04-25T00:00:00Z")))
-        .setStartDate(Date.from(Instant.parse("2024-04-30T00:00:00Z")))
-        .setTopic("Topic")
-        .setReviewDuration(ReviewDuration.TWO_DAYS)
-        .setDescription("Description")
-        .setRepositoryLink("repositoryLink");
-  }
-
-  User createUser(
-      UserRole userRole,
-      Cohort cohort,
-      String username,
-      String email) {
-    User user = new User();
-    user.setRole(userRole);
-    user.setCohort(cohort);
-    user.setUsername(username);
-    user.setEmail(email);
-    user.setPassword("pass");
-    return user;
-  }
-
-  Lecture createLecture(User lector, List<Cohort> cohorts) {
-    return new Lecture()
-        .setLector(lector)
-        .setCohorts(cohorts);
-  }
-
-  Cohort createCohort(StudyDirection studyDirection) {
-    return new Cohort().setStudyDirection(studyDirection);
   }
 
   void insertHomeworkInDb(Homework homework) {

@@ -22,7 +22,6 @@ import org.mockito.Mock;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
@@ -32,9 +31,8 @@ class ReviewersPoolServiceTests extends TestsUtil {
   private ReviewersPoolDao reviewersPoolDao;
   @Mock
   private ReviewDao reviewDao;
-
-  @Spy
-  private ReviewersPoolConverter reviewersPoolConverter = new ReviewersPoolConverter();
+  @Mock
+  private ReviewersPoolConverter reviewersPoolConverter;
 
   @InjectMocks
   private ReviewersPoolService reviewersPoolService;
@@ -45,6 +43,7 @@ class ReviewersPoolServiceTests extends TestsUtil {
     User student = createUser(1, UserRole.STUDENT, homework.getCohorts().get(0));
 
     doNothing().when(reviewersPoolDao).save(any(Reviewer.class));
+    when(reviewersPoolConverter.convertToPoolsReviewer(student, homework)).thenCallRealMethod();
     reviewersPoolService.createReviewer(student, homework);
 
     verify(reviewersPoolDao).save(any(Reviewer.class));

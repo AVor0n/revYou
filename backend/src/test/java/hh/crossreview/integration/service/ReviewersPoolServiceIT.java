@@ -97,6 +97,42 @@ class ReviewersPoolServiceIT extends BaseIT {
     assertNull(reviewer6);
   }
 
+  @Test
+  void givenStudents_whenCreateReviewerCall_thenCreateAvailableReviewer() {
+    Homework homeworkBack = createBackendHomework();
+    insertHomeworkInDb(homeworkBack);
+    User student1 = createUser(UserRole.STUDENT, homeworkBack.getCohorts().get(0), "user1", "email1");
+    User student2 = createUser(UserRole.STUDENT, homeworkBack.getCohorts().get(0), "user2", "email2");
+    insertUserInDb(student1);
+    insertUserInDb(student2);
+
+    reviewersPoolService.createReviewer(student1, homeworkBack);
+    reviewersPoolService.createReviewer(student2, homeworkBack);
+    User reviewer1 = reviewersPoolService.appointAvailableReviewer(homeworkBack);
+    User reviewer2 = reviewersPoolService.appointAvailableReviewer(homeworkBack);
+
+    assertEquals(student1.getUsername(), reviewer1.getUsername());
+    assertEquals(student2.getUsername(), reviewer2.getUsername());
+  }
+
+  @Test
+  void givenReviewersInDifferentHomeworks_whenAppointReviewer_thenReviewersNotIntersect() {
+    Homework homeworkBack = createBackendHomework();
+    Homework homeworkFront = createFrontendHomework();
+    insertHomeworkInDb(homeworkBack);
+    insertHomeworkInDb(homeworkFront);
+    User student1 = createUser(UserRole.STUDENT, homeworkBack.getCohorts().get(0), "user1", "email1");
+    User student2 = createUser(UserRole.STUDENT, homeworkFront.getCohorts().get(0), "user2", "email2");
+    insertReviewerInDb(createReviewer(ReviewerStatus.AVAILABLE, LocalDateTime.now(), student1, homeworkBack));
+    insertReviewerInDb(createReviewer(ReviewerStatus.AVAILABLE, LocalDateTime.now(), student2, homeworkFront));
+
+    User reviewer1 = reviewersPoolService.appointAvailableReviewer(homeworkBack);
+    User reviewer2 = reviewersPoolService.appointAvailableReviewer(homeworkFront);
+
+    assertEquals(student1.getUsername(), reviewer1.getUsername());
+    assertEquals(student2.getUsername(), reviewer2.getUsername());
+  }
+
   User appointAvailableReviewer(Solution solution) {
     Homework homework = solution.getHomework();
     User student = solution.getStudent();
@@ -105,6 +141,10 @@ class ReviewersPoolServiceIT extends BaseIT {
       reviewDao.save(createReview(student, reviewer, ReviewStatus.REVIEWER_FOUND, solution));
     }
     return reviewer;
+  }
+
+  void insertUserInDb(User student) {
+    reviewersPoolDao.save(student);
   }
 
   void insertHomeworkInDb(Homework homework) {
