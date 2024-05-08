@@ -10,12 +10,15 @@ import jakarta.inject.Singleton;
 public class ReviewAttemptDao extends GenericDao {
   public ReviewAttempt findLastReviewAttemptByReview(Review review){
     return getEntityManager()
-            .createQuery(
-                    "SELECT r FROM ReviewAttempt r " +
-                            "WHERE r.review = :review",
-                    ReviewAttempt.class)
-            .setParameter("review", review)
-            .getResultList()
-            .getLast();
+        .createQuery(
+    "SELECT r FROM ReviewAttempt r " +
+            "WHERE r.review = :review " +
+            "ORDER BY r.createdAt DESC",
+             ReviewAttempt.class)
+        .setParameter("review", review)
+        .getResultList()
+        .stream()
+        .findFirst()
+        .orElse(null);
   }
 }

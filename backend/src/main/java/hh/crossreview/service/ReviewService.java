@@ -57,7 +57,7 @@ public class ReviewService {
     reqUtils.requireValidCohorts(user.getCohorts(), homework);
     Solution solution = solutionService.requireSolutionExist(homework, user);
     reqUtils.requireEntityHasStatus(solution, String.valueOf(SolutionStatus.REVIEW_STAGE));
-    requireReviewInProgressAlreadyExist(solution, user);
+    requireReviewInProgressNotExist(solution, user);
     solutionService.createSolutionAttempt(solution);
     Review review = new Review(user, solution);
     reviewDao.save(review);
@@ -124,7 +124,7 @@ public class ReviewService {
     reviewConverter.setReviewer(review, reviewer);
   }
 
-  public void requireReviewInProgressAlreadyExist(Solution solution, User student){
+  public void requireReviewInProgressNotExist(Solution solution, User student){
     Optional<Review> reviewsInProgress =  reviewDao.findBySolutionStudent(solution, student)
             .stream()
             .filter(review -> ReviewStatus.getInProgressStatuses().contains(review.getStatus()))

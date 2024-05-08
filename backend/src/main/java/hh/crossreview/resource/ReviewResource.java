@@ -58,7 +58,7 @@ public class ReviewResource {
   }
 
   @POST
-  @Path("/create-review")
+  @Path("/request-review")
   @Produces(MediaType.APPLICATION_JSON)
   @ApiResponse(
           responseCode = "201",
