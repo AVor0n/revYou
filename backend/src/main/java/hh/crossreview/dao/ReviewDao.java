@@ -25,13 +25,40 @@ public class ReviewDao extends GenericDao {
             .toList();
   }
 
+  public List<Review> findByHomeworkAndStudent(Homework homework, User student) {
+    return getEntityManager()
+            .createQuery("SELECT r FROM Review r " +
+                    "JOIN r.solution s " +
+                    "JOIN r.student u " +
+                    "WHERE s.homework = :homework " +
+                    "AND u = :student", Review.class)
+            .setParameter("homework", homework)
+            .setParameter("student", student)
+            .getResultStream()
+            .toList();
+  }
+
+  public List<Review> findByHomeworkAndReviewer(Homework homework, User reviewer) {
+    return getEntityManager()
+            .createQuery(
+                "SELECT r FROM Review r " +
+                "JOIN r.solution s " +
+                "JOIN r.reviewer u " +
+                "WHERE s.homework = :homework " +
+                "AND u = :reviewer", Review.class)
+            .setParameter("homework", homework)
+            .setParameter("reviewer", reviewer)
+            .getResultStream()
+            .toList();
+  }
+
   public Long countInProgressReviewsByReviewerAndHomework(User reviewer, Homework homework) {
     return getEntityManager()
         .createQuery("SELECT COUNT(*) FROM Review r " +
-            "JOIN r.solution s " +
-            "WHERE r.reviewer = :reviewer " +
-            "AND s.homework = :homework " +
-            "AND r.status IN :reviewStatuses ",
+                "JOIN r.solution s " +
+                "WHERE r.reviewer = :reviewer " +
+                "AND s.homework = :homework " +
+                "AND r.status IN :reviewStatuses ",
             Long.class)
         .setParameter("reviewer", reviewer)
         .setParameter("homework", homework)

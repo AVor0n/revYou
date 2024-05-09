@@ -13,7 +13,7 @@ export const loadFileDiff = createAsyncThunk<
         extra.api.getRawFile({ filePath: path, projectId, ref: fromRef }),
         extra.api.getRawFile({ filePath: path, projectId, ref: toRef }),
       ])
-    ).map(response => (response.status === 'fulfilled' ? response.value.data : ''));
+    ).map(response => (response.status === 'fulfilled' ? String(response.value.data) : ''));
 
     return {
       sourceFileContent,

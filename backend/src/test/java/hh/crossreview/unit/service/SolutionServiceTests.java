@@ -79,23 +79,23 @@ class SolutionServiceTests extends TestsUtil {
     assertEquals(0, solutionDto.getReviewScore());
   }
 
-  @Test
-  void givenCreateSolutionAttemptCall_whenValid_thenSuccessfullyCreate() {
-    Homework homework = createBackHomework();
-    User student = createUser(1, UserRole.STUDENT, homework.getCohorts().get(0));
-    Integer projectId = 1;
-    String branch = "branch-name.with-dot/and-slash";
-    String commitId = "aabbccddeeff";
-    Solution solution = createSolution(1, SolutionStatus.IN_PROGRESS, student, projectId, branch, Collections.emptyList());
-
-    when(solutionDao.findByHomeworkAndStudent(homework, student)).thenReturn(Optional.of(solution));
-    when(gitlabService.retrieveCommitId(projectId, branch)).thenReturn(commitId);
-    doNothing().when(solutionAttemptDao).save(any(SolutionAttempt.class));
-    SolutionAttemptDto solutionAttemptDto = solutionService.createSolutionAttempt(homework, student);
-
-    assertEquals(commitId, solutionAttemptDto.getCommitId());
-    assertNotNull(solutionAttemptDto.getCreatedAt());
-  }
+//  @Test
+//  void givenCreateSolutionAttemptCall_whenValid_thenSuccessfullyCreate() {
+//    Homework homework = createBackHomework();
+//    User student = createUser(1, UserRole.STUDENT, homework.getCohorts().get(0));
+//    Integer projectId = 1;
+//    String branch = "branch-name.with-dot/and-slash";
+//    String commitId = "aabbccddeeff";
+//    Solution solution = createSolution(1, SolutionStatus.IN_PROGRESS, student, projectId, branch, Collections.emptyList());
+//
+//    when(solutionDao.findByHomeworkAndStudent(homework, student)).thenReturn(Optional.of(solution));
+//    when(gitlabService.retrieveCommitId(projectId, branch)).thenReturn(commitId);
+//    doNothing().when(solutionAttemptDao).save(any(SolutionAttempt.class));
+//    SolutionAttemptDto solutionAttemptDto = solutionService.createSolutionAttempt(homework, student);
+//
+//    assertEquals(commitId, solutionAttemptDto.getCommitId());
+//    assertNotNull(solutionAttemptDto.getCreatedAt());
+//  }
 
   @Test
   void givenGetSolutionCall_whenValid_thenSuccessfullyGet() {

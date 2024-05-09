@@ -5,14 +5,15 @@ import java.util.List;
 
 public enum ReviewStatus {
 
-  REVIEWER_SEARCH, REVIEWER_FOUND, REVIEW_STARTED, CORRECTIONS_REQUIRED, APPROVED;
+  REVIEWER_SEARCH, REVIEWER_FOUND, REVIEW_STARTED, CORRECTIONS_REQUIRED, CORRECTIONS_LOADED, APPROVED;
 
   public static List<ReviewStatus> getInProgressStatuses(){
     return Arrays.asList(
             REVIEWER_SEARCH,
             REVIEWER_FOUND,
             REVIEW_STARTED,
-            CORRECTIONS_REQUIRED
+            CORRECTIONS_REQUIRED,
+            CORRECTIONS_LOADED
     );
   }
 }
