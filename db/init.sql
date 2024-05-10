@@ -208,21 +208,20 @@ VALUES ('https://158.160.88.104/gitlab/teacher_1/test_homewrok', 'Домашка
 INSERT INTO solution (status, approve_score, review_score, project_id, branch, source_commit_id, homework_id,
                       student_id)
 VALUES ('IN_PROGRESS', 0, 0, 9, 'user_1_solved_hw_1', 'e814adb5c6f82e32c8ff40b945d9ee7273e9b810', 1, 1),
-       ('REVIEW_STAGE', 0, 0, 4, 'user_2_solved_hw_1', 'e814adb5c6f82e32c8ff40b945d9ee7273e9b810', 1, 2),
-       ('REVIEWER_STAGE', 2, 0, 10, 'user_3_solved_hw_1', 'e814adb5c6f82e32c8ff40b945d9ee7273e9b810', 1, 3),
-       ('COMPLETE', 2, 2, 10, 'user_4_solved_hw_1', 'e814adb5c6f82e32c8ff40b945d9ee7273e9b810', 1, 4);
+       ('IN_PROGRESS', 0, 0, 4, 'user_2_solved_hw_1', 'e814adb5c6f82e32c8ff40b945d9ee7273e9b810', 1, 2),
+       ('IN_PROGRESS', 0, 0, 10, 'user_4_solved_hw_1', 'e814adb5c6f82e32c8ff40b945d9ee7273e9b810', 1, 4);
 
--- Вставка данных в таблицу solution_attempt
-INSERT INTO solution_attempt (commit_id, created_at, solution_id)
-VALUES ('4b0e9b16', '2024-04-10 23:59:59', 1),
-       ('7f174f55', '2024-04-11 23:59:59', 2),
-       ('28219898', '2024-04-12 23:59:59', 3),
-       ('43a0740a', '2024-04-09 23:59:59', 4);
-
--- Вставка данных в таблицу review
-INSERT INTO review (student_id, reviewer_id, status, solution_id)
-VALUES (2, 3, 'REVIEWER_FOUND', 2);
-
--- Вставка данных в таблицу review_attempt
-INSERT INTO review_attempt (review_id, solution_attempt_id, created_at, finished_at, resolution)
-VALUES (1, 2, '2024-04-12 23:59:59', null, null);
+-- -- Вставка данных в таблицу solution_attempt
+-- INSERT INTO solution_attempt (commit_id, created_at, solution_id)
+-- VALUES ('4b0e9b16', '2024-04-10 23:59:59', 1),
+--        ('7f174f55', '2024-04-11 23:59:59', 2),
+--        ('28219898', '2024-04-12 23:59:59', 3),
+--        ('43a0740a', '2024-04-09 23:59:59', 4);
+--
+-- -- Вставка данных в таблицу review
+-- INSERT INTO review (student_id, reviewer_id, status, solution_id)
+-- VALUES (2, 3, 'REVIEWER_FOUND', 2);
+--
+-- -- Вставка данных в таблицу review_attempt
+-- INSERT INTO review_attempt (review_id, solution_attempt_id, created_at, finished_at, resolution)
+-- VALUES (1, 2, '2024-04-12 23:59:59', null, null);
