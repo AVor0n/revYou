@@ -56,7 +56,7 @@ public class ReviewService {
     reqUtils.requireUserHasRole(user, UserRole.STUDENT);
     reqUtils.requireValidCohorts(user.getCohorts(), homework);
     Solution solution = solutionService.requireSolutionExist(homework, user);
-    reqUtils.requireEntityHasStatus(solution, String.valueOf(SolutionStatus.REVIEW_STAGE));
+    reqUtils.requireEntityHasStatus(solution, String.valueOf(SolutionStatus.IN_PROGRESS));
     requireReviewInProgressNotExist(solution, user);
     solutionService.createSolutionAttempt(solution);
     Review review = new Review(user, solution);

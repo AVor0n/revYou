@@ -29,7 +29,7 @@ public class ReviewConverter {
         .setSourceCommitId(sourceCommitId);
 
     List<ReviewAttempt> reviewAttempts = review.getReviewAttempts();
-    if (reviewAttempts != null) {
+    if (reviewAttempts != null && !reviewAttempts.isEmpty()) {
       ReviewAttempt reviewAttempt = reviewAttempts.getLast();
       reviewDto.setReviewAttempts(
           List.of(convertToReviewAttemptDto(reviewAttempt))
