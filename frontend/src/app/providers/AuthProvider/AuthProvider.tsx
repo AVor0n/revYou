@@ -1,4 +1,3 @@
-import axios from 'axios';
 import { type FC, type PropsWithChildren, useEffect, useMemo, useState, useCallback } from 'react';
 import { AuthContext } from './authContext';
 
@@ -24,10 +23,8 @@ export const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
 
   useEffect(() => {
     if (accessToken) {
-      axios.defaults.headers.common.Authorization = `Bearer ${accessToken}`;
       localStorage.setItem('accessToken', accessToken);
     } else {
-      delete axios.defaults.headers.common.Authorization;
       localStorage.removeItem('accessToken');
     }
   }, [accessToken]);
