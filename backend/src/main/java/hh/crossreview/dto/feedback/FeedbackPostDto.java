@@ -2,7 +2,7 @@ package hh.crossreview.dto.feedback;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-@Schema(name = "HomeworkPost")
+@Schema(name = "FeedbackPost")
 public class FeedbackPostDto {
 
   @Schema(requiredMode = Schema.RequiredMode.REQUIRED)

@@ -18,15 +18,6 @@ public class FeedbackDto implements Serializable {
   private Integer rating;
   private LocalDateTime feedbackDate;
 
-  public FeedbackDto() {
-    this.feedbackId = null;
-    this.reviewId = null;
-    this.student = null;
-    this.description = null;
-    this.rating = null;
-    this.feedbackDate = null;
-  }
-
   public Integer getFeedbackId() {
     return feedbackId;
   }

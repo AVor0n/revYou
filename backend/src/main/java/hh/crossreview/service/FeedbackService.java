@@ -31,7 +31,7 @@ public class FeedbackService extends GenericService{
   @Transactional
   public FeedbackDto getFeedback(Integer id) {
     var feedback = feedbackDao.find(Feedback.class, id);
-    requireEntityNotNull(feedback, String.format("Homework with id %d was not found", id));
+    requireEntityNotNull(feedback, String.format("Feedback with id %d was not found", id));
     return feedbackConverter.convertToFeedbackDto(feedback);
   }
 
@@ -46,8 +46,7 @@ public class FeedbackService extends GenericService{
   public FeedbackPostResponseDto createFeedback(FeedbackPostDto feedbackPostDto, UsernamePasswordAuthenticationToken token) {
     var student = feedbackDao.find(User.class, feedbackPostDto.getStudent());
     var review = feedbackDao.find(Review.class, feedbackPostDto.getReview());
-    var description = feedbackPostDto.getDescription();
-    var feedback = feedbackConverter.convertToFeedback(feedbackPostDto, review, student,description);
+    var feedback = feedbackConverter.convertToFeedback(feedbackPostDto, review, student);
     feedbackDao.save(feedback);
     return feedbackConverter.convertToFeedbackPostResponseDto(feedback.getFeedbackId());
   }

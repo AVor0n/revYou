@@ -31,9 +31,9 @@ public class FeedbackConverter {
         .setEmail(user.getEmail());
   }
 
-  public Feedback convertToFeedback(FeedbackPostDto feedbackPostDto, Review review, User student, String description) {
+  public Feedback convertToFeedback(FeedbackPostDto feedbackPostDto, Review review, User student) {
     return new Feedback().setReview(review).setStudent(student).setRating(feedbackPostDto.getRating()).setFeedbackDate(
-            LocalDateTime.now()).setDescription(description);
+            LocalDateTime.now()).setDescription(feedbackPostDto.getDescription());
   }
   public FeedbackPostResponseDto convertToFeedbackPostResponseDto(Integer feedbackId) {
     return new FeedbackPostResponseDto(feedbackId);
