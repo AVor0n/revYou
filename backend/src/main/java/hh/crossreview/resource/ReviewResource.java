@@ -30,7 +30,7 @@ import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.SecurityContext;
 
 @Named
-@Path("/homeworks/{homeworkId}/")
+@Path("/homeworks/{homeworkId}/reviews")
 @Singleton
 @Tag(name = "Reviews")
 @ApiResponse(
@@ -120,7 +120,7 @@ public class ReviewResource {
   }
 
   @POST
-  @Path("/reviews/{reviewId}/start")
+  @Path("/{reviewId}/start")
   @Produces(MediaType.APPLICATION_JSON)
   @ApiResponse(
           responseCode = "201",
@@ -142,7 +142,7 @@ public class ReviewResource {
   }
 
   @PATCH
-  @Path("/reviews/{reviewId}/resolution")
+  @Path("/{reviewId}/resolution")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   @ApiResponse(
