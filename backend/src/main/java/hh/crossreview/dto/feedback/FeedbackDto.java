@@ -71,5 +71,4 @@ public class FeedbackDto implements Serializable {
     this.feedbackDate = feedbackDate;
     return this;
   }
-
 }
