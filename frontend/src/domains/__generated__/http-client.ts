@@ -54,10 +54,59 @@ export class HttpClient<SecurityDataType = unknown> {
   private format?: ResponseType;
 
   constructor({ securityWorker, secure, format }: ApiConfig<SecurityDataType> = {}) {
-    this.instance = axios;
+    this.instance = axios.create({ withCredentials: true }); // к запросу будет приуепляться cookies
     this.secure = secure;
     this.format = format;
     this.securityWorker = securityWorker;
+
+    // создаем перехватчик запросов
+    // который к каждому запросу добавляет accessToken из localStorage
+    this.instance.interceptors.request.use(config => {
+      const accessToken = localStorage.getItem('accessToken');
+      if (accessToken) {
+        config.headers.Authorization = `Bearer ${accessToken}`;
+      }
+      return config;
+    });
+
+    // создаем перехватчик ответов
+    // который в случае невалидного accessToken попытается его обновить
+    // и переотправить запрос с обновленным accessToken
+    this.instance.interceptors.response.use(
+      // в случае валидного accessToken ничего не делаем:
+      config => {
+        return config;
+      },
+      // в случае просроченного accessToken пытаемся его обновить:
+      async error => {
+        // предотвращаем зацикленный запрос, добавляя свойство _isRetry
+        const originalRequest = { ...error.config };
+        originalRequest._isRetry = true;
+        if (
+          // проверим, что ошибка именно из-за невалидного accessToken
+          error.response.status === 401 &&
+          // проверим, что запрос не повторный
+          error.config &&
+          !error.config._isRetry
+        ) {
+          try {
+            // запрос на обновление токенов
+            const resp = await this.instance.get('/api/auth/refresh-access-token');
+            // сохраняем новый accessToken в localStorage
+            localStorage.setItem('accessToken', resp.data.accessToken);
+            localStorage.setItem('refreshToken', resp.data.refreshToken);
+            localStorage.setItem('role', resp.data.role);
+            // переотправляем запрос с обновленным accessToken
+            return this.instance.request(originalRequest);
+          } catch (error) {
+            console.log('AUTH ERROR');
+          }
+        }
+        // на случай, если возникла другая ошибка (не связанная с авторизацией)
+        // пробросим эту ошибку
+        throw error;
+      },
+    );
   }
 
   public setSecurityData = (data: SecurityDataType | null) => {
