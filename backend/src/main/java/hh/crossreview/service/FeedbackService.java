@@ -38,7 +38,7 @@ public class FeedbackService extends GenericService{
   @Transactional
   public List<FeedbackDto> getFeedbacks() {
     var feedback = feedbackDao.getFeedBacks();
-    requireEntityNotNull(feedback, String.format("Homework with id %d was not found", 1));
+    requireEntityNotNull(feedback, String.format("Feedback with id %d was not found", 1));
     return feedbackConverter.convertToFeedbacksWrapperDto(feedback);
   }
 
