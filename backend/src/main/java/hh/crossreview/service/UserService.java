@@ -1,10 +1,13 @@
 package hh.crossreview.service;
 
+import hh.crossreview.dao.CohortDao;
 import hh.crossreview.dao.UserDao;
 import hh.crossreview.dto.user.SignUpRequestDto;
+import hh.crossreview.entity.Cohort;
 import hh.crossreview.entity.User;
 import hh.crossreview.entity.enums.UserRole;
 import hh.crossreview.entity.enums.UserStatus;
+import hh.crossreview.utils.RandomUtils;
 import jakarta.inject.Named;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.ForbiddenException;
@@ -26,10 +29,12 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService implements UserDetailsService {
 
   private final UserDao userDao;
+  private final CohortDao cohortDao;
   private final PasswordEncoder passwordEncoder;
 
-  public UserService(UserDao userDao, PasswordEncoder passwordEncoder) {
+  public UserService(UserDao userDao, CohortDao cohortDao, PasswordEncoder passwordEncoder) {
     this.userDao = userDao;
+    this.cohortDao = cohortDao;
     this.passwordEncoder = passwordEncoder;
   }
 
@@ -75,13 +80,14 @@ public class UserService implements UserDetailsService {
 
   @Transactional
   public User createNewUser(SignUpRequestDto signUpRequestDto) {
-
     User user = new User();
     user.setUsername(signUpRequestDto.getUsername());
     user.setEmail(signUpRequestDto.getEmail());
     user.setPassword(passwordEncoder.encode(signUpRequestDto.getPassword()));
     user.setRole(UserRole.STUDENT);
     user.setStatus(UserStatus.ACTIVE);
+    Cohort cohort = RandomUtils.getRandomElement(cohortDao.findAll());
+    user.setCohort(cohort);
     userDao.createUser(user);
     return user;
 

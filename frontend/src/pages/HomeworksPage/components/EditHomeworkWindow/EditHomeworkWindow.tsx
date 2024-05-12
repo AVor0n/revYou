@@ -24,7 +24,7 @@ export const EditHomeworkWindow = ({ record, open }: EditHomeworkWindowProps) =>
     reset,
     control,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isValid },
   } = useForm<HomeworkPatch>({
     resolver: yupResolver(editHomeworkSchema),
     mode: 'all',
@@ -45,15 +45,24 @@ export const EditHomeworkWindow = ({ record, open }: EditHomeworkWindowProps) =>
     navigate('/homeworks');
   };
 
-  const saveHomework = handleSubmit(async data => {
+  const saveHomework = handleSubmit(data => {
     if (!record?.id) return;
-    await dispatch(editHomework([record.id, data]));
-    closeWindow();
-    await dispatch(loadHomeworks());
+    dispatch(editHomework([record.id, data]))
+      .unwrap()
+      .then(() => {
+        closeWindow();
+        dispatch(loadHomeworks());
+      });
   });
 
   return (
-    <FormWindow title="Редактирование задания" open={open} onClose={closeWindow} onSubmit={saveHomework}>
+    <FormWindow
+      title="Редактирование задания"
+      open={open}
+      onClose={closeWindow}
+      onSubmit={saveHomework}
+      saveDisabled={!isValid}
+    >
       <div className={styles.content}>
         <Controller
           name="name"

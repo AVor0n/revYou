@@ -8,10 +8,6 @@ export const loadHomeworks = createAsyncThunk<Homework[], undefined, ThunkConfig
     try {
       const { data } = await extra.api.getHomeworks();
 
-      if (!data.data) {
-        throw new Error('No data');
-      }
-
       return data.data;
     } catch (error) {
       return rejectWithValue(String(error));

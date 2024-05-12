@@ -16,7 +16,7 @@ export const HomeworksPage = () => {
   const homeworks = useSelector(getHomeworks);
   const homeworkForEdit = useSelector(getHomeworkForEdit);
 
-  const filteredHomeworks = homeworks?.filter(homework => homework.name?.includes(search));
+  const filteredHomeworks = homeworks?.filter(homework => homework.name.includes(search));
 
   useEffect(() => {
     const id = showEditWindow?.params.id;

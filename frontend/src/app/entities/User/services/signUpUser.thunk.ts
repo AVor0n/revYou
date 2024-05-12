@@ -1,4 +1,4 @@
-import { toaster } from '@gravity-ui/uikit/toaster-singleton';
+import { toaster } from '@gravity-ui/uikit/toaster-singleton-react-18';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { type AxiosError } from 'axios';
 import { type SignUpRequest, type User } from '@domains';

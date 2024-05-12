@@ -1,8 +1,8 @@
 import { Button, Card } from '@gravity-ui/uikit';
-import { toaster } from '@gravity-ui/uikit/toaster-singleton';
+import { toaster } from '@gravity-ui/uikit/toaster-singleton-react-18';
 import { useSelector } from 'react-redux';
 import { type Solution, type Homework } from '@domains';
-import { createSolutionAttempt, getUserRole, loadSolution, useAppDispatch } from 'app';
+import { requestReview, getUserRole, loadSolution, useAppDispatch } from 'app';
 import { AuthorAndDeadlines, DescriptionHeader, Desctiption, GitLabLink, SendSolutionForm } from './components';
 import styles from './DescriptionTab.module.scss';
 
@@ -19,11 +19,14 @@ export const DescriptionTab = ({ homeworkInfo, solutionInfo }: DescriptionTabPro
     return null;
   }
 
-  const onSendAttempt = () => {
-    dispatch(createSolutionAttempt(homeworkInfo.id)).then(() => {
+  const onSendAttempt = async () => {
+    const resp = await dispatch(requestReview(homeworkInfo.id));
+    if (resp.meta.requestStatus === 'fulfilled') {
       toaster.add({ name: 'sendAttempt', title: 'Решение отправлено', theme: 'success' });
       dispatch(loadSolution(homeworkInfo.id));
-    });
+    } else {
+      toaster.add({ name: 'sendAttempt', title: 'Возникла ошибка отправки решения', theme: 'danger' });
+    }
   };
 
   const renderFooter = () => {
