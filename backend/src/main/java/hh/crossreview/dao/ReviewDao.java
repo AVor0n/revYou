@@ -52,6 +52,21 @@ public class ReviewDao extends GenericDao {
             .toList();
   }
 
+  public List<Review> findReviewsByHomeworkAndStatus(Homework homework, ReviewStatus reviewStatus, int maxResult) {
+    return getEntityManager()
+        .createQuery(
+            "SELECT r FROM Review r " +
+                "JOIN r.solution s " +
+                "WHERE s.homework = :homework " +
+                "AND r.status = :status ",
+            Review.class
+        )
+        .setParameter("homework", homework)
+        .setParameter("status", reviewStatus)
+        .setMaxResults(maxResult)
+        .getResultList();
+  }
+
   public Long countInProgressReviewsByReviewerAndHomework(User reviewer, Homework homework) {
     return getEntityManager()
         .createQuery("SELECT COUNT(*) FROM Review r " +
@@ -63,6 +78,20 @@ public class ReviewDao extends GenericDao {
         .setParameter("reviewer", reviewer)
         .setParameter("homework", homework)
         .setParameter("reviewStatuses", ReviewStatus.getInProgressStatuses())
+        .getSingleResult();
+  }
+
+  public Long countApprovedReviewsByHomework(Homework homework) {
+    return getEntityManager()
+        .createQuery(
+            "SELECT COUNT(*) FROM Review r " +
+                "JOIN r.solution s " +
+                "WHERE s.homework = :homework " +
+                "AND r.status = :status ",
+            Long.class
+        )
+        .setParameter("homework", homework)
+        .setParameter("status", ReviewStatus.APPROVED)
         .getSingleResult();
   }
 }

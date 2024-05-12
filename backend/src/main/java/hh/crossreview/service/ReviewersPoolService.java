@@ -66,6 +66,7 @@ public class ReviewersPoolService {
 
   private void makeReviewerAvailable(Reviewer reviewer) {
     reviewer.setStatus(ReviewerStatus.AVAILABLE);
+    reviewersPoolDao.save(reviewer);
   }
 
   private void makeReviewerAppointed(Reviewer reviewer, Homework homework) {
@@ -90,6 +91,7 @@ public class ReviewersPoolService {
       throw new BadRequestException("Reviewer has unreviewed solutions");
     }
     reviewer.setStatus(ReviewerStatus.COMPLETE);
+    reviewersPoolDao.save(reviewer);
   }
 
 }

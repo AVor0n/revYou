@@ -11,6 +11,7 @@ import jakarta.inject.Named;
 import jakarta.inject.Singleton;
 import java.util.Collections;
 import java.util.List;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 
 @Named
 @Singleton
@@ -70,4 +71,17 @@ public class ReviewConverter {
   public void setReviewer(Review review, User reviewer) {
     review.setReviewer(reviewer);
   }
+
+  public ReviewWrapperDto convertToReviewWrapperDto(List<ImmutablePair<Review, String>> pairsReviewCommit, Integer projectId, String sourceCommitId) {
+    List<ReviewDto> reviewsDto = pairsReviewCommit
+        .stream()
+        .map(reviewCommit -> convertToReviewDto(
+            reviewCommit.getKey(),
+            projectId,
+            sourceCommitId,
+            reviewCommit.getValue()))
+        .toList();
+    return new ReviewWrapperDto(reviewsDto);
+  }
+
 }

@@ -215,7 +215,6 @@ VALUES ('https://158.160.88.104/gitlab/teacher_1/test_homewrok', 'Домашка
         'Напишите реализацию AtLeastOnce', 'ff3ed0210655c0593b5060fb07cf8c712a14cce5', '2023-10-10 23:59:59',
         '2023-10-17 23:59:59', 48, 3, 5);
 
-
 -- -- Вставка данных в таблицу solution
 -- INSERT INTO solution (status, approve_score, review_score, project_id, branch, source_commit_id, homework_id,
 --                       student_id)
