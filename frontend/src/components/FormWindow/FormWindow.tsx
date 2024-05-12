@@ -19,6 +19,8 @@ interface FormWindowProps {
   cancelText?: string;
   /** Кастомный футер */
   footer?: ReactNode;
+  /** Заблокировать кнопку сохранения */
+  saveDisabled?: boolean;
 }
 
 /** Окно для показа формы создания/редактирования */
@@ -31,6 +33,7 @@ export const FormWindow = ({
   onSubmit,
   onClose,
   footer,
+  saveDisabled,
 }: FormWindowProps) => (
   <Modal open={open} disableOutsideClick onClose={onClose}>
     <form className={styles.window} onSubmit={onSubmit}>
@@ -45,7 +48,7 @@ export const FormWindow = ({
           <Button size="l" onClick={onClose}>
             {cancelText ?? 'Отмена'}
           </Button>
-          <Button view="action" size="l" type="submit">
+          <Button view="action" size="l" type="submit" disabled={saveDisabled}>
             {saveText ?? 'Сохранить'}
           </Button>
         </footer>

@@ -1,5 +1,5 @@
 import { Button, Card } from '@gravity-ui/uikit';
-import { toaster } from '@gravity-ui/uikit/toaster-singleton';
+import { toaster } from '@gravity-ui/uikit/toaster-singleton-react-18';
 import { useSelector } from 'react-redux';
 import { type Solution, type Homework } from '@domains';
 import { requestReview, getUserRole, loadSolution, useAppDispatch } from 'app';

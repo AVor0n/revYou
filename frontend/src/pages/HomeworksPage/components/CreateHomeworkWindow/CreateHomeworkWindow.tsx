@@ -23,7 +23,7 @@ export const CreateHomeworkWindow = ({ open }: CreateHomeworkWindowProps) => {
     reset,
     control,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isValid },
   } = useForm<HomeworkPost>({
     resolver: yupResolver(createHomeworkSchema),
     mode: 'all',
@@ -46,14 +46,24 @@ export const CreateHomeworkWindow = ({ open }: CreateHomeworkWindowProps) => {
     navigate('/homeworks');
   };
 
-  const saveHomework = handleSubmit(async data => {
-    await dispatch(createHomework(data));
-    closeWindow();
-    await dispatch(loadHomeworks());
-  });
+  const saveHomework = handleSubmit(async data =>
+    dispatch(createHomework(data))
+      .unwrap()
+      .then(() => {
+        closeWindow();
+        dispatch(loadHomeworks());
+      }),
+  );
 
   return (
-    <FormWindow title="Создание задания" saveText="Создать" open={open} onClose={closeWindow} onSubmit={saveHomework}>
+    <FormWindow
+      title="Создание задания"
+      saveText="Создать"
+      open={open}
+      onClose={closeWindow}
+      onSubmit={saveHomework}
+      saveDisabled={!isValid}
+    >
       <div className={styles.content}>
         <Controller
           name="name"
@@ -82,6 +92,19 @@ export const CreateHomeworkWindow = ({ open }: CreateHomeworkWindowProps) => {
           )}
         />
         <Input label="Лекция" value="1" size="l" />
+        <Controller
+          name="repositoryLink"
+          control={control}
+          render={({ field }) => (
+            <Input
+              {...field}
+              label="Ссылка на репозиторий"
+              size="l"
+              hasError={!!errors.repositoryLink?.message}
+              errorMessage={errors.repositoryLink?.message}
+            />
+          )}
+        />
         <Controller
           name="startDate"
           control={control}

@@ -1,4 +1,4 @@
-import { toaster } from '@gravity-ui/uikit/toaster-singleton';
+import { toaster } from '@gravity-ui/uikit/toaster-singleton-react-18';
 import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { signInUser } from '../services/signInUser.thunk';
 import { signUpUser } from '../services/signUpUser.thunk';
