@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 import {
   getActiveFilePath,
   getFilesTree,
-  getSolutionInfo,
   getSourceActiveFileContent,
   getTargetActiveFileContent,
   loadFileDiff,
@@ -11,6 +10,7 @@ import {
   useAppDispatch,
   type FolderNode,
   type FileNode,
+  getReviewInfo,
 } from 'app';
 import { DiffViewer, SkeletonFileTree, FilesTree } from './components';
 import styles from './FilesTab.module.scss';
@@ -18,7 +18,7 @@ import './monaco-worker';
 
 export const FilesTab = () => {
   const dispatch = useAppDispatch();
-  const solutionInfo = useSelector(getSolutionInfo);
+  const review = useSelector(getReviewInfo);
   const fileTree = useSelector(getFilesTree);
   const activeFilePath = useSelector(getActiveFilePath);
   const sourceFileContent = useSelector(getSourceActiveFileContent);
@@ -30,15 +30,13 @@ export const FilesTab = () => {
     const filePath = activeFilePath === treeItem.path ? '' : treeItem.path;
     dispatch(reviewActions.setActiveFilePath(filePath));
 
-    const targetCommitId = solutionInfo?.solutionAttempts.at(-1)?.commitId;
-
-    if (filePath && solutionInfo && targetCommitId) {
+    if (filePath && review?.projectId && review.sourceCommitId && review.commitId) {
       dispatch(
         loadFileDiff({
           path: filePath,
-          projectId: solutionInfo.projectId,
-          fromRef: solutionInfo.sourceCommitId,
-          toRef: targetCommitId,
+          projectId: review.projectId,
+          fromRef: review.sourceCommitId,
+          toRef: review.commitId,
         }),
       );
     }

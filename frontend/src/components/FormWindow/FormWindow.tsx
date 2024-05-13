@@ -1,5 +1,5 @@
 import { Button, Modal, Text } from '@gravity-ui/uikit';
-import type { ReactNode } from 'react';
+import type { FormEventHandler, ReactNode } from 'react';
 import styles from './FormWindow.module.scss';
 
 interface FormWindowProps {
@@ -10,7 +10,7 @@ interface FormWindowProps {
   /** Контент формы */
   children: ReactNode;
   /** Обработчик сохранения формы */
-  onSubmit: () => void;
+  onSubmit: FormEventHandler;
   /** Обработчик закрытия окна */
   onClose: () => void;
   /** Текст кнопки сохранения. По умолчанию 'Сохранить' */
@@ -19,8 +19,12 @@ interface FormWindowProps {
   cancelText?: string;
   /** Кастомный футер */
   footer?: ReactNode;
+  /** Показать индикатор загрузки на кнопке сохранения */
+  saveLoading?: boolean;
   /** Заблокировать кнопку сохранения */
   saveDisabled?: boolean;
+  /** Заблокировать кнопку отмены */
+  cancelDisabled?: boolean;
 }
 
 /** Окно для показа формы создания/редактирования */
@@ -33,7 +37,9 @@ export const FormWindow = ({
   onSubmit,
   onClose,
   footer,
+  saveLoading,
   saveDisabled,
+  cancelDisabled,
 }: FormWindowProps) => (
   <Modal open={open} disableOutsideClick onClose={onClose}>
     <form className={styles.window} onSubmit={onSubmit}>
@@ -45,10 +51,10 @@ export const FormWindow = ({
 
       {footer || (
         <footer className={styles.footer}>
-          <Button size="l" onClick={onClose}>
+          <Button size="l" onClick={onClose} disabled={cancelDisabled}>
             {cancelText ?? 'Отмена'}
           </Button>
-          <Button view="action" size="l" type="submit" disabled={saveDisabled}>
+          <Button view="action" size="l" type="submit" disabled={saveDisabled} loading={saveLoading}>
             {saveText ?? 'Сохранить'}
           </Button>
         </footer>

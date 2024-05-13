@@ -1,12 +1,12 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { type Solution } from '@domains';
+import { type Review } from '@domains';
 import { type ThunkConfig } from 'app/providers';
 
-export const loadSolutions = createAsyncThunk<Solution[], number, ThunkConfig<string>>(
-  'solution/loadSolutions',
+export const loadSolutionsForReview = createAsyncThunk<Review[], number, ThunkConfig<string>>(
+  'solution/loadSolutionsForReview',
   async (homeworkId, { extra, rejectWithValue }) => {
     try {
-      const { data } = await extra.api.readSolutions(homeworkId);
+      const { data } = await extra.api.getReviewsToDo(homeworkId);
 
       return data.data;
     } catch (error) {

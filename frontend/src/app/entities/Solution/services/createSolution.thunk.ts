@@ -11,6 +11,7 @@ export const createSolution = createAsyncThunk<
 >('solution/createSolution', async ({ homeworkId, branchLink }, { extra, rejectWithValue }) => {
   try {
     const { data } = await extra.api.createSolution(homeworkId, { branchLink });
+    await extra.api.createReview(homeworkId);
 
     return data;
   } catch (e) {

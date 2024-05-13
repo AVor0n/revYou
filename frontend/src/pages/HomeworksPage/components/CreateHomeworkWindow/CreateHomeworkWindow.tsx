@@ -2,6 +2,7 @@ import { DatePicker } from '@gravity-ui/date-components';
 import { dateTimeParse } from '@gravity-ui/date-utils';
 import { RadioButton, Text } from '@gravity-ui/uikit';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { FormWindow } from '@components/FormWindow';
@@ -19,6 +20,7 @@ interface CreateHomeworkWindowProps {
 export const CreateHomeworkWindow = ({ open }: CreateHomeworkWindowProps) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
   const {
     reset,
     control,
@@ -28,6 +30,7 @@ export const CreateHomeworkWindow = ({ open }: CreateHomeworkWindowProps) => {
     resolver: yupResolver(createHomeworkSchema),
     mode: 'all',
     defaultValues: defaultHomework,
+    disabled: loading,
     values: {
       name: defaultHomework.name,
       topic: defaultHomework.topic,
@@ -46,14 +49,18 @@ export const CreateHomeworkWindow = ({ open }: CreateHomeworkWindowProps) => {
     navigate('/homeworks');
   };
 
-  const saveHomework = handleSubmit(async data =>
-    dispatch(createHomework(data))
+  const saveHomework = handleSubmit(async data => {
+    setLoading(true);
+    return dispatch(createHomework(data))
       .unwrap()
       .then(() => {
         closeWindow();
         dispatch(loadHomeworks());
-      }),
-  );
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  });
 
   return (
     <FormWindow
@@ -63,6 +70,8 @@ export const CreateHomeworkWindow = ({ open }: CreateHomeworkWindowProps) => {
       onClose={closeWindow}
       onSubmit={saveHomework}
       saveDisabled={!isValid}
+      saveLoading={loading}
+      cancelDisabled={loading}
     >
       <div className={styles.content}>
         <Controller
@@ -110,10 +119,9 @@ export const CreateHomeworkWindow = ({ open }: CreateHomeworkWindowProps) => {
           control={control}
           render={({ field }) => (
             <DatePicker
-              name={field.name}
+              {...field}
               value={dateTimeParse(field.value)}
               onUpdate={value => field.onChange(value?.toDate())}
-              onBlur={field.onBlur}
               label="Дата выдачи"
               size="l"
               validationState={errors.startDate?.message ? 'invalid' : undefined}
@@ -126,10 +134,9 @@ export const CreateHomeworkWindow = ({ open }: CreateHomeworkWindowProps) => {
           control={control}
           render={({ field }) => (
             <DatePicker
-              name={field.name}
+              {...field}
               value={dateTimeParse(field.value)}
               onUpdate={value => field.onChange(value?.toDate())}
-              onBlur={field.onBlur}
               label="Дедлайн выполнения"
               size="l"
               validationState={errors.completionDeadline?.message ? 'invalid' : undefined}
@@ -143,8 +150,8 @@ export const CreateHomeworkWindow = ({ open }: CreateHomeworkWindowProps) => {
           control={control}
           render={({ field }) => (
             <RadioButton
+              {...field}
               value={field.value.toString()}
-              onChange={field.onChange}
               size="l"
               options={[
                 { value: '24', content: '24ч' },

@@ -46,6 +46,16 @@ export interface SignUpRequest {
   email: string;
 }
 
+export interface FeedbackPost {
+  /** @format int32 */
+  review: number;
+  /** @format int32 */
+  student: number;
+  /** @format int32 */
+  rating: number;
+  description: string;
+}
+
 export interface Diff {
   new_path: string;
   old_path: string;

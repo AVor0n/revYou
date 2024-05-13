@@ -1,10 +1,10 @@
-import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
-import { createSolution, loadSolution, loadSolutions } from '../services';
+import { createSlice } from '@reduxjs/toolkit';
+import { loadMySolutions, loadSolutionsForReview } from '../services';
 import { type SolutionSchema } from '../types';
 
 const initialState: SolutionSchema = {
-  solutionInfo: null,
-  solutions: null,
+  mySolutions: null,
+  solutionsForReview: null,
   error: '',
 };
 
@@ -13,24 +13,18 @@ export const solutionSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers(builder) {
-    builder.addCase(createSolution.fulfilled, (state, { payload }: PayloadAction<SolutionSchema['solutionInfo']>) => {
-      state.solutionInfo = payload;
+    builder.addCase(loadMySolutions.fulfilled, (state, { payload }) => {
+      state.mySolutions = payload;
     });
-    builder.addCase(createSolution.rejected, (state, { payload }: PayloadAction<string | undefined>) => {
+    builder.addCase(loadMySolutions.rejected, (state, { payload }) => {
+      state.mySolutions = null;
       state.error = payload ?? '';
-      state.solutionInfo = null;
     });
-    builder.addCase(loadSolution.fulfilled, (state, { payload }: PayloadAction<SolutionSchema['solutionInfo']>) => {
-      state.solutionInfo = payload;
+    builder.addCase(loadSolutionsForReview.fulfilled, (state, { payload }) => {
+      state.solutionsForReview = payload;
     });
-    builder.addCase(loadSolution.rejected, (state, { payload }: PayloadAction<string | undefined>) => {
-      state.error = payload ?? '';
-      state.solutionInfo = null;
-    });
-    builder.addCase(loadSolutions.fulfilled, (state, { payload }: PayloadAction<SolutionSchema['solutions']>) => {
-      state.solutions = payload;
-    });
-    builder.addCase(loadSolutions.rejected, (state, { payload }: PayloadAction<string | undefined>) => {
+    builder.addCase(loadSolutionsForReview.rejected, (state, { payload }) => {
+      state.solutionsForReview = null;
       state.error = payload ?? '';
     });
   },

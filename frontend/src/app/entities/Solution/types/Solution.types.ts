@@ -1,7 +1,7 @@
-import { type Solution } from '@domains';
+import { type Review } from '@domains';
 
 export interface SolutionSchema {
-  solutionInfo: Solution | null;
-  solutions: Solution[] | null;
+  mySolutions: Review[] | null;
+  solutionsForReview: Review[] | null;
   error: string;
 }

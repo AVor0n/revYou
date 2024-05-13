@@ -1,9 +1,9 @@
 import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
-import { loadFileDiff, loadReview } from '../services';
+import { loadFileDiff, loadReview, requestRepeatReview } from '../services';
 import { type ReviewSchema } from '../types';
 
 const initialState: ReviewSchema = {
-  solutionInfo: null,
+  reviewInfo: null,
   filesTree: null,
   activeFilePath: '',
   sourceActiveFileContent: null,
@@ -22,6 +22,13 @@ export const reviewSlice = createSlice({
       state.sourceActiveFileContent = null;
       state.targetActiveFileContent = null;
     },
+    setReviewInfo(state, { payload }: PayloadAction<ReviewSchema['reviewInfo']>) {
+      state.reviewInfo = payload;
+
+      state.activeFilePath = '';
+      state.sourceActiveFileContent = null;
+      state.targetActiveFileContent = null;
+    },
   },
   extraReducers(builder) {
     builder.addCase(loadReview.fulfilled, (state, { payload }) => {
@@ -37,8 +44,12 @@ export const reviewSlice = createSlice({
       state.sourceActiveFileContent = null;
       state.targetActiveFileContent = null;
     });
+    builder.addCase(requestRepeatReview.fulfilled, state => {
+      state.reviewInfo = null;
+    });
     builder.addCase(loadReview.rejected, state => {
-      state.error = 'Не удалось загрузить решение';
+      state.reviewInfo = null;
+      state.error = 'Не удалось загрузить ревью';
     });
   },
 });

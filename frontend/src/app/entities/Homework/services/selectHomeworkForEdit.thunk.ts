@@ -2,8 +2,8 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import { type Homework } from '@domains';
 import { type ThunkConfig } from 'app/providers';
 
-export const selectHomework = createAsyncThunk<Homework, number, ThunkConfig<string>>(
-  'homework/selectHomework',
+export const selectHomeworkForView = createAsyncThunk<Homework, number, ThunkConfig<string>>(
+  'homework/selectHomeworkForView',
   async (id, { extra, rejectWithValue }) => {
     try {
       const { data } = await extra.api.getHomework(id);

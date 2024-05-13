@@ -1,56 +1,29 @@
-import { Button, Card } from '@gravity-ui/uikit';
-import { toaster } from '@gravity-ui/uikit/toaster-singleton-react-18';
+import { Card } from '@gravity-ui/uikit';
 import { useSelector } from 'react-redux';
-import { type Solution, type Homework } from '@domains';
-import { requestReview, getUserRole, loadSolution, useAppDispatch } from 'app';
+import { type Homework } from '@domains';
+import { getMySolutions, getUserRole } from 'app';
 import { AuthorAndDeadlines, DescriptionHeader, Desctiption, GitLabLink, SendSolutionForm } from './components';
 import styles from './DescriptionTab.module.scss';
 
 interface DescriptionTabProps {
   homeworkInfo: Homework | null;
-  solutionInfo: Solution | null;
 }
 
-export const DescriptionTab = ({ homeworkInfo, solutionInfo }: DescriptionTabProps) => {
+export const DescriptionTab = ({ homeworkInfo }: DescriptionTabProps) => {
   const role = useSelector(getUserRole);
-  const dispatch = useAppDispatch();
+  const solutionSent = !!useSelector(getMySolutions)?.length;
 
   if (!homeworkInfo) {
     return null;
   }
-
-  const onSendAttempt = async () => {
-    const resp = await dispatch(requestReview(homeworkInfo.id));
-    if (resp.meta.requestStatus === 'fulfilled') {
-      toaster.add({ name: 'sendAttempt', title: 'Решение отправлено', theme: 'success' });
-      dispatch(loadSolution(homeworkInfo.id));
-    } else {
-      toaster.add({ name: 'sendAttempt', title: 'Возникла ошибка отправки решения', theme: 'danger' });
-    }
-  };
 
   const renderFooter = () => {
     if (role !== '[STUDENT]') {
       return null;
     }
 
-    if (!solutionInfo) {
+    if (!solutionSent) {
       return <SendSolutionForm homeworkId={homeworkInfo.id} />;
-    }
-
-    if (!solutionInfo.solutionAttempts.length) {
-      return (
-        <Button
-          className={styles.sendTryButton}
-          type="submit"
-          view="action"
-          size="m"
-          pin="round-round"
-          onClick={onSendAttempt}
-        >
-          Сдать попытку
-        </Button>
-      );
     }
 
     return null;

@@ -2,8 +2,8 @@ import { Skeleton } from '@gravity-ui/uikit';
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { type Homework } from '@domains';
-import { getSolutions, loadSolutions, useAppDispatch } from 'app';
+import { type Homework, type Review } from '@domains';
+import { getSolutionsForReview, loadSolutionsForReview, reviewActions, useAppDispatch } from 'app';
 import { SolutionsTable } from './components';
 import styles from './SolutionsTab.module.scss';
 
@@ -14,17 +14,22 @@ interface SolutionTabProps {
 export const SolutionTab = ({ homeworkInfo }: SolutionTabProps) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const solutions = useSelector(getSolutions);
+  const solutionsForReview = useSelector(getSolutionsForReview);
 
   useEffect(() => {
     if (!homeworkInfo?.id) return;
-    dispatch(loadSolutions(homeworkInfo.id));
+    dispatch(loadSolutionsForReview(homeworkInfo.id));
   }, [dispatch, homeworkInfo]);
+
+  const onRowClick = (review: Review) => {
+    dispatch(reviewActions.setReviewInfo(review));
+    navigate(`/homeworks/${homeworkInfo?.id}/review/${review.reviewId}/reviewer`);
+  };
 
   return (
     <div className={styles.page}>
-      {solutions ? (
-        <SolutionsTable data={solutions} onRowClick={({ projectId }) => navigate(`/solutions/${projectId}`)} />
+      {solutionsForReview ? (
+        <SolutionsTable data={solutionsForReview} onRowClick={onRowClick} />
       ) : (
         <Skeleton className={styles.skeleton} />
       )}

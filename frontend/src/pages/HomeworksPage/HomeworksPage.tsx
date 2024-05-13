@@ -2,7 +2,14 @@ import { Skeleton } from '@gravity-ui/uikit';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useMatch, useNavigate } from 'react-router-dom';
-import { getHomeworkForEdit, getHomeworks, homeworkActions, selectHomework, loadHomeworks, useAppDispatch } from 'app';
+import {
+  getHomeworkForEdit,
+  getHomeworks,
+  homeworkActions,
+  loadHomeworks,
+  useAppDispatch,
+  selectHomeworkForEdit,
+} from 'app';
 import { CreateHomeworkWindow, EditHomeworkWindow, HomeworksTable, HomeworksToolbar } from './components';
 import styles from './HomeworksPage.module.scss';
 
@@ -21,7 +28,7 @@ export const HomeworksPage = () => {
   useEffect(() => {
     const id = showEditWindow?.params.id;
     if (id) {
-      dispatch(selectHomework(+id));
+      dispatch(selectHomeworkForEdit(+id));
     }
   }, [dispatch, showEditWindow?.params.id]);
 
