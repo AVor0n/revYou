@@ -19,14 +19,13 @@ public class ReviewConverter {
 
   public ReviewDto convertToReviewDto(
           Review review,
-          Integer projectId,
           String sourceCommitId,
           String commitId) {
     ReviewDto reviewDto = new ReviewDto()
         .setReviewId(review.getReviewId())
         .setStatus(review.getStatus().toString())
         .setCommitId(commitId)
-        .setProjectId(projectId)
+        .setProjectId(review.getSolution().getProjectId())
         .setSourceCommitId(sourceCommitId);
 
     List<ReviewAttempt> reviewAttempts = review.getReviewAttempts();
@@ -54,11 +53,10 @@ public class ReviewConverter {
   public ReviewWrapperDto convertToReviewWrapperDto(
           List<Review> reviews,
           String commitId,
-          Integer projectId,
           String sourceCommitId) {
     List<ReviewDto> reviewsDto = reviews
             .stream()
-            .map((Review review) -> convertToReviewDto(review, projectId, sourceCommitId, commitId))
+            .map((Review review) -> convertToReviewDto(review, sourceCommitId, commitId))
             .toList();
     return new ReviewWrapperDto(reviewsDto);
   }
@@ -72,13 +70,12 @@ public class ReviewConverter {
     review.setReviewer(reviewer);
   }
 
-  public ReviewWrapperDto convertToReviewWrapperDto(List<ImmutablePair<Review, String>> pairsReviewCommit, Integer projectId, String sourceCommitId) {
+  public ReviewWrapperDto convertToReviewWrapperDto(List<ImmutablePair<Review, String>> pairsReviewCommit, String sourceCommitId) {
     List<ReviewDto> reviewsDto = pairsReviewCommit
         .stream()
         .map(reviewCommit -> convertToReviewDto(
             reviewCommit.getKey(),
-            projectId,
-            sourceCommitId,
+                sourceCommitId,
             reviewCommit.getValue()))
         .toList();
     return new ReviewWrapperDto(reviewsDto);

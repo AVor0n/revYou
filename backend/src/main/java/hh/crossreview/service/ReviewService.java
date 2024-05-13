@@ -259,15 +259,13 @@ public class ReviewService {
       return new ReviewWrapperDto(Collections.emptyList());
     }
     String commitId = solution.getSolutionAttempts().getLast().getCommitId();
-    Integer projectId = homework.getHomeworkId();
     String sourceCommitId = homework.getSourceCommitId();
     return reviewConverter.convertToReviewWrapperDto(
-            reviews, commitId, projectId, sourceCommitId
+            reviews, commitId, sourceCommitId
     );
   }
 
   public ReviewWrapperDto wrapReviewsToDo(Homework homework, List<Review> reviews) {
-    Integer projectId = homework.getHomeworkId();
     String sourceCommitId = homework.getSourceCommitId();
     List<ImmutablePair<Review, String>> pairs = reviews
         .stream()
@@ -279,7 +277,7 @@ public class ReviewService {
                .getCommitId();
           return new ImmutablePair<>(review, commitId); })
         .toList();
-    return reviewConverter.convertToReviewWrapperDto(pairs, projectId, sourceCommitId);
+    return reviewConverter.convertToReviewWrapperDto(pairs, sourceCommitId);
   }
 
   @Transactional
