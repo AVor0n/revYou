@@ -81,17 +81,17 @@ public class ReviewDao extends GenericDao {
         .getSingleResult();
   }
 
-  public Long countApprovedReviewsByHomework(Homework homework) {
+  public Long countReviewsByTeacherAndHomework(Homework homework) {
     return getEntityManager()
         .createQuery(
             "SELECT COUNT(*) FROM Review r " +
                 "JOIN r.solution s " +
                 "WHERE s.homework = :homework " +
-                "AND r.status = :status ",
+                "AND r.reviewer = :reviewer ",
             Long.class
         )
         .setParameter("homework", homework)
-        .setParameter("status", ReviewStatus.APPROVED)
+        .setParameter("reviewer", homework.getAuthor())
         .getSingleResult();
   }
 }

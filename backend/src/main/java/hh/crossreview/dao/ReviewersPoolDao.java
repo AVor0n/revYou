@@ -25,17 +25,23 @@ public class ReviewersPoolDao extends GenericDao {
         .findFirst();
   }
 
-  public Optional<Reviewer> findAvailableReviewer(Homework homework) {
+  public Optional<Reviewer> findAvailableReviewer(User student,Homework homework) {
     return getEntityManager()
         .createQuery(
-            "SELECT pr FROM Reviewer pr " +
-                "WHERE pr.homework = :homework " +
-                "AND pr.status = :status " +
-                "ORDER BY pr.appointedAt " +
-                "LIMIT 1",
+    "SELECT pr FROM Reviewer pr " +
+            "WHERE pr.homework = :homework " +
+            "AND pr.status = :status " +
+            "AND pr.user.id NOT IN (" +
+            "  SELECT r.reviewer.id FROM Review r " +
+            "  WHERE r.solution.homework = :homework " +
+            "  AND r.student = :student " +
+            "  AND r.reviewer IS NOT NULL) " +
+            "ORDER BY pr.appointedAt",
             Reviewer.class)
         .setParameter("homework", homework)
         .setParameter("status", ReviewerStatus.AVAILABLE)
+        .setParameter("student", student)
+        .setMaxResults(1)
         .getResultStream()
         .findFirst();
   }

@@ -31,7 +31,7 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 @Singleton
 public class ReviewService {
 
-  private static final Integer STUDENT_STAGE_REQUIRED_APPROVES = 2;
+
   private static final Integer APPROVE_SCORE_FOR_COMPLETE = 2;
   private static final Integer REVIEW_SCORE_FOR_COMPLETE = 2;
 
@@ -63,76 +63,12 @@ public class ReviewService {
   }
 
   @Transactional
-  public void createReview(Homework homework, User user){
-    reqUtils.requireUserHasRole(user, UserRole.STUDENT);
-    reqUtils.requireValidCohorts(user.getCohorts(), homework);
+  public void requestReview(Homework homework, User user){
     Solution solution = solutionService.requireSolutionExist(homework, user);
     reqUtils.requireEntityHasStatus(solution, String.valueOf(SolutionStatus.IN_PROGRESS));
     requireReviewInProgressNotExist(solution, user);
     solution.setStatus(SolutionStatus.REVIEW_STAGE);
-    solutionService.createSolutionAttempt(solution);
-    appointReview(homework, user, solution);
-  }
-
-  private void appointReview(Homework homework, User student, Solution solution) {
-    Long approvedReviews = reviewDao.countApprovedReviewsByHomework(homework);
-    boolean isAppointed = isStudentReviewStage(approvedReviews) ?
-        tryAppointForNewReview(homework, student, solution) :
-        tryAppointTeacherForNewReview(homework, student, solution, approvedReviews);
-    if (!isAppointed) {
-      saveReviewWithoutReviewer(student, solution);
-    }
-  }
-
-  private boolean isStudentReviewStage(Long approvedReviews) {
-    return approvedReviews >= STUDENT_STAGE_REQUIRED_APPROVES;
-  }
-
-  private boolean tryAppointForNewReview(Homework homework, User student, Solution solution) {
-    boolean isAppointed = false;
-    for(int i = 0; i < APPROVE_SCORE_FOR_COMPLETE; i++) {
-      if (!tryAppointForNewReviewOneTime(homework, student, solution)) {
-        break;
-      }
-      isAppointed = true;
-    }
-    return isAppointed;
-  }
-
-  private boolean tryAppointForNewReviewOneTime(Homework homework, User student, Solution solution) {
-    User reviewer = reviewersPoolService.appointAvailableReviewer(homework);
-    if (reviewer != null) {
-      saveReviewWithReviewer(student, reviewer, solution);
-      return true;
-    }
-    return false;
-  }
-
-  private boolean tryAppointTeacherForNewReview(Homework homework, User student, Solution solution, Long approvedReviews) {
-    User teacher = homework.getAuthor();
-    Long appointedReviews = reviewDao.countInProgressReviewsByReviewerAndHomework(teacher, homework);
-    if (approvedReviews + appointedReviews < STUDENT_STAGE_REQUIRED_APPROVES) {
-      saveReviewWithReviewer(student, teacher, solution);
-      return true;
-    }
-    return false;
-  }
-
-  private void saveReviewWithReviewer(User student, User reviewer, Solution solution) {
-    Review review = new Review();
-    review.setStudent(student);
-    review.setReviewer(reviewer);
-    review.setSolution(solution);
-    review.setStatus(ReviewStatus.REVIEWER_FOUND);
-    reviewDao.save(review);
-  }
-
-  private void saveReviewWithoutReviewer(User student, Solution solution) {
-    Review review = new Review(student, solution);
-    review.setStudent(student);
-    review.setSolution(solution);
-    review.setStatus(ReviewStatus.REVIEWER_SEARCH);
-    reviewDao.save(review);
+    createReview(homework, solution, user);
   }
 
   @Transactional
@@ -158,13 +94,31 @@ public class ReviewService {
     if (status.equals(ReviewStatus.APPROVED.toString())) {
       updateReviewer(review, homework);
       updateStudent(review, homework);
-      tryAppointForSearchingReviews(homework);
       review.setStatus(ReviewStatus.APPROVED);
       reviewAttempt.setFinishedAt(LocalDateTime.now());
     }
     else if (status.equals(ReviewStatus.CORRECTIONS_REQUIRED.toString())) {
       review.setStatus(ReviewStatus.CORRECTIONS_REQUIRED);
     }
+  }
+
+  @Transactional
+  public void uploadCorrections(Homework homework, User user, Integer reviewId) {
+    Review review = requireReviewExist(reviewId);
+    reqUtils.requireEntityHasStatus(review, ReviewStatus.CORRECTIONS_REQUIRED.toString());
+    reqUtils.requireUserHasRole(user, UserRole.STUDENT);
+    Solution solution = solutionService.requireSolutionExist(homework, user);
+    solutionService.createSolutionAttempt(solution);
+    createReviewAttempt(review);
+    setStatus(review, ReviewStatus.CORRECTIONS_LOADED);
+  }
+
+  private void createReview(Homework homework, Solution solution, User user){
+    solutionService.createSolutionAttempt(solution);
+    Review review = new Review(user, solution);
+    reviewDao.save(review);
+    User vacantReviewer = reviewersPoolService.findAvailableReviewer(user, homework);
+    tryAppointReviewer(review, vacantReviewer);
   }
 
   private void requireValidReviewStatusForResolution(Review review) {
@@ -198,6 +152,10 @@ public class ReviewService {
     if (newApproveScore >= APPROVE_SCORE_FOR_COMPLETE) {
       solution.setStatus(SolutionStatus.REVIEWER_STAGE);
       reviewersPoolService.createReviewer(student, homework);
+      Review reviewWithSearchingReviewer = getReviewWithStatusReviewSearch(homework);
+      tryAppointReviewer(reviewWithSearchingReviewer, student);
+    } else {
+      createReview(homework, solution, student);
     }
   }
 
@@ -218,32 +176,16 @@ public class ReviewService {
     }
   }
 
-  private void tryAppointForSearchingReviews(Homework homework) {
-    User teacher = homework.getAuthor();
-    Long approveReviews = reviewDao.countInProgressReviewsByReviewerAndHomework(teacher, homework);
-    if (isStudentReviewStage(approveReviews)) {
-      List<Review> searchingReviews = reviewDao.findReviewsByHomeworkAndStatus(
-          homework,
-          ReviewStatus.REVIEWER_SEARCH,
-          REVIEW_SCORE_FOR_COMPLETE
-      );
-      for(Review searchingReview : searchingReviews) {
-        if (!tryAppointForSearchingReview(homework, searchingReview)) {
-          break;
-        }
-      }
+  private Review getReviewWithStatusReviewSearch(Homework homework){
+    List<Review> searchingReviews = reviewDao.findReviewsByHomeworkAndStatus(
+            homework,
+            ReviewStatus.REVIEWER_SEARCH,
+            REVIEW_SCORE_FOR_COMPLETE
+    );
+    if (searchingReviews.isEmpty()){
+      return null;
     }
-  }
-
-  private boolean tryAppointForSearchingReview(Homework homework, Review searchingReview) {
-    User reviewer = reviewersPoolService.appointAvailableReviewer(homework);
-    if (reviewer == null) {
-      return false;
-    }
-    searchingReview.setReviewer(reviewer);
-    searchingReview.setStatus(ReviewStatus.REVIEWER_FOUND);
-    reviewDao.save(searchingReview);
-    return true;
+    return searchingReviews.getFirst();
   }
 
   public void createReviewAttempt(Review review) {
@@ -296,9 +238,13 @@ public class ReviewService {
     reviewConverter.setStatus(review, status);
   }
 
-
-  public void setReviewer(Review review, User reviewer) {
-    reviewConverter.setReviewer(review, reviewer);
+  public void tryAppointReviewer(Review review, User reviewer) {
+    if (reviewer == null | review == null){
+      return;
+    }
+    review.setReviewer(reviewer);
+    review.setStatus(ReviewStatus.REVIEWER_FOUND);
+    reviewDao.save(review);
   }
 
   public void requireReviewInProgressNotExist(Solution solution, User student){
@@ -327,16 +273,5 @@ public class ReviewService {
     }
   }
 
-  @Transactional
-  public void uploadCorrections(Homework homework, User user, Integer reviewId) {
-    Review review = requireReviewExist(reviewId);
-    reqUtils.requireEntityHasStatus(review, ReviewStatus.CORRECTIONS_REQUIRED.toString());
-    reqUtils.requireUserHasRole(user, UserRole.STUDENT);
-
-    Solution solution = solutionService.requireSolutionExist(homework, user);
-    solutionService.createSolutionAttempt(solution);
-    createReviewAttempt(review);
-    setStatus(review, ReviewStatus.CORRECTIONS_LOADED);
-  }
 }
 

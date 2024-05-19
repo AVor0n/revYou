@@ -65,7 +65,8 @@ public class RequirementsUtils {
 
   public void requireEntityHasStatus(Statusable entity, String status) {
     if (!entity.getStatus().toString().equals(status)) {
-      throw new ForbiddenException("This action is not available to you!");
+      throw new ForbiddenException(
+              "This action is not available to you!. Expected status " + status);
     }
   }
 }

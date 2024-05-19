@@ -72,7 +72,7 @@ public class ReviewResource {
           @Context SecurityContext securityContext) {
     User user = userService.findByPrincipal(securityContext.getUserPrincipal());
     Homework homework = homeworkService.getHomeworkEntity(homeworkId);
-    reviewService.createReview(homework, user);
+    reviewService.requestReview(homework, user);
     return  Response
             .status(Response.Status.CREATED)
             .build();

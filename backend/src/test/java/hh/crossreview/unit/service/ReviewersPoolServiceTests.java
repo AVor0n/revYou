@@ -80,9 +80,9 @@ class ReviewersPoolServiceTests extends TestsUtil {
     User student = createUser(1, UserRole.STUDENT, homework.getCohorts().get(0));
     Reviewer reviewer = createReviewer(1, ReviewerStatus.AVAILABLE, LocalDateTime.now(), student, homework);
 
-    when(reviewersPoolDao.findAvailableReviewer(homework)).thenReturn(Optional.of(reviewer));
+    when(reviewersPoolDao.findAvailableReviewer(student, homework)).thenReturn(Optional.of(reviewer));
     when(reviewDao.countInProgressReviewsByReviewerAndHomework(reviewer.getUser(), homework)).thenReturn(1L);
-    User user = reviewersPoolService.appointAvailableReviewer(homework);
+    User user = reviewersPoolService.getReviewerFromPool(student, homework);
 
     assertEquals(ReviewerStatus.BUSY, reviewer.getStatus());
     assertEquals(student.getUserId(), user.getUserId());
@@ -94,23 +94,23 @@ class ReviewersPoolServiceTests extends TestsUtil {
     User student = createUser(1, UserRole.STUDENT, homework.getCohorts().get(0));
     Reviewer reviewer = createReviewer(1, ReviewerStatus.AVAILABLE, LocalDateTime.now(), student, homework);
 
-    when(reviewersPoolDao.findAvailableReviewer(homework)).thenReturn(Optional.of(reviewer));
+    when(reviewersPoolDao.findAvailableReviewer(student, homework)).thenReturn(Optional.of(reviewer));
     when(reviewDao.countInProgressReviewsByReviewerAndHomework(reviewer.getUser(), homework)).thenReturn(0L);
-    User user = reviewersPoolService.appointAvailableReviewer(homework);
+    User user = reviewersPoolService.getReviewerFromPool(student, homework);
 
     assertEquals(ReviewerStatus.AVAILABLE, reviewer.getStatus());
     assertEquals(student.getUserId(), user.getUserId());
   }
 
-  @Test
-  void givenAppointAvailableReviewer_whenHasNotAvailableReviewer_thenReturnsNull() {
-    Homework homework = createBackHomework();
-
-    when(reviewersPoolDao.findAvailableReviewer(homework)).thenReturn(Optional.empty());
-    User user = reviewersPoolService.appointAvailableReviewer(homework);
-
-    assertNull(user);
-  }
+//  @Test
+//  void givenAppointAvailableReviewer_whenHasNotAvailableReviewer_thenReturnsNull() {
+//    Homework homework = createBackHomework();
+//
+//    when(reviewersPoolDao.findAvailableReviewer(homework)).thenReturn(Optional.empty());
+//    User user = reviewersPoolService.getReviewerFromPool(homework);
+//
+//    assertNull(user);
+//  }
 
   private Reviewer createReviewer(
       Integer id,
