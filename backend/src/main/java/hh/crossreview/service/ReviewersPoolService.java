@@ -18,7 +18,9 @@ import java.util.Optional;
 @Singleton
 public class ReviewersPoolService {
 
-  private static final Integer MAX_APPOINTED_REVIEWS = 2;
+  private static final Integer MAX_NUM_OF_REVIEWS_BY_STUDENT = 2;
+
+  private static final Integer MAX_NUM_OF_REVIEWS_BY_TEACHER = 5;
 
   private final ReviewersPoolDao reviewersPoolDao;
   private final ReviewDao reviewDao;
@@ -54,8 +56,8 @@ public class ReviewersPoolService {
   }
 
   @SuppressWarnings({"unused"})
-  public User appointAvailableReviewer(Homework homework) {
-    Optional<Reviewer> optionalReviewer = reviewersPoolDao.findAvailableReviewer(homework);
+  public User getReviewerFromPool(User user, Homework homework) {
+    Optional<Reviewer> optionalReviewer = reviewersPoolDao.findAvailableReviewer(user, homework);
     if (optionalReviewer.isEmpty()) {
       return null;
     }
@@ -64,18 +66,28 @@ public class ReviewersPoolService {
     return reviewer.getUser();
   }
 
+  public User findAvailableReviewer(User user, Homework homework){
+    Long reviewsByTeacher = reviewDao.countReviewsByTeacherAndHomework(homework);
+    if (reviewsByTeacher < MAX_NUM_OF_REVIEWS_BY_TEACHER) {
+      return homework.getAuthor();
+    } else {
+      return getReviewerFromPool(user, homework);
+    }
+  }
+
   private void makeReviewerAvailable(Reviewer reviewer) {
     reviewer.setStatus(ReviewerStatus.AVAILABLE);
     reviewersPoolDao.save(reviewer);
   }
 
   private void makeReviewerAppointed(Reviewer reviewer, Homework homework) {
+
     Long appointedReviews = reviewDao.countInProgressReviewsByReviewerAndHomework(
         reviewer.getUser(),
         homework
     );
 
-    if (appointedReviews + 1 >= MAX_APPOINTED_REVIEWS) {
+    if (appointedReviews + 1 >= MAX_NUM_OF_REVIEWS_BY_STUDENT) {
       reviewer.setStatus(ReviewerStatus.BUSY);
     }
     reviewer.setAppointedAt(LocalDateTime.now());
@@ -93,5 +105,4 @@ public class ReviewersPoolService {
     reviewer.setStatus(ReviewerStatus.COMPLETE);
     reviewersPoolDao.save(reviewer);
   }
-
 }
