@@ -74,9 +74,9 @@ CREATE TABLE IF NOT EXISTS solution
     homework_id      INTEGER      NOT NULL,
     student_id       INTEGER      NOT NULL,
     FOREIGN KEY (homework_id) REFERENCES homework (homework_id) ON DELETE CASCADE,
-    FOREIGN KEY (student_id) REFERENCES user_account (user_id),
-    UNIQUE (homework_id, student_id),
-    UNIQUE (project_id, branch)
+    FOREIGN KEY (student_id) REFERENCES user_account (user_id)
+    --UNIQUE (homework_id, student_id),
+    -- UNIQUE (project_id, branch)
 );
 
 CREATE TABLE IF NOT EXISTS solution_attempt
@@ -167,39 +167,54 @@ VALUES (1, '2023-09-01', '2024-06-30', 'https://mattermost.com/frontend1', 'FRON
 -- Вставка данных в таблицу user_account
 INSERT INTO user_account (username, name, surname, email, password, gitlab_username, mm_username, status, role,
                           cohort_id)
-VALUES ('username_1', 'Иван', 'Иванов', 'ivanov@example.com',
+VALUES ('student_1', 'Иван', 'Иванов', 'ivanov@example.com',
         '$2a$04$Fx/SX9.BAvtPlMyIIqqFx.hLY2Xp8nnhpzvEEVINvVpwIPbA3v/.i',
-        'username_1', 'ivanov',
+        'student_1', 'ivanov',
         'ACTIVE', 'STUDENT', 1),
-       ('username_2', 'Мария', 'Петрова', 'petrova@example.com',
+       ('student_2', 'Мария', 'Петрова', 'petrova@example.com',
         '$2a$04$Fx/SX9.BAvtPlMyIIqqFx.hLY2Xp8nnhpzvEEVINvVpwIPbA3v/.i',
-        'username_2', 'petrova',
+        'student_2', 'petrova',
         'DISABLED', 'STUDENT', 2),
-       ('username_3', 'Антон', 'Сидоров', 'sidorov@example.com',
+       ('student_4', 'Елена', 'Козлова', 'kozlova@example.com',
         '$2a$04$Fx/SX9.BAvtPlMyIIqqFx.hLY2Xp8nnhpzvEEVINvVpwIPbA3v/.i',
-        'username_3', 'sidorov',
-        'ACTIVE', 'TEACHER', NULL),
-       ('username_4', 'Елена', 'Козлова', 'kozlova@example.com',
-        '$2a$04$Fx/SX9.BAvtPlMyIIqqFx.hLY2Xp8nnhpzvEEVINvVpwIPbA3v/.i',
-        'username_4', 'kozlova',
+        'student_4', 'kozlova',
         'ACTIVE', 'STUDENT', 1),
-       ('username_5', 'Геннадий', 'Горин', 'gorin@example.com',
+       ('student_5', 'Елена', 'Козлова', 'kozlova66@example.com',
         '$2a$04$Fx/SX9.BAvtPlMyIIqqFx.hLY2Xp8nnhpzvEEVINvVpwIPbA3v/.i',
-        'username_5', 'gorin',
+        'student_5', 'kozlova2',
+        'ACTIVE', 'STUDENT', 1),
+       ('student_6', 'Елена', 'Козлова', 'kozlova2@example.com',
+        '$2a$04$Fx/SX9.BAvtPlMyIIqqFx.hLY2Xp8nnhpzvEEVINvVpwIPbA3v/.i',
+        'student_6', 'kozlova3',
+        'ACTIVE', 'STUDENT', 1),
+       ('student_7', 'Елена', 'Козлова', 'kozlova3@example.com',
+        '$2a$04$Fx/SX9.BAvtPlMyIIqqFx.hLY2Xp8nnhpzvEEVINvVpwIPbA3v/.i',
+        'student_7', 'kozlova4',
+        'ACTIVE', 'STUDENT', 1),
+       ('teacher_1', 'Антон', 'Сидоров', 'sidorov@example.com',
+        '$2a$04$Fx/SX9.BAvtPlMyIIqqFx.hLY2Xp8nnhpzvEEVINvVpwIPbA3v/.i',
+        'teacher_1', 'sidorov',
+        'ACTIVE', 'TEACHER', NULL),
+       ('teacher_2', 'Геннадий', 'Горин', 'gorin@example.com',
+        '$2a$04$Fx/SX9.BAvtPlMyIIqqFx.hLY2Xp8nnhpzvEEVINvVpwIPbA3v/.i',
+        'teacher_2', 'gorin',
         'ACTIVE', 'TEACHER', NULL);
 
 -- Вставка данных в таблицу lecture
 INSERT INTO lecture (name, lecture_date, zoom_link, presentation_link, lector_id)
-VALUES ('React', '2023-10-05 09:00:00', 'https://zoom.us/git1', 'https://slides.com/git1', 3),
-       ('Git', '2023-10-10 10:00:00', 'https://zoom.us/git2', 'https://slides.com/git2', 5),
-       ('Kafka', '2023-10-15 13:00:00', 'https://zoom.us/kafka', 'https://slides.com/kafka', 5);
+VALUES ('React', '2023-10-05 09:00:00', 'https://zoom.us/git1', 'https://slides.com/git1', 7),
+       ('Git', '2023-10-10 10:00:00', 'https://zoom.us/git2', 'https://slides.com/git2', 8),
+       ('Kafka', '2023-10-15 13:00:00', 'https://zoom.us/kafka', 'https://slides.com/kafka', 8),
+       ('Python', '2023-10-15 13:00:00', 'https://zoom.us/python', 'https://slides.com/python', 8);
 
 -- Вставка данных в таблицу lecture_cohort
 INSERT INTO lecture_cohort (lecture_id, cohort_id)
 VALUES (1, 1),
        (2, 1),
        (2, 2),
-       (3, 2);
+       (3, 2),
+       (4, 1),
+       (4, 2);
 
 -- Вставка данных в таблицу homework
 INSERT INTO homework (repository_link, name, topic, description, source_commit_id, start_date, completion_deadline,
@@ -213,7 +228,10 @@ VALUES ('https://158.160.88.104/gitlab/teacher_1/test_homewrok', 'Домашка
         '2023-10-17 23:59:59', 48, 1, 3),
        ('https://158.160.88.104/gitlab/teacher_3/test_homework_3', 'Домашка по кафке', 'Kafka',
         'Напишите реализацию AtLeastOnce', 'ff3ed0210655c0593b5060fb07cf8c712a14cce5', '2023-10-10 23:59:59',
-        '2023-10-17 23:59:59', 48, 3, 5);
+        '2023-10-17 23:59:59', 48, 3, 5),
+        ('https://158.160.88.104/gitlab/hh_teacher/hh-school-2023-python-core', 'Домашка по Python', 'Python',
+        'Решите задачу', '89d364f1b80bf49ed6eefd7abbfa8c3e740cd131', '2023-10-10 23:59:59',
+        '2023-10-17 23:59:59', 48, 4, 5);
 
 -- -- Вставка данных в таблицу solution
 -- INSERT INTO solution (status, approve_score, review_score, project_id, branch, source_commit_id, homework_id,

@@ -20,7 +20,7 @@ public class ReviewersPoolService {
 
   private static final Integer MAX_NUM_OF_REVIEWS_BY_STUDENT = 2;
 
-  private static final Integer MAX_NUM_OF_REVIEWS_BY_TEACHER = 5;
+  private static final Integer MAX_NUM_OF_REVIEWS_BY_TEACHER = 2;
 
   private final ReviewersPoolDao reviewersPoolDao;
   private final ReviewDao reviewDao;
