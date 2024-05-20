@@ -152,8 +152,14 @@ public class ReviewService {
     if (newApproveScore >= APPROVE_SCORE_FOR_COMPLETE) {
       solution.setStatus(SolutionStatus.REVIEWER_STAGE);
       reviewersPoolService.createReviewer(student, homework);
-      Review reviewWithSearchingReviewer = getReviewWithStatusReviewSearch(homework);
-      tryAppointReviewer(reviewWithSearchingReviewer, student);
+      for(int i = 0; i < REVIEW_SCORE_FOR_COMPLETE; i++){
+        Review reviewWithSearchingReviewer = getReviewWithStatusReviewSearch(homework);
+        if (reviewWithSearchingReviewer == null){
+          break;
+        }
+        tryAppointReviewer(reviewWithSearchingReviewer, student);
+      }
+
     } else {
       createReview(homework, solution, student);
     }
