@@ -115,4 +115,13 @@ public class Lecture implements Authorable {
     this.cohorts = cohorts;
     return this;
   }
+  public Date getLectureDate() {
+    return lectureDate;
+  }
+  public String getZoomLink() {
+    return zoomLink;
+  }
+  public String getPresentationLink() {
+    return presentationLink;
+  }
 }
