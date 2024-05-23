@@ -3,13 +3,20 @@ package hh.crossreview.converter;
 import hh.crossreview.dto.review.ReviewAttemptDto;
 import hh.crossreview.dto.review.ReviewDto;
 import hh.crossreview.dto.review.ReviewWrapperDto;
+import hh.crossreview.dto.review.info.ReviewInfoDto;
+import hh.crossreview.dto.review.info.ReviewInfoWrapperDto;
+import hh.crossreview.dto.user.StudentDto;
 import hh.crossreview.entity.Review;
 import hh.crossreview.entity.ReviewAttempt;
 import hh.crossreview.entity.User;
 import hh.crossreview.entity.enums.ReviewStatus;
 import jakarta.inject.Named;
 import jakarta.inject.Singleton;
+import jakarta.ws.rs.InternalServerErrorException;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 
@@ -29,14 +36,7 @@ public class ReviewConverter {
         .setSourceCommitId(sourceCommitId);
 
     List<ReviewAttempt> reviewAttempts = review.getReviewAttempts();
-    if (reviewAttempts != null && !reviewAttempts.isEmpty()) {
-      ReviewAttempt reviewAttempt = reviewAttempts.getLast();
-      reviewDto.setReviewAttempts(
-          List.of(convertToReviewAttemptDto(reviewAttempt))
-      );
-    } else {
-      reviewDto.setReviewAttempts(Collections.emptyList());
-    }
+    reviewDto.setReviewAttempts(convertToReviewAttemptsDto(reviewAttempts));
     return reviewDto;
   }
 
@@ -79,6 +79,67 @@ public class ReviewConverter {
             reviewCommit.getValue()))
         .toList();
     return new ReviewWrapperDto(reviewsDto);
+  }
+
+  public ReviewInfoWrapperDto convertToReviewInfoWrapperDto(List<ImmutablePair<Review, String>> pairsReviewCommit, String sourceCommitId) {
+    List<ReviewInfoDto> reviewsDto = pairsReviewCommit
+        .stream()
+        .map(reviewCommit -> convertToReviewInfoDto(
+          reviewCommit.getKey(),
+          reviewCommit.getValue()
+        ))
+        .toList();
+    return new ReviewInfoWrapperDto(reviewsDto, sourceCommitId);
+  }
+
+  public ReviewInfoDto convertToReviewInfoDto(Review review, String commitId) {
+    StudentDto student = new StudentDto(review.getStudent());
+    StudentDto reviewer = new StudentDto(review.getReviewer());
+    Duration duration = countReviewDuration(review, review.getReviewAttempts());
+    List<ReviewAttemptDto> reviewAttemptsDto = convertToReviewAttemptsDto(review.getReviewAttempts());
+    return new ReviewInfoDto()
+        .setReviewAttempts(reviewAttemptsDto)
+        .setDuration(duration)
+        .setReviewer(reviewer)
+        .setStudent(student)
+        .setReviewId(review.getReviewId())
+        .setStatus(review.getStatus().toString())
+        .setCommitId(commitId)
+        .setProjectId(review.getSolution().getProjectId());
+  }
+
+  private List<ReviewAttemptDto> convertToReviewAttemptsDto(List<ReviewAttempt> reviewAttempts) {
+    if (reviewAttempts != null && !reviewAttempts.isEmpty()) {
+      ReviewAttempt reviewAttempt = reviewAttempts.getLast();
+      return List.of(convertToReviewAttemptDto(reviewAttempt));
+    }
+    return Collections.emptyList();
+  }
+
+  private Duration countReviewDuration(Review review, List<ReviewAttempt> reviewAttemptsDto) {
+    if (reviewAttemptsDto.isEmpty()) {
+      return Duration.ZERO;
+    }
+
+    LocalDateTime startDateTime = findStartDateTime(reviewAttemptsDto);
+    LocalDateTime finishDateTime = review.getStatus().equals(ReviewStatus.APPROVED) ?
+        findFinishDateTime(reviewAttemptsDto) :
+        LocalDateTime.now();
+    return Duration.between(startDateTime, finishDateTime);
+  }
+
+  private LocalDateTime findStartDateTime(List<ReviewAttempt> reviewAttemptsDto) {
+    return reviewAttemptsDto.stream()
+        .min(Comparator.comparing(ReviewAttempt::getCreatedAt))
+        .orElseThrow(() -> new InternalServerErrorException("ReviewAttempt must have a creation date"))
+        .getCreatedAt();
+  }
+
+  private LocalDateTime findFinishDateTime(List<ReviewAttempt> reviewAttemptsDto) {
+    return reviewAttemptsDto.stream()
+        .max(Comparator.comparing(ReviewAttempt::getCreatedAt))
+        .orElseThrow(() -> new InternalServerErrorException("ReviewAttempt must have a finish date if review approved"))
+        .getFinishedAt();
   }
 
 }

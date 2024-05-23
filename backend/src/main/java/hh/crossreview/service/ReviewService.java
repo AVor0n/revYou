@@ -5,6 +5,7 @@ import hh.crossreview.dao.ReviewAttemptDao;
 import hh.crossreview.dao.ReviewDao;
 import hh.crossreview.dto.review.ReviewResolutionDto;
 import hh.crossreview.dto.review.ReviewWrapperDto;
+import hh.crossreview.dto.review.info.ReviewInfoWrapperDto;
 import hh.crossreview.entity.Homework;
 import hh.crossreview.entity.Review;
 import hh.crossreview.entity.ReviewAttempt;
@@ -213,19 +214,29 @@ public class ReviewService {
     );
   }
 
-  public ReviewWrapperDto wrapReviewsToDo(Homework homework, List<Review> reviews) {
+  private ReviewWrapperDto wrapReviewsToDo(Homework homework, List<Review> reviews) {
     String sourceCommitId = homework.getSourceCommitId();
-    List<ImmutablePair<Review, String>> pairs = reviews
+    List<ImmutablePair<Review, String>> pairs = extractReviewCommitPairs(homework, reviews);
+    return reviewConverter.convertToReviewWrapperDto(pairs, sourceCommitId);
+  }
+
+  private ReviewInfoWrapperDto wrapReviewInfo(Homework homework, List<Review> reviews) {
+    List<ImmutablePair<Review, String>> pairs = extractReviewCommitPairs(homework, reviews);
+    return reviewConverter.convertToReviewInfoWrapperDto(pairs, homework.getSourceCommitId());
+  }
+
+  private List<ImmutablePair<Review, String>> extractReviewCommitPairs(Homework homework, List<Review> reviews) {
+    return reviews
         .stream()
         .map(review -> {
           String commitId = solutionService
-               .requireSolutionExist(homework, review.getStudent())
-               .getSolutionAttempts()
-               .getLast()
-               .getCommitId();
-          return new ImmutablePair<>(review, commitId); })
+              .requireSolutionExist(homework, review.getStudent())
+              .getSolutionAttempts()
+              .getLast()
+              .getCommitId();
+          return new ImmutablePair<>(review, commitId);
+        })
         .toList();
-    return reviewConverter.convertToReviewWrapperDto(pairs, sourceCommitId);
   }
 
   @Transactional
@@ -240,12 +251,19 @@ public class ReviewService {
     return wrapReviewsToDo(homework, reviews);
   }
 
+  @Transactional
+  public ReviewInfoWrapperDto getReviewsInfo(Homework homework, User user) {
+    reqUtils.requireUserHasRole(user, UserRole.TEACHER);
+    List<Review> reviews =  reviewDao.findByHomework(homework);
+    return wrapReviewInfo(homework, reviews);
+  }
+
   public void setStatus(Review review, ReviewStatus status) {
     reviewConverter.setStatus(review, status);
   }
 
   public void tryAppointReviewer(Review review, User reviewer) {
-    if (reviewer == null | review == null){
+    if (reviewer == null || review == null){
       return;
     }
     review.setReviewer(reviewer);
