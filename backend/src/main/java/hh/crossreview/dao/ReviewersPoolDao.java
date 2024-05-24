@@ -25,7 +25,7 @@ public class ReviewersPoolDao extends GenericDao {
         .findFirst();
   }
 
-  public Optional<Reviewer> findAvailableReviewer(User student,Homework homework) {
+  public Optional<Reviewer> findAvailableReviewer(User student, Homework homework) {
     return getEntityManager()
         .createQuery(
     "SELECT pr FROM Reviewer pr " +

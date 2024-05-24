@@ -9,7 +9,6 @@ import hh.crossreview.entity.Review;
 import hh.crossreview.entity.User;
 import jakarta.inject.Named;
 import jakarta.inject.Singleton;
-
 import java.time.LocalDateTime;
 import java.util.List;
 
