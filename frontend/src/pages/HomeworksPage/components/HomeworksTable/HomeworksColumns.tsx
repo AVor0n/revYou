@@ -34,7 +34,7 @@ export const homeworksColumns: HomeworkTableColumn[] = [
     id: 'repoLink',
     name: () => <span>Ссылка на репозиторий</span>,
     template: ({ repositoryLink }) => (
-      <a href={repositoryLink} target="_blank" rel="noreferrer">
+      <a className="g-link g-link_view_normal" href={repositoryLink} target="_blank" rel="noreferrer">
         Репо
       </a>
     ),

@@ -1,9 +1,9 @@
 import { settings } from '@gravity-ui/date-utils';
-import { ThemeProvider, ToasterComponent, ToasterProvider } from '@gravity-ui/uikit';
+import { ToasterComponent, ToasterProvider } from '@gravity-ui/uikit';
 import { useEffect } from 'react';
 import { type Role, userActions } from './entities';
 import { useAppDispatch } from './hooks';
-import { RouterProvider } from './providers';
+import { RouterProvider, ThemeProvider } from './providers';
 
 import './global.css';
 
@@ -19,10 +19,9 @@ export const App = () => {
   }, [dispatch]);
 
   return (
-    <ThemeProvider theme="light">
+    <ThemeProvider>
       <ToasterProvider>
         <RouterProvider />
-
         <ToasterComponent />
       </ToasterProvider>
     </ThemeProvider>
