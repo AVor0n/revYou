@@ -112,27 +112,31 @@ CREATE TABLE IF NOT EXISTS review_attempt
     FOREIGN KEY (solution_attempt_id) REFERENCES solution_attempt (solution_attempt_id)
 );
 
-CREATE TABLE IF NOT EXISTS thread
+CREATE TABLE IF NOT EXISTS comments_thread
 (
-    thread_id    SERIAL PRIMARY KEY,
+    comments_thread_id    SERIAL PRIMARY KEY,
     review_id    INTEGER       NOT NULL,
+    author_id INTEGER NOT NULL,
+    status VARCHAR(20) NOT NULL,
+    commit_sha   VARCHAR(255) NOT NULL,
     file_path    VARCHAR(1000) NOT NULL,
     start_line   INTEGER       NOT NULL,
     start_symbol INTEGER       NOT NULL,
     end_line     INTEGER       NOT NULL,
     end_symbol   INTEGER       NOT NULL,
+    FOREIGN KEY (author_id) REFERENCES user_account (user_id),
     FOREIGN KEY (review_id) REFERENCES review (review_id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS comment
 (
     comment_id SERIAL PRIMARY KEY,
-    thread_id  INTEGER NOT NULL,
+    comments_thread_id  INTEGER NOT NULL,
     author_id  INTEGER NOT NULL,
     content    VARCHAR(255),
     created_at TIMESTAMP DEFAULT NOW(),
     updated_at TIMESTAMP,
-    FOREIGN KEY (thread_id) REFERENCES thread (thread_id) ON DELETE CASCADE,
+    FOREIGN KEY (comments_thread_id) REFERENCES comments_thread (comments_thread_id) ON DELETE CASCADE,
     FOREIGN KEY (author_id) REFERENCES user_account (user_id)
 );
 
@@ -233,7 +237,7 @@ VALUES ('https://158.160.88.104/gitlab/teacher_1/test_homewrok', 'Домашка
         'Решите задачу', '89d364f1b80bf49ed6eefd7abbfa8c3e740cd131', '2023-10-10 23:59:59',
         '2023-10-17 23:59:59', 48, 4, 8);
 
--- -- Вставка данных в таблицу solution
+-- Вставка данных в таблицу solution
 -- INSERT INTO solution (status, approve_score, review_score, project_id, branch, source_commit_id, homework_id,
 --                       student_id)
 -- VALUES ('IN_PROGRESS', 0, 0, 9, 'user_1_solved_hw_1', 'e814adb5c6f82e32c8ff40b945d9ee7273e9b810', 1, 1),
