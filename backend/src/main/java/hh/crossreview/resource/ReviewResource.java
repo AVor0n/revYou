@@ -177,7 +177,7 @@ public class ReviewResource {
     User user = userService.findByPrincipal(securityContext.getUserPrincipal());
     Homework homework = homeworkService.getHomeworkEntity(homeworkId);
     reviewService.uploadCorrections(homework, user, reviewId);
-    return  Response
+    return Response
         .status(Response.Status.CREATED)
         .build();
   }
