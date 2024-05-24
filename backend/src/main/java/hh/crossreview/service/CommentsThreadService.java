@@ -106,7 +106,7 @@ public class CommentsThreadService {
     requirementsUtils.requireAuthorPermissionOrAdmin(author, comment);
     Integer commentsThreadId = comment.getCommentsThread().getCommentsThreadId();
     CommentsThread commentsThread = requiredCommentsThreadExist(commentsThreadId);
-    if (commentsThread.getComments().contains(comment) && commentsThread.getComments().size() == 1){
+    if (commentsThread.getComments().size() == 1){
       commentsThreadDao.deleteCommentsThread(commentsThread);
       return;
     }

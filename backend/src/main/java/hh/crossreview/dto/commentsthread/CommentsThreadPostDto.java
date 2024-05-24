@@ -4,7 +4,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(name = "ThreadPost")
 public class CommentsThreadPostDto {
-  private Integer authorId;
 
   private Integer reviewId;
 
@@ -20,15 +19,6 @@ public class CommentsThreadPostDto {
   private Integer endSymbol;
 
   private String content;
-
-  public Integer getAuthorId() {
-    return authorId;
-  }
-
-  public CommentsThreadPostDto setAuthorId(Integer authorId) {
-    this.authorId = authorId;
-    return this;
-  }
 
   public String getCommitSha() {
     return commitSha;

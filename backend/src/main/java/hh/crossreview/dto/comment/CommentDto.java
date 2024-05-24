@@ -10,8 +10,6 @@ public class CommentDto {
 
   private Integer authorId;
 
-  private CommentsThread commentsThread;
-
   private String content;
 
   private LocalDateTime createdAt;
@@ -27,15 +25,6 @@ public class CommentDto {
 
   public CommentDto setCommentId(Integer commentId) {
     this.commentId = commentId;
-    return this;
-  }
-
-  public CommentsThread getThread() {
-    return commentsThread;
-  }
-
-  public CommentDto setThread(CommentsThread commentsThread) {
-    this.commentsThread = commentsThread;
     return this;
   }
 

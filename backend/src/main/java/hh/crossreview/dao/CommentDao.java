@@ -23,8 +23,6 @@ public class CommentDao extends GenericDao{
   }
 
   public void deleteComment(Comment comment) {
-    EntityManager entityManager = getEntityManager();
-    entityManager.remove(comment);
-    entityManager.flush();
+    getEntityManager().remove(comment);
   }
 }
