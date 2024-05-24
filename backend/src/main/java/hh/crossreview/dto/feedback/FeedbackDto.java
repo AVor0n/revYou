@@ -1,14 +1,9 @@
 package hh.crossreview.dto.feedback;
 
 import hh.crossreview.dto.user.UserDto;
-import hh.crossreview.entity.Feedback;
-
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
-/**
- * DTO for {@link Feedback}
- */
 public class FeedbackDto implements Serializable {
 
   private Integer feedbackId;
