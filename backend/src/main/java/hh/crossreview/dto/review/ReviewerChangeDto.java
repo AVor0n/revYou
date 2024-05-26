@@ -2,7 +2,7 @@ package hh.crossreview.dto.review;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-@Schema(name = "ReviewAssignment", requiredProperties = {
+@Schema(name = "ReviewerChange", requiredProperties = {
     "reviewId", "selfAssignment"
 })
 @SuppressWarnings({"unused"})
