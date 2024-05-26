@@ -4,12 +4,14 @@ import hh.crossreview.dto.exception.ExceptionDto;
 import hh.crossreview.dto.exception.ExceptionValidationDto;
 import hh.crossreview.dto.review.ReviewResolutionDto;
 import hh.crossreview.dto.review.ReviewWrapperDto;
+import hh.crossreview.dto.review.ReviewerChangeDto;
 import hh.crossreview.dto.review.info.ReviewInfoWrapperDto;
 import hh.crossreview.entity.Homework;
 import hh.crossreview.entity.User;
 import hh.crossreview.service.HomeworkService;
 import hh.crossreview.service.ReviewService;
 import hh.crossreview.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -77,6 +79,62 @@ public class ReviewResource {
     return  Response
             .status(Response.Status.CREATED)
             .build();
+  }
+
+  @PATCH
+  @Path("/assign-reviewer")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  @ApiResponse(
+      responseCode = "200",
+      description = "Review is assigned")
+  @ApiResponse(
+      responseCode = "400",
+      description = "Bad request",
+      content = @Content(schema = @Schema(implementation = ExceptionValidationDto.class)))
+  @Operation(summary =
+      "Manually assign a reviewer to the review. Available to teacher and admin. " +
+      "If the flag is set in the body of the request, " +
+      "then the author of the request will be appointed as a reviewer using a token.")
+  public Response assignReviewer(
+      ReviewerChangeDto reviewerChangeDto,
+      @PathParam("homeworkId") Integer homeworkId,
+      @Context SecurityContext securityContext
+  ) {
+    User privilegedUser = userService.findByPrincipal(securityContext.getUserPrincipal());
+    Homework homework = homeworkService.getHomeworkEntity(homeworkId);
+    reviewService.assignReviewer(privilegedUser, homework, reviewerChangeDto);
+    return Response
+        .status(Response.Status.OK)
+        .build();
+  }
+
+  @PATCH
+  @Path("/replace-reviewer")
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  @ApiResponse(
+      responseCode = "200",
+      description = "Review is assigned")
+  @ApiResponse(
+      responseCode = "400",
+      description = "Bad request",
+      content = @Content(schema = @Schema(implementation = ExceptionValidationDto.class)))
+  @Operation(summary =
+      "Manually replace a reviewer to the review. Available to teacher and admin. " +
+      "If the flag is set in the body of the request, " +
+      "then the author of the request will be appointed as a reviewer using a token.")
+  public Response replaceReviewer(
+      ReviewerChangeDto reviewerChangeDto,
+      @PathParam("homeworkId") Integer homeworkId,
+      @Context SecurityContext securityContext
+  ) {
+    User privilegedUser = userService.findByPrincipal(securityContext.getUserPrincipal());
+    Homework homework = homeworkService.getHomeworkEntity(homeworkId);
+    reviewService.replaceReviewer(privilegedUser, homework, reviewerChangeDto);
+    return Response
+        .status(Response.Status.OK)
+        .build();
   }
 
   @GET

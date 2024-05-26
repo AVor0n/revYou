@@ -94,18 +94,22 @@ public class ReviewConverter {
 
   public ReviewInfoDto convertToReviewInfoDto(Review review, String commitId) {
     StudentDto student = new StudentDto(review.getStudent());
-    StudentDto reviewer = new StudentDto(review.getReviewer());
     Duration duration = countReviewDuration(review, review.getReviewAttempts());
     List<ReviewAttemptDto> reviewAttemptsDto = convertToReviewAttemptsDto(review.getReviewAttempts());
-    return new ReviewInfoDto()
+    ReviewInfoDto reviewInfoDto = new ReviewInfoDto()
         .setReviewAttempts(reviewAttemptsDto)
         .setDuration(duration)
-        .setReviewer(reviewer)
         .setStudent(student)
         .setReviewId(review.getReviewId())
         .setStatus(review.getStatus().toString())
         .setCommitId(commitId)
         .setProjectId(review.getSolution().getProjectId());
+
+    User reviewer = review.getReviewer();
+    if (reviewer != null) {
+      reviewInfoDto.setReviewer(new StudentDto(reviewer));
+    }
+    return reviewInfoDto;
   }
 
   private List<ReviewAttemptDto> convertToReviewAttemptsDto(List<ReviewAttempt> reviewAttempts) {

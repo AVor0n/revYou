@@ -45,7 +45,8 @@ public class Review implements Statusable {
   @OneToMany(
           cascade = CascadeType.ALL,
           mappedBy = "review",
-          fetch = FetchType.EAGER)
+          fetch = FetchType.EAGER,
+          orphanRemoval = true)
   private List<ReviewAttempt> reviewAttempts;
 
   public Review(User student, Solution solution) {

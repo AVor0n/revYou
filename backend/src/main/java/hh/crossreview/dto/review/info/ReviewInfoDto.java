@@ -9,7 +9,7 @@ import java.util.List;
 @Schema(name = "ReviewInfo", requiredProperties = {
     "reviewId", "projectId", "commitId",
     "status", "duration", "student",
-    "reviewer", "reviewAttempts"})
+    "reviewAttempts"})
 @SuppressWarnings({"unused"})
 public class ReviewInfoDto {
 
