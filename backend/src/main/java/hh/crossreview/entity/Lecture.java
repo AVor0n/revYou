@@ -14,12 +14,13 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
 @Entity
 @Table
-@SuppressWarnings({"unused"})
+@SuppressWarnings({"unused"}) 
 public class Lecture implements Authorable {
 
   @Id
@@ -31,7 +32,7 @@ public class Lecture implements Authorable {
   private String name;
 
   @Column(name = "lecture_date")
-  private Date lectureDate;
+  private LocalDateTime lectureDate;
 
   @Column(name = "zoom_link")
   private String zoomLink;
@@ -101,11 +102,11 @@ public class Lecture implements Authorable {
     return this;
   }
 
-  public Date getLectureDate() {
+  public LocalDateTime getLectureDate() {
     return lectureDate;
   }
 
-  public Lecture setLectureDate(Date lectureDate) {
+  public Lecture setLectureDate(LocalDateTime lectureDate) {
     this.lectureDate = lectureDate;
     return this;
   }

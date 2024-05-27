@@ -1,21 +1,22 @@
 package hh.crossreview.dto.lecture;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Schema(name = "LecturePatch")
 public class LecturePatchDto {
   private String name;
-  private Date lectureDate;
+  private LocalDateTime lectureDate;
   private String zoomLink;
   private String presentationLink;
   private Integer lectorId;
 
-  public Date getLectureDate() {
+  public LocalDateTime getLectureDate() {
     return lectureDate;
   }
 
-  public void setLectureDate(Date lectureDate) {
+  public void setLectureDate(LocalDateTime lectureDate) {
     this.lectureDate = lectureDate;
   }
 

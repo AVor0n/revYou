@@ -4,6 +4,7 @@ import hh.crossreview.dto.user.UserDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Schema(name = "Lecture", requiredProperties = {"lectureId",
@@ -17,8 +18,7 @@ public class LectureDto implements Serializable {
   private Integer lectureId;
   @NotNull
   private String name;
-  @NotNull
-  private Date lectureDate;
+  private LocalDateTime lectureDate;
   private String zoomLink;
   private String presentationLink;
   @NotNull(message = "Field 'teacherId' couldn't be empty")
@@ -42,11 +42,11 @@ public class LectureDto implements Serializable {
     return this;
   }
 
-  public Date getLectureDate() {
+  public LocalDateTime getLectureDate() {
     return lectureDate;
   }
 
-  public LectureDto setLectureDate(Date lectureDate) {
+  public LectureDto setLectureDate(LocalDateTime lectureDate) {
     this.lectureDate = lectureDate;
     return this;
   }
