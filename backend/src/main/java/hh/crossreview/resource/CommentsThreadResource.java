@@ -5,7 +5,6 @@ import hh.crossreview.dto.commentsthread.CommentsThreadPostDto;
 import hh.crossreview.dto.commentsthread.CommentsThreadWrapperDto;
 import hh.crossreview.dto.exception.ExceptionDto;
 import hh.crossreview.dto.exception.ExceptionValidationDto;
-import hh.crossreview.dto.solution.SolutionsWrapperDto;
 import hh.crossreview.entity.User;
 import hh.crossreview.service.CommentsThreadService;
 import hh.crossreview.service.UserService;

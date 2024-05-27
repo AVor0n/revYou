@@ -2,7 +2,6 @@ package hh.crossreview.dto.lecture;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 
 @Schema(name = "LecturePost")

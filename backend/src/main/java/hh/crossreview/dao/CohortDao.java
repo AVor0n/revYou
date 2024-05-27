@@ -1,6 +1,9 @@
 package hh.crossreview.dao;
 
+import hh.crossreview.entity.Cohort;
 import jakarta.inject.Named;
+import jakarta.inject.Singleton;
+import java.util.List;
 
 @Named
 @Singleton

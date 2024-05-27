@@ -1,6 +1,5 @@
 package hh.crossreview.dto.comment;
 
-import hh.crossreview.entity.CommentsThread;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;
 
