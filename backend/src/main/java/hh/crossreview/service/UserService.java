@@ -1,8 +1,10 @@
 package hh.crossreview.service;
 
+import hh.crossreview.converter.UserConverter;
 import hh.crossreview.dao.CohortDao;
 import hh.crossreview.dao.UserDao;
 import hh.crossreview.dto.user.SignUpRequestDto;
+import hh.crossreview.dto.user.UserPatchDto;
 import hh.crossreview.entity.Cohort;
 import hh.crossreview.entity.User;
 import hh.crossreview.entity.enums.UserRole;
@@ -32,11 +34,13 @@ public class UserService implements UserDetailsService {
   private final UserDao userDao;
   private final CohortDao cohortDao;
   private final PasswordEncoder passwordEncoder;
+  private final UserConverter userConverter;
 
-  public UserService(UserDao userDao, CohortDao cohortDao, PasswordEncoder passwordEncoder) {
+  public UserService(UserDao userDao, CohortDao cohortDao, PasswordEncoder passwordEncoder, UserConverter userConverter) {
     this.userDao = userDao;
     this.cohortDao = cohortDao;
     this.passwordEncoder = passwordEncoder;
+    this.userConverter = userConverter;
   }
 
 
@@ -101,4 +105,22 @@ public class UserService implements UserDetailsService {
     return user;
 
   }
+
+
+  @Transactional
+  public void updateProfile(Principal principal, UserPatchDto userPatchDto) {
+    String username = userPatchDto.getUsername();
+    if (userPatchDto.getUsername() != null) {
+      requireUsernameUnique(username);
+    }
+    User user = findByPrincipal(principal);
+    userConverter.merge(user, userPatchDto);
+  }
+
+  private void requireUsernameUnique(String username) {
+    if (!userDao.findByUsername(username).isEmpty()) {
+      throw new BadRequestException("Username already taken");
+    }
+  }
+
 }
