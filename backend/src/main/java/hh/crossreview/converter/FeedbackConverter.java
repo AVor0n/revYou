@@ -9,7 +9,6 @@ import hh.crossreview.entity.Review;
 import hh.crossreview.entity.User;
 import jakarta.inject.Named;
 import jakarta.inject.Singleton;
-
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -23,7 +22,7 @@ public class FeedbackConverter {
   public FeedbackDto convertToFeedbackDto(Feedback feedback) {
     return new FeedbackDto().setFeedbackId(feedback.getFeedbackId()).setReviewId(feedback.getReview().getReviewId())
         .setStudent(converToUserDto(feedback.getStudent())).setRating(feedback.getRating())
-            .setFeedbackDate(feedback.getFeedbackDate()).setDescription(feedback.getDescription());
+        .setFeedbackDate(feedback.getFeedbackDate()).setDescription(feedback.getDescription());
   }
 
   private UserDto converToUserDto(User user) {
@@ -33,8 +32,9 @@ public class FeedbackConverter {
 
   public Feedback convertToFeedback(FeedbackPostDto feedbackPostDto, Review review, User student) {
     return new Feedback().setReview(review).setStudent(student).setRating(feedbackPostDto.getRating()).setFeedbackDate(
-            LocalDateTime.now()).setDescription(feedbackPostDto.getDescription());
+        LocalDateTime.now()).setDescription(feedbackPostDto.getDescription());
   }
+
   public FeedbackPostResponseDto convertToFeedbackPostResponseDto(Integer feedbackId) {
     return new FeedbackPostResponseDto(feedbackId);
   }

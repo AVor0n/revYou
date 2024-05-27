@@ -18,14 +18,14 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 
 @Named
 @Singleton
-public class FeedbackService extends GenericService{
-  private FeedbackDao feedbackDao;
-  private FeedbackConverter feedbackConverter;
+public class FeedbackService extends GenericService {
+  private final FeedbackDao feedbackDao;
+  private final FeedbackConverter feedbackConverter;
 
   public FeedbackService(FeedbackDao feedbackDao, FeedbackConverter feedbackConverter, UserDao userDao, HomeworkDao homeworkDao) {
     super(userDao);
     this.feedbackDao = feedbackDao;
-   this.feedbackConverter = feedbackConverter;
+    this.feedbackConverter = feedbackConverter;
   }
 
   @Transactional
