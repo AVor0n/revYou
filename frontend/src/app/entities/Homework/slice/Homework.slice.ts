@@ -1,5 +1,6 @@
 import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
-import { loadHomeworks, selectHomework } from '../services';
+import { createHomework, deleteHomework, editHomework, loadHomeworks, selectHomeworkForEdit } from '../services';
+import { selectHomeworkForView } from '../services/selectHomeworkForEdit.thunk';
 import { type HomeworkSchema } from '../types';
 
 const initialState: HomeworkSchema = {
@@ -24,8 +25,20 @@ export const homeworkSlice = createSlice({
     builder.addCase(loadHomeworks.fulfilled, (state, { payload }) => {
       state.homeworks = payload;
     });
-    builder.addCase(selectHomework.fulfilled, (state, { payload }) => {
+    builder.addCase(selectHomeworkForView.fulfilled, (state, { payload }) => {
       state.selectedHomework = payload;
+    });
+    builder.addCase(selectHomeworkForEdit.fulfilled, (state, { payload }) => {
+      state.homeworkForEdit = payload;
+    });
+    builder.addCase(createHomework.fulfilled, state => {
+      state.homeworks = null;
+    });
+    builder.addCase(editHomework.fulfilled, state => {
+      state.homeworks = null;
+    });
+    builder.addCase(deleteHomework.fulfilled, state => {
+      state.homeworks = null;
     });
     builder.addCase(loadHomeworks.rejected, (state, { payload }: PayloadAction<string | undefined>) => {
       state.error = payload ?? '';

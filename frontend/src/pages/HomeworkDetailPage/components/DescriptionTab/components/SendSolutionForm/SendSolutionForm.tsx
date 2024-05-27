@@ -1,9 +1,10 @@
 import { Button } from '@gravity-ui/uikit';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Controller, useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
 import { Input } from '@components/Input';
-import { createSolution, useAppDispatch } from 'app';
+import { createSolution, loadMySolutions, useAppDispatch } from 'app';
 import styles from './SendSolutionForm.module.scss';
 
 const sendSolution = yup
@@ -17,6 +18,7 @@ interface SendSolutionFormProps {
 }
 
 export const SendSolutionForm = ({ homeworkId }: SendSolutionFormProps) => {
+  const navigate = useNavigate();
   const {
     control,
     handleSubmit,
@@ -28,8 +30,10 @@ export const SendSolutionForm = ({ homeworkId }: SendSolutionFormProps) => {
 
   const dispatch = useAppDispatch();
 
-  const onSendSolution = handleSubmit(data => {
-    dispatch(createSolution({ homeworkId, branchLink: data.branchLink }));
+  const onSendSolution = handleSubmit(async data => {
+    await dispatch(createSolution({ homeworkId, branchLink: data.branchLink })).unwrap();
+    await dispatch(loadMySolutions(homeworkId)).unwrap();
+    navigate(`/homeworks/${homeworkId}/my-solution`);
   });
 
   return (

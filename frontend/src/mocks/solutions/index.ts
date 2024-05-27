@@ -88,9 +88,12 @@ export const solutionsHandlers = [
       }
 
       const response = await fetch(
-        bypass(`https://gitlab.com/api/v4/projects/${projectId}/repository/files/${path}/raw?ref=${ref}`),
+        bypass(
+          `https://gitlab.com/api/v4/projects/${projectId}/repository/files/${encodeURIComponent(path)}/raw?ref=${ref}`,
+        ),
       ).then<string>(res => res.text());
 
+      if (response === '{"message":"404 File Not Found"}') return HttpResponse.json(null, { status: 404 });
       return HttpResponse.json(response);
     },
   ),

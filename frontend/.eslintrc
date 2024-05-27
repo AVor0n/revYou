@@ -12,33 +12,27 @@
     "plugin:@typescript-eslint/recommended-type-checked",
     "plugin:@typescript-eslint/stylistic-type-checked",
     "plugin:@typescript-eslint/strict-type-checked",
-    "eslint-config-prettier"
+    "eslint-config-prettier",
   ],
   "plugins": ["@typescript-eslint", "import", "react-refresh", "jsx-expressions"],
-  "ignorePatterns": [
-    "dist",
-    "scripts",
-    ".eslintrc.cjs",
-    "stylelint.config.cjs",
-    "vite.config.ts"
-  ],
+  "ignorePatterns": ["dist", "scripts", ".eslintrc.cjs", "stylelint.config.cjs", "vite.config.ts"],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "ecmaVersion": "latest",
     "sourceType": "module",
-    "project": ["./tsconfig.json", "./tsconfig.node.json"]
+    "project": ["./tsconfig.json", "./tsconfig.node.json"],
   },
   "env": { "browser": true, "es2020": true },
   "settings": {
     "import/resolver": {
       "typescript": {
         "alwaysTryTypes": true,
-        "project": "tsconfig.json"
-      }
+        "project": "tsconfig.json",
+      },
     },
     "react": {
-      "version": "detect"
-    }
+      "version": "detect",
+    },
   },
   "rules": {
     "arrow-body-style": ["error", "as-needed"],
@@ -86,6 +80,13 @@
     "import/no-cycle": ["error", { "maxDepth": 3, "ignoreExternal": true }],
     "import/prefer-default-export": "off",
     "import/no-duplicates": ["error", { "prefer-inline": true }],
+    "no-restricted-imports": [
+      "error",
+      {
+        "name": "@gravity-ui/uikit/toaster-singleton",
+        "message": "Нужно использовать @gravity-ui/uikit/toaster-singleton-react-18",
+      },
+    ],
     "import/order": [
       "error",
       {
@@ -93,28 +94,28 @@
         "newlines-between": "never",
         "alphabetize": {
           "order": "asc",
-          "caseInsensitive": true
+          "caseInsensitive": true,
         },
         "pathGroups": [
           {
             "pattern": "@(components)|(pages)|(types)/*",
-            "group": "internal"
+            "group": "internal",
           },
           {
             "pattern": "./*.module.scss",
             "group": "object",
-            "position": "after"
-          }
-        ]
-      }
-    ]
+            "position": "after",
+          },
+        ],
+      },
+    ],
   },
-    "overrides": [
+  "overrides": [
     {
       "files": ["./src/mocks/**/*"],
       "rules": {
         "import/no-extraneous-dependencies": "off",
       },
-    }
-  ]
+    },
+  ],
 }

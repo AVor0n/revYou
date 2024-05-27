@@ -1,10 +1,16 @@
 import { Route, Routes } from 'react-router-dom';
 import { HomeworkDetailPage } from '@pages/HomeworkDetailPage';
-import { AuthPage, HomeworksPage, NotFoundPage, SolutionDetailPage } from 'pages';
+import { AuthPage, HomeworksPage, NotFoundPage, ReviewPage } from 'pages';
 import { Layout } from '../../../components';
 import { AuthRequire } from './AuthRequire';
 
-const navLinks = [{ title: 'Домашки', href: '/homeworks', element: <HomeworksPage /> }];
+const onLogout = () => {
+  localStorage.removeItem('accessToken');
+  localStorage.removeItem('refreshToken');
+  localStorage.removeItem('role');
+};
+
+const navLinks = [{ title: 'Выйти', href: '/auth', element: <AuthPage />, onClick: onLogout }];
 
 export const RouterProvider = () => (
   <Routes>
@@ -18,13 +24,11 @@ export const RouterProvider = () => (
         element={
           <AuthRequire>
             <Routes>
-              {navLinks.map(link => (
-                <Route key={link.href} element={link.element} path={link.href} />
-              ))}
+              <Route index path="/" element={<HomeworksPage />} />
               <Route element={<HomeworksPage />} path="/homeworks/create?" />
-              <Route element={<HomeworksPage />} path="/homeworks/:id/edit" />
-              <Route element={<HomeworkDetailPage />} path="/homeworks/:id/:tab?" />
-              <Route element={<SolutionDetailPage />} path="/solutions/:id/:tab?" />
+              <Route element={<HomeworksPage />} path="/homeworks/:homeworkId/edit" />
+              <Route element={<HomeworkDetailPage />} path="/homeworks/:homeworkId/:tab?" />
+              <Route element={<ReviewPage />} path="/homeworks/:homeworkId/review/:reviewId/:role/:tab?" />
               <Route element={<NotFoundPage />} path="/*" />
             </Routes>
           </AuthRequire>

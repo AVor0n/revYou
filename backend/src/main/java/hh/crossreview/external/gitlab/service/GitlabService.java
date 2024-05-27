@@ -49,7 +49,7 @@ public class GitlabService {
       RepositoryInfo repositoryInfo = parseBranchLink(branchLink);
       Integer projectId = retrieveProjectId(repositoryInfo.getProjectPath());
       repositoryInfo.setProjectId(projectId);
-      requireBranchUnique(repositoryInfo);
+//      requireBranchUnique(repositoryInfo);
       getBranchRequest(repositoryInfo);
       return repositoryInfo;
     } catch (HttpClientErrorException | HttpServerErrorException e) {

@@ -3,7 +3,6 @@ package hh.crossreview.unit.service;
 import hh.crossreview.converter.SolutionConverter;
 import hh.crossreview.dao.SolutionAttemptDao;
 import hh.crossreview.dao.SolutionDao;
-import hh.crossreview.dto.solution.SolutionAttemptDto;
 import hh.crossreview.dto.solution.SolutionDto;
 import hh.crossreview.dto.solution.SolutionPatchDto;
 import hh.crossreview.dto.solution.SolutionPostDto;
@@ -13,8 +12,8 @@ import hh.crossreview.entity.SolutionAttempt;
 import hh.crossreview.entity.User;
 import hh.crossreview.entity.enums.SolutionStatus;
 import hh.crossreview.entity.enums.UserRole;
-import hh.crossreview.external.gitlab.service.GitlabService;
 import hh.crossreview.external.gitlab.entity.RepositoryInfo;
+import hh.crossreview.external.gitlab.service.GitlabService;
 import hh.crossreview.service.SolutionService;
 import hh.crossreview.unit.TestsUtil;
 import hh.crossreview.utils.RequirementsUtils;
@@ -23,7 +22,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -175,34 +173,6 @@ class SolutionServiceTests extends TestsUtil {
     SolutionPatchDto solutionPatchDto = new SolutionPatchDto();
     solutionPatchDto.setBranchLink(branchLink);
     return solutionPatchDto;
-  }
-
-  @SuppressWarnings("SameParameterValue")
-  Solution createSolution(
-      Integer solutionId,
-      SolutionStatus solutionStatus,
-      User student,
-      Integer projectId,
-      String branch,
-      List<SolutionAttempt> solutionAttempts
-  ) {
-    return new Solution()
-        .setSolutionId(solutionId)
-        .setStatus(solutionStatus)
-        .setStudent(student)
-        .setProjectId(projectId)
-        .setBranch(branch)
-        .setSolutionAttempts(solutionAttempts);
-  }
-
-  @SuppressWarnings("SameParameterValue")
-  SolutionAttempt createSolutionAttempt(
-      String commitId,
-      LocalDateTime createdAt
-  ) {
-    return new SolutionAttempt()
-        .setCommitId(commitId)
-        .setCreatedAt(createdAt);
   }
 
 }

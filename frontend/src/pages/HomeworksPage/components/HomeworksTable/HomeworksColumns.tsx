@@ -10,7 +10,7 @@ export const homeworksColumns: HomeworkTableColumn[] = [
   {
     id: 'departments',
     name: () => <span>Направление</span>,
-    template: ({ departments }) => departments?.join(', '),
+    template: ({ departments }) => departments.join(', '),
     placeholder: 'Не задано',
   },
   {
@@ -21,13 +21,13 @@ export const homeworksColumns: HomeworkTableColumn[] = [
   {
     id: 'author',
     name: () => <span>Автор</span>,
-    template: ({ author }) => `${author?.firstName ?? ''} ${author?.lastName ?? ''}`,
+    template: ({ author }) => `${author.firstName} ${author.lastName}`,
     meta: { sort: true },
   },
   {
     id: 'lecture',
     name: () => <span>Лекция</span>,
-    template: ({ lecture }) => lecture?.name,
+    template: ({ lecture }) => lecture.name,
     meta: { sort: true },
   },
   {
@@ -55,9 +55,7 @@ export const homeworksColumns: HomeworkTableColumn[] = [
     meta: { sort: true },
   },
   {
-    // FIXME: #back
-    // опечатка в api reviewDuraion -> reviewDuration
-    id: 'reviewDuraion',
+    id: 'reviewDuration',
     name: () => <span>Дедлайн проверки</span>,
     template: ({ reviewDuration }) => `${reviewDuration} ч`,
     meta: { sort: true },

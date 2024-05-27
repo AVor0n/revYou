@@ -1,7 +1,7 @@
-import type { Solution } from '@domains';
+import type { Review } from '@domains';
 
 export interface ReviewSchema {
-  solutionInfo: Solution | null;
+  reviewInfo: Review | null;
   filesTree: FilesTree | null;
   activeFilePath: string;
   sourceActiveFileContent: string | null;

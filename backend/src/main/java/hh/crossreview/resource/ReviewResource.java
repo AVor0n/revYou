@@ -4,6 +4,7 @@ import hh.crossreview.dto.exception.ExceptionDto;
 import hh.crossreview.dto.exception.ExceptionValidationDto;
 import hh.crossreview.dto.review.ReviewResolutionDto;
 import hh.crossreview.dto.review.ReviewWrapperDto;
+import hh.crossreview.dto.review.info.ReviewInfoWrapperDto;
 import hh.crossreview.entity.Homework;
 import hh.crossreview.entity.User;
 import hh.crossreview.service.HomeworkService;
@@ -30,7 +31,7 @@ import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.SecurityContext;
 
 @Named
-@Path("/homeworks/{homeworkId}/")
+@Path("/homeworks/{homeworkId}/reviews")
 @Singleton
 @Tag(name = "Reviews")
 @ApiResponse(
@@ -72,7 +73,7 @@ public class ReviewResource {
           @Context SecurityContext securityContext) {
     User user = userService.findByPrincipal(securityContext.getUserPrincipal());
     Homework homework = homeworkService.getHomeworkEntity(homeworkId);
-    reviewService.createReview(homework, user);
+    reviewService.requestReview(homework, user);
     return  Response
             .status(Response.Status.CREATED)
             .build();
@@ -119,8 +120,28 @@ public class ReviewResource {
             .build();
   }
 
+  @GET
+  @Path("/reviews-info")
+  @Produces(MediaType.APPLICATION_JSON)
+  @ApiResponse(
+      responseCode = "200",
+      description = "Successful operation",
+      content = @Content(schema = @Schema(implementation = ReviewInfoWrapperDto.class)))
+  public Response getReviewsInfo(
+      @PathParam("homeworkId") Integer homeworkId,
+      @Context SecurityContext securityContext
+  ) {
+    User user = userService.findByPrincipal(securityContext.getUserPrincipal());
+    Homework homework = homeworkService.getHomeworkEntity(homeworkId);
+    ReviewInfoWrapperDto reviewInfoWrapperDto = reviewService.getReviewsInfo(homework, user);
+    return Response
+        .status(Response.Status.OK)
+        .entity(reviewInfoWrapperDto)
+        .build();
+  }
+
   @POST
-  @Path("/reviews/{reviewId}/start")
+  @Path("/{reviewId}/start")
   @Produces(MediaType.APPLICATION_JSON)
   @ApiResponse(
           responseCode = "201",
@@ -130,19 +151,39 @@ public class ReviewResource {
           description = "Bad request",
           content = @Content(schema = @Schema(implementation = ExceptionValidationDto.class)))
   public Response startReview(
-          @PathParam("homeworkId") Integer homeworkId,
           @PathParam("reviewId") Integer reviewId,
           @Context SecurityContext securityContext) {
     User user = userService.findByPrincipal(securityContext.getUserPrincipal());
-    Homework homework = homeworkService.getHomeworkEntity(homeworkId);
-    reviewService.startReview(homework, user, reviewId);
+    reviewService.startReview(user, reviewId);
     return  Response
             .status(Response.Status.CREATED)
             .build();
   }
 
+  @POST
+  @Path("/{reviewId}/upload-corrections")
+  @Produces(MediaType.APPLICATION_JSON)
+  @ApiResponse(
+      responseCode = "201",
+      description = "Created")
+  @ApiResponse(
+      responseCode = "400",
+      description = "Bad request",
+      content = @Content(schema = @Schema(implementation = ExceptionValidationDto.class)))
+  public Response uploadCorrections(
+      @PathParam("homeworkId") Integer homeworkId,
+      @PathParam("reviewId") Integer reviewId,
+      @Context SecurityContext securityContext) {
+    User user = userService.findByPrincipal(securityContext.getUserPrincipal());
+    Homework homework = homeworkService.getHomeworkEntity(homeworkId);
+    reviewService.uploadCorrections(homework, user, reviewId);
+    return Response
+        .status(Response.Status.CREATED)
+        .build();
+  }
+
   @PATCH
-  @Path("/reviews/{reviewId}/resolution")
+  @Path("/{reviewId}/resolution")
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   @ApiResponse(
@@ -154,10 +195,12 @@ public class ReviewResource {
           content = @Content(schema = @Schema(implementation = ExceptionValidationDto.class)))
   public Response addReviewResolution(
           ReviewResolutionDto reviewResolutionDto,
+          @PathParam("homeworkId") Integer homeworkId,
           @PathParam("reviewId") Integer reviewId,
           @Context SecurityContext securityContext) {
     User user = userService.findByPrincipal(securityContext.getUserPrincipal());
-    reviewService.addReviewResolution(user, reviewId, reviewResolutionDto);
+    Homework homework = homeworkService.getHomeworkEntity(homeworkId);
+    reviewService.addReviewResolution(homework, user, reviewId, reviewResolutionDto);
     return  Response
             .status(Response.Status.CREATED)
             .build();

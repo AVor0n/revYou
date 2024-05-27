@@ -17,7 +17,7 @@ public class FeedbackDao extends GenericDao {
         .getResultList();
   }
 
-  public void createFeedback(Feedback feedback) {
+  public void createFeedback(Feedback feedback){
     getEntityManager().persist(feedback);
   }
 

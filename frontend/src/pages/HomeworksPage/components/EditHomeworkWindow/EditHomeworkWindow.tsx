@@ -2,6 +2,7 @@ import { DatePicker } from '@gravity-ui/date-components';
 import { dateTimeParse } from '@gravity-ui/date-utils';
 import { RadioButton, Text } from '@gravity-ui/uikit';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { FormWindow } from '@components/FormWindow';
@@ -19,16 +20,18 @@ interface EditHomeworkWindowProps {
 
 export const EditHomeworkWindow = ({ record, open }: EditHomeworkWindowProps) => {
   const dispatch = useAppDispatch();
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const {
     reset,
     control,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isValid },
   } = useForm<HomeworkPatch>({
     resolver: yupResolver(editHomeworkSchema),
     mode: 'all',
     defaultValues: defaultHomework,
+    disabled: loading,
     values: {
       name: record?.name ?? defaultHomework.name,
       topic: record?.topic ?? defaultHomework.topic,
@@ -45,15 +48,30 @@ export const EditHomeworkWindow = ({ record, open }: EditHomeworkWindowProps) =>
     navigate('/homeworks');
   };
 
-  const saveHomework = handleSubmit(async data => {
+  const saveHomework = handleSubmit(data => {
     if (!record?.id) return;
-    await dispatch(editHomework([record.id, data]));
-    closeWindow();
-    await dispatch(loadHomeworks());
+    setLoading(true);
+    dispatch(editHomework([record.id, data]))
+      .unwrap()
+      .then(() => {
+        closeWindow();
+        dispatch(loadHomeworks());
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   });
 
   return (
-    <FormWindow title="Редактирование задания" open={open} onClose={closeWindow} onSubmit={saveHomework}>
+    <FormWindow
+      title="Редактирование задания"
+      open={open}
+      onClose={closeWindow}
+      onSubmit={saveHomework}
+      saveDisabled={!isValid}
+      saveLoading={loading}
+      cancelDisabled={loading}
+    >
       <div className={styles.content}>
         <Controller
           name="name"
@@ -86,10 +104,9 @@ export const EditHomeworkWindow = ({ record, open }: EditHomeworkWindowProps) =>
           control={control}
           render={({ field }) => (
             <DatePicker
-              name={field.name}
+              {...field}
               value={dateTimeParse(field.value)}
               onUpdate={value => field.onChange(value?.toDate())}
-              onBlur={field.onBlur}
               label="Дата выдачи"
               size="l"
               validationState={errors.startDate?.message ? 'invalid' : undefined}
@@ -102,10 +119,9 @@ export const EditHomeworkWindow = ({ record, open }: EditHomeworkWindowProps) =>
           control={control}
           render={({ field }) => (
             <DatePicker
-              name={field.name}
+              {...field}
               value={dateTimeParse(field.value)}
               onUpdate={value => field.onChange(value?.toDate())}
-              onBlur={field.onBlur}
               label="Дедлайн выполнения"
               size="l"
               validationState={errors.completionDeadline?.message ? 'invalid' : undefined}
@@ -119,8 +135,8 @@ export const EditHomeworkWindow = ({ record, open }: EditHomeworkWindowProps) =>
           control={control}
           render={({ field }) => (
             <RadioButton
+              {...field}
               value={field.value?.toString()}
-              onChange={field.onChange}
               size="l"
               options={[
                 { value: '24', content: '24ч' },

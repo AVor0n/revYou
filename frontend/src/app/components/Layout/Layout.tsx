@@ -4,7 +4,7 @@ import { NavLink, Outlet } from 'react-router-dom';
 import styles from './Layout.module.scss';
 
 interface LayoutProps {
-  navLinks?: { title: string; href: string }[];
+  navLinks?: { title: string; href: string; onClick?: () => void }[];
 }
 
 export const Layout = ({ navLinks }: LayoutProps) => (
@@ -18,8 +18,8 @@ export const Layout = ({ navLinks }: LayoutProps) => (
 
           {!!navLinks?.length && (
             <nav className={styles.navLinks}>
-              {navLinks.map(({ title, href }) => (
-                <NavLink className={styles.navLink} to={href} key={href}>
+              {navLinks.map(({ title, href, onClick }) => (
+                <NavLink className={styles.navLink} to={href} key={href} onClick={onClick}>
                   {title}
                 </NavLink>
               ))}

@@ -1,4 +1,4 @@
 import { type StoreSchema } from 'app';
 
-export const getSolutions = (state: StoreSchema) => state.solution.solutions;
-export const getSolutionInfo = (state: StoreSchema) => state.solution.solutionInfo;
+export const getMySolutions = (state: StoreSchema) => state.solution.mySolutions;
+export const getSolutionsForReview = (state: StoreSchema) => state.solution.solutionsForReview;

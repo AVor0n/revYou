@@ -52,6 +52,21 @@ public class ReviewDao extends GenericDao {
             .toList();
   }
 
+  public List<Review> findReviewsByHomeworkAndStatus(Homework homework, ReviewStatus reviewStatus, int maxResult) {
+    return getEntityManager()
+        .createQuery(
+            "SELECT r FROM Review r " +
+                "JOIN r.solution s " +
+                "WHERE s.homework = :homework " +
+                "AND r.status = :status ",
+            Review.class
+        )
+        .setParameter("homework", homework)
+        .setParameter("status", reviewStatus)
+        .setMaxResults(maxResult)
+        .getResultList();
+  }
+
   public Long countInProgressReviewsByReviewerAndHomework(User reviewer, Homework homework) {
     return getEntityManager()
         .createQuery("SELECT COUNT(*) FROM Review r " +
@@ -64,5 +79,31 @@ public class ReviewDao extends GenericDao {
         .setParameter("homework", homework)
         .setParameter("reviewStatuses", ReviewStatus.getInProgressStatuses())
         .getSingleResult();
+  }
+
+  public Long countReviewsByTeacherAndHomework(Homework homework) {
+    return getEntityManager()
+        .createQuery(
+            "SELECT COUNT(*) FROM Review r " +
+                "JOIN r.solution s " +
+                "WHERE s.homework = :homework " +
+                "AND r.reviewer = :reviewer ",
+            Long.class
+        )
+        .setParameter("homework", homework)
+        .setParameter("reviewer", homework.getAuthor())
+        .getSingleResult();
+  }
+
+  public List<Review> findByHomework(Homework homework) {
+    return getEntityManager()
+        .createQuery(
+            "SELECT r FROM Review r " +
+                "JOIN r.solution s " +
+                "WHERE s.homework = :homework ",
+            Review.class
+        )
+        .setParameter("homework", homework)
+        .getResultList();
   }
 }

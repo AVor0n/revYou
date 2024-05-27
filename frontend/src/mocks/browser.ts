@@ -1,6 +1,7 @@
 import { http, passthrough } from 'msw';
 import { setupWorker } from 'msw/browser';
 import { homeworksHandlers } from './homeworks';
+import { reviewHandlers } from './reviews';
 import { solutionsHandlers } from './solutions';
 import { usersHandlers } from './user';
 
@@ -17,4 +18,5 @@ export const worker = setupWorker(
   ...homeworksHandlers,
   ...usersHandlers,
   ...solutionsHandlers,
+  ...reviewHandlers,
 );

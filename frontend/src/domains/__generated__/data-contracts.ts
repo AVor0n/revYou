@@ -46,6 +46,16 @@ export interface SignUpRequest {
   email: string;
 }
 
+export interface FeedbackPost {
+  /** @format int32 */
+  review: number;
+  /** @format int32 */
+  student: number;
+  /** @format int32 */
+  rating: number;
+  description: string;
+}
+
 export interface Diff {
   new_path: string;
   old_path: string;
@@ -136,16 +146,19 @@ export interface HomeworkPatch {
   reviewDuration?: HomeworkPatchReviewDurationEnum;
 }
 
+export interface ReviewResolutionDto {
+  status?: string;
+  resolution?: string;
+}
+
 export interface Review {
   /** @format int32 */
   reviewId?: number;
-  /** @format int32 */
-  studentId?: number;
-  /** @format int32 */
-  reviewerId?: number;
   status?: string;
   /** @format int32 */
-  solutionId?: number;
+  projectId?: number;
+  sourceCommitId?: string;
+  commitId?: string;
   reviewAttempts?: ReviewAttempt[];
 }
 
@@ -161,6 +174,10 @@ export interface ReviewAttempt {
   /** @format date-time */
   finishedAt?: string;
   resolution?: string;
+}
+
+export interface ReviewWrapper {
+  data: Review[];
 }
 
 export interface Solution {

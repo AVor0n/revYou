@@ -13,6 +13,7 @@ import {
   DiffsWrapper,
   Exception,
   ExceptionValidation,
+  FeedbackPost,
   GetDiffsParams,
   GetRawFileParams,
   Homework,
@@ -21,12 +22,12 @@ import {
   HomeworkPostResponse,
   HomeworksWrapper,
   RefreshAccessTokenRequestDto,
-  Review,
+  ReviewResolutionDto,
+  ReviewWrapper,
   SignInRequest,
   SignInResponse,
   SignUpRequest,
   Solution,
-  SolutionAttempt,
   SolutionPatch,
   SolutionPost,
   SolutionWrapper,
@@ -92,6 +93,33 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
   /**
    * No description
    *
+   * @name GetFeedbacks
+   * @request GET:/api/feedbacks
+   * @response `default` `unknown` default response
+   */
+  getFeedbacks = (params: RequestParams = {}) =>
+    this.request<any, unknown>({
+      path: `/api/feedbacks`,
+      method: 'GET',
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @name CreateFeedback
+   * @request POST:/api/feedbacks
+   * @response `default` `unknown` default response
+   */
+  createFeedback = (data: FeedbackPost, params: RequestParams = {}) =>
+    this.request<any, unknown>({
+      path: `/api/feedbacks`,
+      method: 'POST',
+      body: data,
+      ...params,
+    });
+  /**
+   * No description
+   *
    * @tags Gitlab
    * @name GetDiffs
    * @request GET:/api/gitlab/projects/{projectId}/repository/compare
@@ -115,11 +143,11 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
    * @name GetRawFile
    * @request GET:/api/gitlab/projects/{projectId}/repository/files/{filePath}/raw
    * @secure
-   * @response `200` `unknown` Successful operation
+   * @response `200` `string` Successful operation
    * @response `403` `Exception` Forbidden request
    */
   getRawFile = ({ projectId, filePath, ...query }: GetRawFileParams, params: RequestParams = {}) =>
-    this.request<unknown, Exception>({
+    this.request<string, Exception>({
       path: `/api/gitlab/projects/${projectId}/repository/files/${filePath}/raw`,
       method: 'GET',
       query: query,
@@ -242,20 +270,116 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
    * No description
    *
    * @tags Reviews
-   * @name CreateReview
-   * @request POST:/api/homeworks/{homeworkId}/reviews
+   * @name AddReviewResolution
+   * @request PATCH:/api/homeworks/{homeworkId}/reviews/{reviewId}/resolution
    * @secure
-   * @response `201` `Review` Created
+   * @response `201` `unknown` Created
+   * @response `400` `ExceptionValidation` Bad request
+   * @response `403` `Exception` Forbidden request
+   * @response `404` `Exception` Not found
+   */
+  addReviewResolution = (homeworkId: number, reviewId: number, data: ReviewResolutionDto, params: RequestParams = {}) =>
+    this.request<unknown, ExceptionValidation | Exception>({
+      path: `/api/homeworks/${homeworkId}/reviews/${reviewId}/resolution`,
+      method: 'PATCH',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags Reviews
+   * @name CreateReview
+   * @request POST:/api/homeworks/{homeworkId}/reviews/request-review
+   * @secure
+   * @response `201` `unknown` Created
    * @response `400` `ExceptionValidation` Bad request
    * @response `403` `Exception` Forbidden request
    * @response `404` `Exception` Not found
    */
   createReview = (homeworkId: number, params: RequestParams = {}) =>
-    this.request<Review, ExceptionValidation | Exception>({
-      path: `/api/homeworks/${homeworkId}/reviews`,
+    this.request<unknown, ExceptionValidation | Exception>({
+      path: `/api/homeworks/${homeworkId}/reviews/request-review`,
       method: 'POST',
       secure: true,
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags Reviews
+   * @name GetMyReviews
+   * @request GET:/api/homeworks/{homeworkId}/reviews/my-reviews
+   * @secure
+   * @response `200` `ReviewWrapper` Successful operation
+   * @response `403` `Exception` Forbidden request
+   * @response `404` `Exception` Not found
+   */
+  getMyReviews = (homeworkId: number, params: RequestParams = {}) =>
+    this.request<ReviewWrapper, Exception>({
+      path: `/api/homeworks/${homeworkId}/reviews/my-reviews`,
+      method: 'GET',
+      secure: true,
       format: 'json',
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags Reviews
+   * @name GetReviewsToDo
+   * @request GET:/api/homeworks/{homeworkId}/reviews/reviews-to-do
+   * @secure
+   * @response `200` `ReviewWrapper` Successful operation
+   * @response `403` `Exception` Forbidden request
+   * @response `404` `Exception` Not found
+   */
+  getReviewsToDo = (homeworkId: number, params: RequestParams = {}) =>
+    this.request<ReviewWrapper, Exception>({
+      path: `/api/homeworks/${homeworkId}/reviews/reviews-to-do`,
+      method: 'GET',
+      secure: true,
+      format: 'json',
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags Reviews
+   * @name StartReview
+   * @request POST:/api/homeworks/{homeworkId}/reviews/{reviewId}/start
+   * @secure
+   * @response `201` `unknown` Created
+   * @response `400` `ExceptionValidation` Bad request
+   * @response `403` `Exception` Forbidden request
+   * @response `404` `Exception` Not found
+   */
+  startReview = (reviewId: number, homeworkId: string, params: RequestParams = {}) =>
+    this.request<unknown, ExceptionValidation | Exception>({
+      path: `/api/homeworks/${homeworkId}/reviews/${reviewId}/start`,
+      method: 'POST',
+      secure: true,
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags Reviews
+   * @name UploadCorrections
+   * @request POST:/api/homeworks/{homeworkId}/reviews/{reviewId}/upload-corrections
+   * @secure
+   * @response `201` `unknown` Created
+   * @response `400` `ExceptionValidation` Bad request
+   * @response `403` `Exception` Forbidden request
+   * @response `404` `Exception` Not found
+   */
+  uploadCorrections = (homeworkId: number, reviewId: number, params: RequestParams = {}) =>
+    this.request<unknown, ExceptionValidation | Exception>({
+      path: `/api/homeworks/${homeworkId}/reviews/${reviewId}/upload-corrections`,
+      method: 'POST',
+      secure: true,
       ...params,
     });
   /**
@@ -339,26 +463,6 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
       body: data,
       secure: true,
       type: ContentType.Json,
-      format: 'json',
-      ...params,
-    });
-  /**
-   * No description
-   *
-   * @tags Solutions
-   * @name CreateSolutionAttempt
-   * @request POST:/api/homeworks/{homeworkId}/solutions/attempts
-   * @secure
-   * @response `201` `SolutionAttempt` Created
-   * @response `400` `ExceptionValidation` Bad request
-   * @response `403` `Exception` Forbidden request
-   * @response `404` `Exception` Not found
-   */
-  createSolutionAttempt = (homeworkId: number, params: RequestParams = {}) =>
-    this.request<SolutionAttempt, ExceptionValidation | Exception>({
-      path: `/api/homeworks/${homeworkId}/solutions/attempts`,
-      method: 'POST',
-      secure: true,
       format: 'json',
       ...params,
     });

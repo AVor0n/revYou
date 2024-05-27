@@ -75,7 +75,6 @@ public class SolutionService {
 
   @Transactional
   public void createSolutionAttempt(Solution solution) {
-
     String commitId = gitlabService.retrieveCommitId(solution.getProjectId(), solution.getBranch());
     SolutionAttempt solutionAttempt = new SolutionAttempt(commitId, solution);
     solutionAttemptDao.save(solutionAttempt);

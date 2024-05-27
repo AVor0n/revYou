@@ -1,4 +1,4 @@
-import { toaster } from '@gravity-ui/uikit/toaster-singleton';
+import { toaster } from '@gravity-ui/uikit/toaster-singleton-react-18';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { type AxiosError } from 'axios';
 import { type Solution } from '@domains';
@@ -11,6 +11,7 @@ export const createSolution = createAsyncThunk<
 >('solution/createSolution', async ({ homeworkId, branchLink }, { extra, rejectWithValue }) => {
   try {
     const { data } = await extra.api.createSolution(homeworkId, { branchLink });
+    await extra.api.createReview(homeworkId);
 
     return data;
   } catch (e) {
