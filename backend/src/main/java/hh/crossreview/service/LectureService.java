@@ -58,7 +58,8 @@ public class LectureService extends GenericService {
   }
 
   @Transactional
-  public LecturePostPesponseDto createLecture(LecturePostDto lecturePostDto, User lector) {
+  public LecturePostPesponseDto createLecture(LecturePostDto lecturePostDto, User lector, User admin) {
+    reqUtils.requireUserHasRole(admin, UserRole.ADMIN);
     var cohorts = lecturePostDto.getCohortsId().stream().map(id -> {
       var cohort = cohortDao.find(Cohort.class, id);
       reqUtils.requireEntityNotNull(cohort, String.format("Cohort with id %d was not found", id));

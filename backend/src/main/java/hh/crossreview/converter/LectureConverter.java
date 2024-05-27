@@ -36,7 +36,8 @@ public class LectureConverter {
         .setLectureDate(lecturePostDto.getLectureDate())
         .setZoomLink(lecturePostDto.getZoomLink())
         .setPresentationLink(lecturePostDto.getPresentationLink())
-        .setLector(lector).setCohorts(cohorts);
+        .setLector(lector)
+        .setCohorts(cohorts);
   }
 
   public LecturePostPesponseDto convertToLecturePostResponseDto(Integer lectureId) {

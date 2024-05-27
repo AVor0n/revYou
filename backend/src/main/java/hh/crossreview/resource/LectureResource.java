@@ -65,8 +65,9 @@ public class LectureResource {
       description = "Bad request",
       content = @Content(schema = @Schema(implementation = ExceptionValidationDto.class)))
   public Response createLecture(LecturePostDto lecturePostDto, @Context SecurityContext securityContext) {
-    var lector = userService.findByPrincipal(securityContext.getUserPrincipal());
-    var lectureResponse = lectureService.createLecture(lecturePostDto, lector);
+    var lector = userService.findByUserId(lecturePostDto.getLectorId());
+    var admin = userService.findByPrincipal(securityContext.getUserPrincipal());
+    var lectureResponse = lectureService.createLecture(lecturePostDto, lector, admin);
     return Response.status(Response.Status.CREATED).entity(lectureResponse).build();
   }
 
