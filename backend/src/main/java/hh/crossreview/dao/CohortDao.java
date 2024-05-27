@@ -16,5 +16,4 @@ public class CohortDao extends GenericDao {
             Cohort.class)
         .getResultList();
   }
-
 }

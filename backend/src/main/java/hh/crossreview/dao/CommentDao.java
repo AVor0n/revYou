@@ -4,7 +4,6 @@ import hh.crossreview.entity.Comment;
 import hh.crossreview.entity.CommentsThread;
 import jakarta.inject.Named;
 import jakarta.inject.Singleton;
-import jakarta.persistence.EntityManager;
 import java.util.List;
 
 @Named

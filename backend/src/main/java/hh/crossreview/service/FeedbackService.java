@@ -17,9 +17,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 
 @Named
 @Singleton
-public class FeedbackService extends GenericService{
-  private FeedbackDao feedbackDao;
-  private FeedbackConverter feedbackConverter;
+public class FeedbackService extends GenericService {
+  private final FeedbackDao feedbackDao;
+  private final FeedbackConverter feedbackConverter;
 
   public FeedbackService(FeedbackDao feedbackDao, FeedbackConverter feedbackConverter, UserDao userDao) {
     super(userDao);
