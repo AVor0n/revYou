@@ -3,14 +3,13 @@ package hh.crossreview.dto.review;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(name = "ReviewerChange", requiredProperties = {
-    "reviewId", "selfAssignment"
+    "reviewId", "reviewerId"
 })
 @SuppressWarnings({"unused"})
 public class ReviewerChangeDto {
 
   private Integer reviewId;
   private Integer reviewerId;
-  private Boolean selfAssignment;
 
   public Integer getReviewId() {
     return reviewId;
@@ -20,10 +19,6 @@ public class ReviewerChangeDto {
     return reviewerId;
   }
 
-  public Boolean getSelfAssignment() {
-    return selfAssignment;
-  }
-
   public ReviewerChangeDto setReviewId(Integer reviewId) {
     this.reviewId = reviewId;
     return this;
@@ -31,11 +26,6 @@ public class ReviewerChangeDto {
 
   public ReviewerChangeDto setReviewerId(Integer reviewerId) {
     this.reviewerId = reviewerId;
-    return this;
-  }
-
-  public ReviewerChangeDto setSelfAssignment(Boolean selfAssignment) {
-    this.selfAssignment = selfAssignment;
     return this;
   }
 

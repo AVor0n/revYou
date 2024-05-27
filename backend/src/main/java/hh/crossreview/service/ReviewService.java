@@ -125,13 +125,10 @@ public class ReviewService {
     reqUtils.requireAuthorPermissionOrAdmin(privilegedUser, homework);
     Integer reviewId = reviewerChangeDto.getReviewId();
     Integer reviewerId = reviewerChangeDto.getReviewerId();
-    Review review = reviewDao.find(Review.class, reviewId);
-    reqUtils.requireEntityNotNull(review, String.format("Review with id %d was not found", reviewId));
+    Review review = requireReviewExist(reviewId);
     reqUtils.requireEntityHasStatus(review, ReviewStatus.REVIEWER_SEARCH.toString());
 
-    User reviewer = Boolean.TRUE.equals(reviewerChangeDto.getSelfAssignment()) ?
-        privilegedUser :
-        getAndValidateReviewerForAssignment(homework, reviewerId);
+    User reviewer = getAndValidateReviewerForAssignment(homework, reviewerId);
     tryAppointReviewer(review, reviewer);
   }
 
@@ -140,12 +137,8 @@ public class ReviewService {
     reqUtils.requireAuthorPermissionOrAdmin(privilegedUser, homework);
     Integer reviewId = reviewerChangeDto.getReviewId();
     Integer reviewerId = reviewerChangeDto.getReviewerId();
-    Review review = reviewDao.find(Review.class, reviewId);
-    reqUtils.requireEntityNotNull(review, String.format("Review with id %d was not found", reviewId));
-
-    User newReviewer = Boolean.TRUE.equals(reviewerChangeDto.getSelfAssignment()) ?
-        privilegedUser :
-        getAndValidateReviewerForAssignment(homework, reviewerId);
+    Review review = requireReviewExist(reviewId);
+    User newReviewer = getAndValidateReviewerForAssignment(homework, reviewerId);
     if (review.getReviewer() == null) {
       throw new BadRequestException(
           "Review does not have a reviewer. " +
@@ -160,7 +153,8 @@ public class ReviewService {
   private User getAndValidateReviewerForAssignment(Homework homework, Integer reviewerId) {
     User reviewer = userService.findById(reviewerId);
     reqUtils.requireEntityNotNull(reviewer, String.format("Reviewer with id %d was not found", reviewerId));
-    if (!reviewersPoolService.checkStatus(reviewer, homework, ReviewerStatus.COMPLETE)) {
+    if (!reviewer.getRole().equals(UserRole.TEACHER) &&
+        !reviewersPoolService.checkStatus(reviewer, homework, ReviewerStatus.COMPLETE)) {
       throw new BadRequestException("Reviewer has not completed homework yet");
     }
     return reviewer;
