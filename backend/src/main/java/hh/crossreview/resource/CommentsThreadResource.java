@@ -5,6 +5,7 @@ import hh.crossreview.dto.commentsthread.CommentsThreadPostDto;
 import hh.crossreview.dto.commentsthread.CommentsThreadWrapperDto;
 import hh.crossreview.dto.exception.ExceptionDto;
 import hh.crossreview.dto.exception.ExceptionValidationDto;
+import hh.crossreview.dto.solution.SolutionsWrapperDto;
 import hh.crossreview.entity.User;
 import hh.crossreview.service.CommentsThreadService;
 import hh.crossreview.service.UserService;
@@ -82,6 +83,10 @@ public class CommentsThreadResource {
   @Path("/review/{reviewId}")
   @Produces(MediaType.APPLICATION_JSON)
   @Operation(summary = "Get all treads and comments by reviewId. Available to review participants, admin and teacher")
+  @ApiResponse(
+          responseCode = "200",
+          description = "Successful operation",
+          content = @Content(schema = @Schema(implementation = CommentsThreadWrapperDto.class)))
   public Response getAllThreads(
           @Context SecurityContext securityContext,
           @PathParam("reviewId") Integer reviewId
