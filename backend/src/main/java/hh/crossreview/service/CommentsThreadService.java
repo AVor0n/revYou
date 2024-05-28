@@ -7,6 +7,7 @@ import hh.crossreview.dto.comment.CommentDto;
 import hh.crossreview.dto.comment.CommentPostDto;
 import hh.crossreview.dto.commentsthread.CommentsThreadDto;
 import hh.crossreview.dto.commentsthread.CommentsThreadPostDto;
+import hh.crossreview.dto.commentsthread.CommentsThreadResolveDto;
 import hh.crossreview.dto.commentsthread.CommentsThreadWrapperDto;
 import hh.crossreview.entity.Comment;
 import hh.crossreview.entity.CommentsThread;
@@ -21,10 +22,10 @@ import jakarta.transaction.Transactional;
 import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.ForbiddenException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import org.apache.commons.lang3.EnumUtils;
 
 
 @Named
@@ -136,11 +137,21 @@ public class CommentsThreadService {
   }
 
   @Transactional
-  public void resolveThread(User author, Integer commentsThreadId) {
+  public CommentsThreadDto resolveThread(
+          User author,
+          Integer commentsThreadId,
+          CommentsThreadResolveDto commentsThreadResolveDto
+  ) {
+    String newStatus = commentsThreadResolveDto.getStatus();
+    if (!EnumUtils.isValidEnum(CommentsThreadStatus.class, newStatus)) {
+      throw new BadRequestException("This status is not available for the thread!");
+    }
     CommentsThread commentsThread = requiredCommentsThreadExist(commentsThreadId);
-    requirementsUtils.requireAuthorPermissionOrAdmin(author, commentsThread);
-    commentsThread.setStatus(CommentsThreadStatus.RESOLVED);
+    Review review = reviewService.requireReviewExist(commentsThread.getReview().getReviewId());
+    checkReviewParticipantTeacherAdminPermission(author, review);
+    commentsThread.setStatus(CommentsThreadStatus.valueOf(newStatus));
     commentsThreadDao.save(commentsThread);
+    return commentsThreadConverter.convertToCommentsThreadDto(commentsThread);
   }
 
   private Comment requireCommentExist(Integer commentId) {

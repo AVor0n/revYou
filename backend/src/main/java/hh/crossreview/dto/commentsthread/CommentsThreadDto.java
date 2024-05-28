@@ -1,7 +1,6 @@
 package hh.crossreview.dto.commentsthread;
 
 import hh.crossreview.dto.comment.CommentDto;
-import hh.crossreview.entity.enums.CommentsThreadStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
 @Schema(
