@@ -1,15 +1,24 @@
 package hh.crossreview.dto.commentsthread;
 
 import hh.crossreview.dto.comment.CommentDto;
+import hh.crossreview.entity.enums.CommentsThreadStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
-@Schema(name = "CommentsThread")
+@Schema(
+    name = "CommentsThread",
+    requiredProperties = {
+        "threadId", "authorId", "status",
+        "commitSha", "filePath" , "startLine",
+        "startSymbol", "endLine", "endSymbol", "comments"
+    }
+)
 public class CommentsThreadDto {
 
   private Integer threadId;
 
   private Integer authorId;
 
+  @Schema(allowableValues = {"ACTIVE", "RESOLVED"})
   private String status;
 
   private String commitSha;

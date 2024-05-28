@@ -3,7 +3,9 @@ package hh.crossreview.service;
 import hh.crossreview.converter.CommentsThreadConverter;
 import hh.crossreview.dao.CommentDao;
 import hh.crossreview.dao.CommentsThreadDao;
+import hh.crossreview.dto.comment.CommentDto;
 import hh.crossreview.dto.comment.CommentPostDto;
+import hh.crossreview.dto.commentsthread.CommentsThreadDto;
 import hh.crossreview.dto.commentsthread.CommentsThreadPostDto;
 import hh.crossreview.dto.commentsthread.CommentsThreadWrapperDto;
 import hh.crossreview.entity.Comment;
@@ -19,7 +21,9 @@ import jakarta.transaction.Transactional;
 import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.ForbiddenException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -52,7 +56,7 @@ public class CommentsThreadService {
   }
 
   @Transactional
-  public void createCommentsThread(CommentsThreadPostDto commentsThreadPostDto, User author){
+  public CommentsThreadDto createCommentsThread(CommentsThreadPostDto commentsThreadPostDto, User author){
     Review review = reviewService.requireReviewExist(commentsThreadPostDto.getReviewId());
     checkReviewParticipantTeacherAdminPermission(author, review);
     CommentsThread commentsThread = new CommentsThread(
@@ -66,7 +70,9 @@ public class CommentsThreadService {
             commentsThreadPostDto.getEndSymbol()
     );
     commentsThreadDao.save(commentsThread);
-    createComment(commentsThread, author, commentsThreadPostDto.getContent());
+    Comment comment = createComment(commentsThread, author, commentsThreadPostDto.getContent());
+    commentsThread.setComments(Collections.singletonList(comment));
+    return commentsThreadConverter.convertToCommentsThreadDto(commentsThread);
   }
 
   @Transactional
@@ -77,7 +83,7 @@ public class CommentsThreadService {
     return commentsThreadConverter.convertToCommentsThreadWrapperDto(commentsThreads);
   }
   @Transactional
-  public void addComment(
+  public CommentDto addComment(
            CommentPostDto commentPostDto,
            Integer commentsThreadId,
            User author
@@ -85,10 +91,11 @@ public class CommentsThreadService {
     CommentsThread commentsThread = requiredCommentsThreadExist(commentsThreadId);
     Review review = reviewService.requireReviewExist(commentsThread.getReview().getReviewId());
     checkReviewParticipantTeacherAdminPermission(author, review);
-    createComment(commentsThread, author, commentPostDto.getContent());
+    Comment comment = createComment(commentsThread, author, commentPostDto.getContent());
+    return commentsThreadConverter.convertToCommentDto(comment);
   }
 
-  public void createComment(
+  public Comment createComment(
             CommentsThread commentsThread,
             User author,
             String content
@@ -98,6 +105,7 @@ public class CommentsThreadService {
     }
     Comment comment = new Comment(commentsThread, author, content);
     commentDao.save(comment);
+    return comment;
   }
 
   @Transactional
@@ -114,7 +122,7 @@ public class CommentsThreadService {
   }
 
   @Transactional
-  public void updateComment(User author, Integer commentId, CommentPostDto commentPostDto) {
+  public CommentDto updateComment(User author, Integer commentId, CommentPostDto commentPostDto) {
     Comment comment = requireCommentExist(commentId);
     requirementsUtils.requireAuthorPermissionOrAdmin(author, comment);
     String newContent = commentPostDto.getContent();
@@ -124,6 +132,7 @@ public class CommentsThreadService {
     comment.setContent(newContent);
     comment.setUpdatedAt(LocalDateTime.now());
     commentDao.save(comment);
+    return  commentsThreadConverter.convertToCommentDto(comment);
   }
 
   @Transactional

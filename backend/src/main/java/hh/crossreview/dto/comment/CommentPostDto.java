@@ -2,7 +2,10 @@ package hh.crossreview.dto.comment;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-@Schema(name = "CommentPostDto")
+@Schema(
+    name = "CommentPostDto",
+    requiredProperties = {"content"}
+)
 public class CommentPostDto {
 
 
