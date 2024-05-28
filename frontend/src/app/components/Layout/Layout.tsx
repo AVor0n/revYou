@@ -17,15 +17,18 @@ export const Layout = ({ navLinks }: LayoutProps) => (
             <Icon className={styles.logo} data={Code} size={20} />
           </NavLink>
 
-          {!!navLinks?.length && (
-            <nav className={styles.navLinks}>
-              {navLinks.map(({ title, href, onClick }) => (
-                <NavLink className={styles.navLink} to={href} key={href} onClick={onClick}>
-                  {title}
-                </NavLink>
-              ))}
-            </nav>
-          )}
+          <div className={styles.rightContent}>
+            <ThemeSwitcher className={styles.themeSwitcher} />
+            {!!navLinks?.length && (
+              <nav className={styles.navLinks}>
+                {navLinks.map(({ title, href, onClick }) => (
+                  <NavLink className={styles.navLink} to={href} key={href} onClick={onClick}>
+                    {title}
+                  </NavLink>
+                ))}
+              </nav>
+            )}
+          </div>
         </div>
       </div>
     </div>
@@ -37,6 +40,5 @@ export const Layout = ({ navLinks }: LayoutProps) => (
         </div>
       </div>
     </div>
-    <ThemeSwitcher className={styles.themeSwitcher} />
   </div>
 );

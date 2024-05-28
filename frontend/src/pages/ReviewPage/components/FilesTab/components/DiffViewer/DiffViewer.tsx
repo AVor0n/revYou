@@ -1,6 +1,7 @@
 import { editor as IEditor } from 'monaco-editor';
 import { useRef } from 'react';
 import { MonacoDiffEditor } from 'react-monaco-editor';
+import { Theme, useTheme } from 'app';
 
 interface DiffViewerProps {
   sourceContent: string;
@@ -9,9 +10,11 @@ interface DiffViewerProps {
 
 export const DiffViewer = ({ sourceContent, targetContent }: DiffViewerProps) => {
   const editorRef = useRef<IEditor.IStandaloneDiffEditor | null>(null);
+  const { theme } = useTheme();
 
   return (
     <MonacoDiffEditor
+      theme={theme === Theme.LIGHT ? 'vs' : 'vs-dark'}
       editorDidMount={editor => {
         editorRef.current = editor;
       }}

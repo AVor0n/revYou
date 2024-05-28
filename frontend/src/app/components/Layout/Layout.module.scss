@@ -56,8 +56,7 @@
   padding: 20px;
 }
 
-.themeSwitcher {
-  position: fixed;
-  inset-block-end: 30px;
-  inset-inline-start: 30px;
+.rightContent {
+  display: flex;
+  gap: 32px;
 }
