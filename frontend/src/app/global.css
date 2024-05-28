@@ -4,7 +4,6 @@
 
 .g-root {
   /* цвета */
-  --g-color-base-background: #fff;
   --g-color-base-brand: #0070ff;
   --g-color-base-brand-hover: #2b7fff;
   --g-color-line-brand: #0070ff;
@@ -27,6 +26,15 @@
 
   /* тень */
   --g-box-shadow: 0 6px 16px rgba(0, 0, 0, 20%);
+}
+
+.g-root_theme_dark {
+  --g-color-base-brand: #1e406b;
+  --g-color-base-brand-hover: #1e3f6b86;
+
+  input {
+    color-scheme: dark;
+  }
 }
 
 * {

@@ -71,19 +71,20 @@ public class UserService implements UserDetailsService {
     List<User> users = findByUsername(username);
     if (users.isEmpty()) {
       throw new UsernameNotFoundException(String.format("Пользователь '%s' не найден", username));
-    } else {
-      User user = users.getFirst();
-      Collection<String> userRoles = List.of(user.getRole().name());
-      List<GrantedAuthority> grantedAuthoritiesRoles = userRoles.stream()
-              .map(SimpleGrantedAuthority::new)
-              .collect(Collectors.toList());
-      return new org.springframework.security.core.userdetails.User(
-              user.getUsername(),
-              user.getPassword(),
-              grantedAuthoritiesRoles
-      );
     }
+    return generateUserDetails(users.getFirst());
+  }
 
+  public org.springframework.security.core.userdetails.User generateUserDetails(User user) {
+    Collection<String> userRoles = List.of(user.getRole().name());
+    List<GrantedAuthority> grantedAuthoritiesRoles = userRoles.stream()
+            .map(SimpleGrantedAuthority::new)
+            .collect(Collectors.toList());
+    return new org.springframework.security.core.userdetails.User(
+        user.getUsername(),
+        user.getPassword(),
+        grantedAuthoritiesRoles
+    );
   }
 
   @Transactional

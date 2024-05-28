@@ -1,3 +1,4 @@
+import { Card } from '@gravity-ui/uikit';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { type SignInRequest, type SignUpRequest } from '@domains';
@@ -39,12 +40,12 @@ export const AuthTab = () => {
   };
 
   return (
-    <div className={styles.AuthTab}>
+    <Card view="raised" className={styles.AuthTab}>
       {authType === 'signIn' ? (
         <SignInForm onChangeAuthType={onChangeAuthType} onSubmit={onSubmitSignIn} />
       ) : (
         <SignUpForm onChangeAuthType={onChangeAuthType} onSubmit={onSubmitSignUp} />
       )}
-    </div>
+    </Card>
   );
 };
