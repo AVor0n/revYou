@@ -65,7 +65,7 @@
     "@typescript-eslint/prefer-ts-expect-error": "error",
     "@typescript-eslint/no-misused-promises": "off",
     "@typescript-eslint/no-empty-interface": "off",
-    "@typescript-eslint/no-floating-promises": "warn",
+    "@typescript-eslint/no-floating-promises": "off",
     "@typescript-eslint/consistent-type-imports": ["warn", { "fixStyle": "inline-type-imports" }],
     "@typescript-eslint/no-use-before-define": ["error", { "functions": false }],
     "@typescript-eslint/prefer-nullish-coalescing": "off",

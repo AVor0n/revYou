@@ -1,6 +1,9 @@
 import { Card, Text } from '@gravity-ui/uikit';
+import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { ReviewStatus } from '@components/ReviewStatus';
+import { getCommentThreads } from 'app';
+import { CommentsThread } from '../CommentsThread';
 import { CompleteReviewButton, RequestReviewButton } from './components';
 import type { Review } from '@domains';
 import styles from './OverviewTab.module.scss';
@@ -15,6 +18,8 @@ export const OverviewTab = ({ review }: OverviewTabProps) => {
     reviewId: string;
     role: 'student' | 'reviewer';
   }>();
+  const commentThreads = useSelector(getCommentThreads);
+
   const resolution = review.reviewAttempts?.at(-1)?.resolution;
 
   if (!homeworkId || !reviewId) return null;
@@ -43,6 +48,12 @@ export const OverviewTab = ({ review }: OverviewTabProps) => {
           {showCompleteReviewButton && <CompleteReviewButton homeworkId={+homeworkId} reviewId={+reviewId} />}
         </div>
       </Card>
+
+      {commentThreads?.length !== 0 && (
+        <div className={styles.threadsContainer}>
+          {commentThreads?.toReversed().map(thread => <CommentsThread thread={thread} key={thread.threadId} />)}
+        </div>
+      )}
     </div>
   );
 };

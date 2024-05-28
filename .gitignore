@@ -4,3 +4,4 @@ logs/*
 data/*
 config/*
 docker-compose.override.yml
+frontend/scripts/openapi.yaml

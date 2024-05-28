@@ -10,10 +10,15 @@
  */
 
 import {
+  Comment,
+  CommentPostDto,
+  CommentsThread,
   DiffsWrapper,
   Exception,
   ExceptionValidation,
+  FeedbackDto,
   FeedbackPost,
+  FeedbackWrapper,
   GetDiffsParams,
   GetRawFileParams,
   Homework,
@@ -21,7 +26,12 @@ import {
   HomeworkPost,
   HomeworkPostResponse,
   HomeworksWrapper,
+  Lecture,
+  LecturePatch,
+  LecturePost,
+  LecturePostPesponseDto,
   RefreshAccessTokenRequestDto,
+  ReviewInfoWrapper,
   ReviewResolutionDto,
   ReviewWrapper,
   SignInRequest,
@@ -31,6 +41,8 @@ import {
   SolutionPatch,
   SolutionPost,
   SolutionWrapper,
+  ThreadPost,
+  ThreadWrapper,
   User,
 } from './data-contracts';
 import { ContentType, HttpClient, RequestParams } from './http-client';
@@ -93,28 +105,175 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
   /**
    * No description
    *
-   * @name GetFeedbacks
-   * @request GET:/api/feedbacks
-   * @response `default` `unknown` default response
+   * @tags Threads
+   * @name AddComment
+   * @summary Add comment to thread. Available to review participants, admin and teacher
+   * @request POST:/api/threads/{threadId}/comments
+   * @secure
+   * @response `201` `Comment` Created
+   * @response `400` `ExceptionValidation` Bad request
+   * @response `403` `Exception` Forbidden request
+   * @response `404` `Exception` Not found
    */
-  getFeedbacks = (params: RequestParams = {}) =>
-    this.request<any, unknown>({
-      path: `/api/feedbacks`,
-      method: 'GET',
+  addComment = (threadId: number, data: CommentPostDto, params: RequestParams = {}) =>
+    this.request<Comment, ExceptionValidation | Exception>({
+      path: `/api/threads/${threadId}/comments`,
+      method: 'POST',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
       ...params,
     });
   /**
    * No description
    *
-   * @name CreateFeedback
-   * @request POST:/api/feedbacks
-   * @response `default` `unknown` default response
+   * @tags Threads
+   * @name DeleteComment
+   * @summary Delete comment. Available to author of the comment and admin
+   * @request DELETE:/api/threads/comments/{commentId}
+   * @secure
+   * @response `204` `unknown` No content
+   * @response `403` `Exception` Forbidden request
+   * @response `404` `Exception` Not found
    */
-  createFeedback = (data: FeedbackPost, params: RequestParams = {}) =>
-    this.request<any, unknown>({
-      path: `/api/feedbacks`,
+  deleteComment = (commentId: number, params: RequestParams = {}) =>
+    this.request<unknown, Exception>({
+      path: `/api/threads/comments/${commentId}`,
+      method: 'DELETE',
+      secure: true,
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags Threads
+   * @name UpdateComment
+   * @summary Edit comment. Available to author of the comment and admin
+   * @request PATCH:/api/threads/comments/{commentId}
+   * @secure
+   * @response `200` `CommentPostDto` Successful operation
+   * @response `400` `ExceptionValidation` Bad request
+   * @response `403` `Exception` Forbidden request
+   * @response `404` `Exception` Not found
+   */
+  updateComment = (commentId: number, data: CommentPostDto, params: RequestParams = {}) =>
+    this.request<CommentPostDto, ExceptionValidation | Exception>({
+      path: `/api/threads/comments/${commentId}`,
+      method: 'PATCH',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags Threads
+   * @name GetAllThreads
+   * @summary Get all treads and comments by reviewId. Available to review participants, admin and teacher
+   * @request GET:/api/threads/review/{reviewId}
+   * @secure
+   * @response `200` `ThreadWrapper` Successful operation
+   * @response `403` `Exception` Forbidden request
+   * @response `404` `Exception` Not found
+   */
+  getAllThreads = (reviewId: number, params: RequestParams = {}) =>
+    this.request<ThreadWrapper, Exception>({
+      path: `/api/threads/review/${reviewId}`,
+      method: 'GET',
+      secure: true,
+      format: 'json',
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags Threads
+   * @name ResolveCommentsThread
+   * @summary Resolve thread. Available to author of the thread and admin
+   * @request PATCH:/api/threads/{threadId}/resolve
+   * @secure
+   * @response `400` `ExceptionValidation` Bad request
+   * @response `403` `Exception` Forbidden request
+   * @response `404` `Exception` Not found
+   */
+  resolveCommentsThread = (threadId: number, params: RequestParams = {}) =>
+    this.request<any, ExceptionValidation | Exception>({
+      path: `/api/threads/${threadId}/resolve`,
+      method: 'PATCH',
+      secure: true,
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags Threads
+   * @name StartThread
+   * @summary Starting thread with first comment. Available to review participants, admin and teacher
+   * @request POST:/api/threads
+   * @secure
+   * @response `201` `CommentsThread` Created
+   * @response `400` `ExceptionValidation` Bad request
+   * @response `403` `Exception` Forbidden request
+   * @response `404` `Exception` Not found
+   */
+  startThread = (data: ThreadPost, params: RequestParams = {}) =>
+    this.request<CommentsThread, ExceptionValidation | Exception>({
+      path: `/api/threads`,
       method: 'POST',
       body: data,
+      secure: true,
+      type: ContentType.Json,
+      format: 'json',
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags Feedback
+   * @name GetFeedbacks
+   * @request GET:/api/feedback
+   * @response `200` `FeedbackWrapper` Successful operation
+   */
+  getFeedbacks = (params: RequestParams = {}) =>
+    this.request<FeedbackWrapper, any>({
+      path: `/api/feedback`,
+      method: 'GET',
+      format: 'json',
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags Feedback
+   * @name CreateFeedback
+   * @request POST:/api/feedback
+   * @response `201` `FeedbackPost` Created
+   * @response `400` `ExceptionValidation` Bad request
+   */
+  createFeedback = (data: FeedbackPost, params: RequestParams = {}) =>
+    this.request<FeedbackPost, ExceptionValidation>({
+      path: `/api/feedback`,
+      method: 'POST',
+      body: data,
+      format: 'json',
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags Feedback
+   * @name GetFeedback
+   * @request GET:/api/feedback/{feedbackId}
+   * @response `200` `FeedbackDto` Successful operation
+   */
+  getFeedback = (feedbackId: number, params: RequestParams = {}) =>
+    this.request<FeedbackDto, any>({
+      path: `/api/feedback/${feedbackId}`,
+      method: 'GET',
+      format: 'json',
       ...params,
     });
   /**
@@ -269,6 +428,86 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
   /**
    * No description
    *
+   * @tags Lecture
+   * @name GetAllLectures
+   * @request GET:/api/lectures
+   * @response `200` `Lecture` Successful operation
+   */
+  getAllLectures = (params: RequestParams = {}) =>
+    this.request<Lecture, any>({
+      path: `/api/lectures`,
+      method: 'GET',
+      format: 'json',
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags Lecture
+   * @name CreateLecture
+   * @request POST:/api/lectures
+   * @response `201` `LecturePostPesponseDto` Created
+   * @response `400` `ExceptionValidation` Bad request
+   */
+  createLecture = (data: LecturePost, params: RequestParams = {}) =>
+    this.request<LecturePostPesponseDto, ExceptionValidation>({
+      path: `/api/lectures`,
+      method: 'POST',
+      body: data,
+      format: 'json',
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags Lecture
+   * @name GetLecture
+   * @request GET:/api/lectures/{lectureId}
+   * @response `200` `Lecture` Successful operation
+   */
+  getLecture = (lectureId: number, params: RequestParams = {}) =>
+    this.request<Lecture, any>({
+      path: `/api/lectures/${lectureId}`,
+      method: 'GET',
+      format: 'json',
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags Lecture
+   * @name DeleteLecture
+   * @request DELETE:/api/lectures/{lectureId}
+   * @response `200` `Lecture` Successful operation
+   * @response `400` `ExceptionValidation` Bad request
+   */
+  deleteLecture = (lectureId: number, params: RequestParams = {}) =>
+    this.request<Lecture, ExceptionValidation>({
+      path: `/api/lectures/${lectureId}`,
+      method: 'DELETE',
+      format: 'json',
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags Lecture
+   * @name PatchLecture
+   * @request PATCH:/api/lectures/{lectureId}
+   * @response `200` `Lecture` Successful operation
+   * @response `400` `ExceptionValidation` Bad request
+   */
+  patchLecture = (lectureId: number, data: LecturePatch, params: RequestParams = {}) =>
+    this.request<Lecture, ExceptionValidation>({
+      path: `/api/lectures/${lectureId}`,
+      method: 'PATCH',
+      body: data,
+      format: 'json',
+      ...params,
+    });
+  /**
+   * No description
+   *
    * @tags Reviews
    * @name AddReviewResolution
    * @request PATCH:/api/homeworks/{homeworkId}/reviews/{reviewId}/resolution
@@ -320,6 +559,25 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
   getMyReviews = (homeworkId: number, params: RequestParams = {}) =>
     this.request<ReviewWrapper, Exception>({
       path: `/api/homeworks/${homeworkId}/reviews/my-reviews`,
+      method: 'GET',
+      secure: true,
+      format: 'json',
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags Reviews
+   * @name GetReviewsInfo
+   * @request GET:/api/homeworks/{homeworkId}/reviews/reviews-info
+   * @secure
+   * @response `200` `ReviewInfoWrapper` Successful operation
+   * @response `403` `Exception` Forbidden request
+   * @response `404` `Exception` Not found
+   */
+  getReviewsInfo = (homeworkId: number, params: RequestParams = {}) =>
+    this.request<ReviewInfoWrapper, Exception>({
+      path: `/api/homeworks/${homeworkId}/reviews/reviews-info`,
       method: 'GET',
       secure: true,
       format: 'json',

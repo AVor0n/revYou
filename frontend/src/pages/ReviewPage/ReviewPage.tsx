@@ -2,7 +2,7 @@ import { Skeleton, Tabs } from '@gravity-ui/uikit';
 import { useEffect, useMemo, type ReactNode } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
-import { getReviewInfo, loadReview, useAppDispatch } from 'app';
+import { getReviewInfo, loadReview, loadThreads, useAppDispatch } from 'app';
 import { Header, FilesTab, OverviewTab } from './components';
 import styles from './ReviewPage.module.scss';
 
@@ -19,8 +19,9 @@ export const ReviewPage = () => {
   const activeTab = tab ?? 'about';
 
   useEffect(() => {
-    if (reviewInfo) {
+    if (reviewInfo?.reviewId) {
       dispatch(loadReview(reviewInfo));
+      dispatch(loadThreads(reviewInfo.reviewId));
     } else {
       navigate(`/homeworks/${homeworkId}`);
     }

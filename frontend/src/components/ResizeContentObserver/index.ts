@@ -1,0 +1,1 @@
+export { ResizeContentObserver } from './ResizeContentObserver';

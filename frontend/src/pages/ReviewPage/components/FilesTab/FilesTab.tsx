@@ -1,6 +1,8 @@
 import { Loader, Text } from '@gravity-ui/uikit';
+import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
+import { type CommentsThread } from '@domains';
 import {
   getActiveFilePath,
   getFilesTree,
@@ -12,10 +14,11 @@ import {
   type FolderNode,
   type FileNode,
   getReviewInfo,
+  getCommentThreads,
 } from 'app';
 import { DiffViewer, SkeletonFileTree, FilesTree } from './components';
+import './components/DiffViewer/monaco-worker';
 import styles from './FilesTab.module.scss';
-import './monaco-worker';
 
 export const FilesTab = () => {
   const dispatch = useAppDispatch();
@@ -24,6 +27,9 @@ export const FilesTab = () => {
   const activeFilePath = useSelector(getActiveFilePath);
   const sourceFileContent = useSelector(getSourceActiveFileContent);
   const targetFileContent = useSelector(getTargetActiveFileContent);
+  const threads = useSelector(getCommentThreads);
+  const [sourceCommitThreads, setSourceCommitThreads] = useState<CommentsThread[]>([]);
+  const [targetCommitThreads, setTargetCommitThreads] = useState<CommentsThread[]>([]);
 
   const hasFilesForComparison = sourceFileContent !== null && targetFileContent !== null;
 
@@ -43,6 +49,13 @@ export const FilesTab = () => {
     }
   };
 
+  useEffect(() => {
+    if (!review) return;
+    const fileThreads = threads?.filter(thread => thread.filePath === activeFilePath) ?? [];
+    setSourceCommitThreads(fileThreads.filter(thread => thread.commitSha === review.sourceCommitId));
+    setTargetCommitThreads(fileThreads.filter(thread => thread.commitSha === review.commitId));
+  }, [activeFilePath, review, threads]);
+
   return (
     <PanelGroup className={styles.FilesTab} direction="horizontal">
       <Panel defaultSize={10}>
@@ -54,7 +67,17 @@ export const FilesTab = () => {
       </Panel>
       <PanelResizeHandle className={styles.resizer} />
       <Panel defaultSize={90}>
-        {hasFilesForComparison && <DiffViewer sourceContent={sourceFileContent} targetContent={targetFileContent} />}
+        {hasFilesForComparison && !!review?.reviewId && !!review.commitId && !!review.sourceCommitId && (
+          <DiffViewer
+            reviewId={review.reviewId}
+            sourceContent={sourceFileContent}
+            targetContent={targetFileContent}
+            sourceSha={review.sourceCommitId}
+            targetSha={review.commitId}
+            sourceCommentThreads={sourceCommitThreads}
+            targetCommentThreads={targetCommitThreads}
+          />
+        )}
 
         {!hasFilesForComparison && (
           <div className={styles.placeholderContainer}>

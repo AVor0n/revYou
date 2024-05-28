@@ -1,13 +1,14 @@
 .OverviewTab {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
+  gap: 20px;
 
   & .card {
     display: flex;
     flex-direction: column;
     gap: 20px;
     inline-size: 100%;
-    min-block-size: 300px;
+    min-block-size: 100px;
     padding: 20px;
 
     & .status {
@@ -26,5 +27,11 @@
       align-self: flex-end;
       margin-block-start: auto;
     }
+  }
+
+  & .threadsContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
   }
 }

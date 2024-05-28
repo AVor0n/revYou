@@ -1,4 +1,4 @@
-import type { Review } from '@domains';
+import type { CommentsThread, Review } from '@domains';
 
 export interface ReviewSchema {
   reviewInfo: Review | null;
@@ -6,6 +6,8 @@ export interface ReviewSchema {
   activeFilePath: string;
   sourceActiveFileContent: string | null;
   targetActiveFileContent: string | null;
+  threads: CommentsThread[] | null;
+  createThreadInProgress: boolean;
   error: string;
 }
 

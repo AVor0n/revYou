@@ -46,6 +46,70 @@ export interface SignUpRequest {
   email: string;
 }
 
+export interface Comment {
+  /** @format int32 */
+  commentId: number;
+  /** @format int32 */
+  authorId: number;
+  content: string;
+  /** @format date-time */
+  createdAt: string;
+  /** @format date-time */
+  updatedAt: string;
+}
+
+export interface ExceptionValidation {
+  /** @format date-time */
+  timestamp: string;
+  /** @format int32 */
+  status: number;
+  message: string;
+  validationMessages: string[];
+}
+
+export interface CommentPostDto {
+  content: string;
+}
+
+export interface CommentsThread {
+  /** @format int32 */
+  threadId: number;
+  /** @format int32 */
+  authorId: number;
+  status: CommentsThreadStatusEnum;
+  commitSha: string;
+  filePath: string;
+  /** @format int32 */
+  startLine: number;
+  /** @format int32 */
+  startSymbol: number;
+  /** @format int32 */
+  endLine: number;
+  /** @format int32 */
+  endSymbol: number;
+  comments: Comment[];
+}
+
+export interface ThreadWrapper {
+  data: CommentsThread[];
+}
+
+export interface ThreadPost {
+  /** @format int32 */
+  reviewId: number;
+  commitSha: string;
+  filePath: string;
+  /** @format int32 */
+  startLine: number;
+  /** @format int32 */
+  startSymbol: number;
+  /** @format int32 */
+  endLine: number;
+  /** @format int32 */
+  endSymbol: number;
+  content: string;
+}
+
 export interface FeedbackPost {
   /** @format int32 */
   review: number;
@@ -54,6 +118,23 @@ export interface FeedbackPost {
   /** @format int32 */
   rating: number;
   description: string;
+}
+
+export interface FeedbackDto {
+  /** @format int32 */
+  feedbackId?: number;
+  /** @format int32 */
+  reviewId?: number;
+  student?: User;
+  description?: string;
+  /** @format int32 */
+  rating?: number;
+  /** @format date-time */
+  feedbackDate?: string;
+}
+
+export interface FeedbackWrapper {
+  data: FeedbackDto[];
 }
 
 export interface Diff {
@@ -72,15 +153,6 @@ export interface DiffsWrapper {
 export interface HomeworkPostResponse {
   /** @format int32 */
   id: number;
-}
-
-export interface ExceptionValidation {
-  /** @format date-time */
-  timestamp: string;
-  /** @format int32 */
-  status: number;
-  message: string;
-  validationMessages: string[];
 }
 
 export interface HomeworkPost {
@@ -146,6 +218,43 @@ export interface HomeworkPatch {
   reviewDuration?: HomeworkPatchReviewDurationEnum;
 }
 
+export interface LecturePostPesponseDto {
+  /** @format int32 */
+  lectureId?: number;
+}
+
+export interface LecturePost {
+  name: string;
+  /** @format date-time */
+  lectureDate: string;
+  zoomLink?: string;
+  presentationLink?: string;
+  /** @format int32 */
+  lectorId: number;
+  cohortsId: number[];
+}
+
+export interface Lecture {
+  /** @format int32 */
+  lectureId: number;
+  name: string;
+  /** @format date-time */
+  lectureDate: string;
+  zoomLink: string;
+  presentationLink: string;
+  lector: User;
+}
+
+export interface LecturePatch {
+  name?: string;
+  /** @format date-time */
+  lectureDate?: string;
+  zoomLink?: string;
+  presentationLink?: string;
+  /** @format int32 */
+  lectorId?: number;
+}
+
 export interface ReviewResolutionDto {
   status?: string;
   resolution?: string;
@@ -180,6 +289,37 @@ export interface ReviewWrapper {
   data: Review[];
 }
 
+export interface ReviewDuration {
+  /** @format int64 */
+  hours: number;
+  /** @format int64 */
+  minutes: number;
+}
+
+export interface ReviewInfo {
+  /** @format int32 */
+  reviewId: number;
+  /** @format int32 */
+  projectId: number;
+  commitId: string;
+  status: string;
+  duration: ReviewDuration;
+  student: Student;
+  reviewer: Student;
+  reviewAttempts: ReviewAttempt[];
+}
+
+export interface ReviewInfoWrapper {
+  data: ReviewInfo[];
+  sourceCommitId: string;
+}
+
+export interface Student {
+  /** @format int32 */
+  userId: number;
+  username: string;
+}
+
 export interface Solution {
   status: string;
   /** @format int32 */
@@ -212,6 +352,8 @@ export interface SolutionWrapper {
 export interface SolutionPatch {
   branchLink: string;
 }
+
+export type CommentsThreadStatusEnum = 'ACTIVE' | 'RESOLVED';
 
 /** @format int32 */
 export type HomeworkPostReviewDurationEnum = 24 | 48;
