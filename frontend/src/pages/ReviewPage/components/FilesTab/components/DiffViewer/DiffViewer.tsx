@@ -1,8 +1,8 @@
 import { editor } from 'monaco-editor';
 import { useState } from 'react';
 import { MonacoDiffEditor } from 'react-monaco-editor';
-import { Theme, useTheme } from 'app';
 import useResizeObserver from 'use-resize-observer';
+import { Theme, useTheme } from 'app';
 
 interface DiffViewerProps {
   sourceContent: string;
@@ -10,9 +10,8 @@ interface DiffViewerProps {
 }
 
 export const DiffViewer = ({ sourceContent, targetContent }: DiffViewerProps) => {
-  const editorRef = useRef<IEditor.IStandaloneDiffEditor | null>(null);
   const { theme } = useTheme();
-    
+
   const [diffEditor, setDiffEditor] = useState<editor.IDiffEditor | null>(null);
 
   const onResizeEditorContainer = () => {
