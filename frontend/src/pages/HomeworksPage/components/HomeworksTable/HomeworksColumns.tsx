@@ -1,4 +1,5 @@
 import { dateTimeParse } from '@gravity-ui/date-utils';
+import { Link } from '@gravity-ui/uikit';
 import { type HomeworkTableColumn } from './types';
 
 export const homeworksColumns: HomeworkTableColumn[] = [
@@ -34,9 +35,9 @@ export const homeworksColumns: HomeworkTableColumn[] = [
     id: 'repoLink',
     name: () => <span>Ссылка на репозиторий</span>,
     template: ({ repositoryLink }) => (
-      <a href={repositoryLink} target="_blank" rel="noreferrer">
+      <Link href={repositoryLink} target="_blank" rel="noreferrer">
         Репо
-      </a>
+      </Link>
     ),
     meta: { sort: true },
   },
