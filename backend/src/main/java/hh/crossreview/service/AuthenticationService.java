@@ -20,6 +20,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 
 @Named
@@ -46,12 +47,13 @@ public class AuthenticationService {
     } catch (BadCredentialsException e) {
       throw new NotAuthorizedException("Incorrect login or password");
     }
-    UserDetails userDetails = userService.loadUserByUsername(signInRequestDto.getUsername());
+    User user = requireUserExist(signInRequestDto.getUsername());
+    UserDetails userDetails = userService.generateUserDetails(user);
     String userRole = userDetails.getAuthorities().toString();
     String accessToken = jwtTokenUtils.generateAccessToken(userDetails);
     String refreshToken = jwtTokenUtils.generateRefreshToken(userDetails);
 
-    return Response.ok(new SignInResponseDto(accessToken, refreshToken, userRole))
+    return Response.ok(new SignInResponseDto(accessToken, refreshToken, userRole, user))
             .type(MediaType.APPLICATION_JSON)
             .build();
   }
@@ -72,14 +74,23 @@ public class AuthenticationService {
     if (jwtTokenUtils.validateRefreshToken(refreshToken)){
       final Claims claims = jwtTokenUtils.getRefreshClaims(refreshToken);
       final String username = claims.getSubject();
-      UserDetails userDetails = userService.loadUserByUsername(username);
+      User user = requireUserExist(username);
+      UserDetails userDetails = userService.generateUserDetails(user);
       String userRole = userDetails.getAuthorities().toString();
       final String accessToken = jwtTokenUtils.generateAccessToken(userDetails);
-      return Response.ok(new SignInResponseDto(accessToken, refreshToken, userRole))
+      return Response.ok(new SignInResponseDto(accessToken, refreshToken, userRole, user))
               .type(MediaType.APPLICATION_JSON)
               .build();
     }
     throw new NotAuthorizedException("Invalid JWT token");
+  }
+
+  private User requireUserExist(String username) {
+    List<User> users = userService.findByUsername(username);
+    if (users.isEmpty()) {
+      throw new UsernameNotFoundException(String.format("Пользователь '%s' не найден", username));
+    }
+    return users.getFirst();
   }
 
   private boolean validateSignUpRequest(SignUpRequestDto signUpRequestDto) {

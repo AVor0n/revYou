@@ -67,6 +67,9 @@ public class User implements Cohortable {
   @JoinColumn(name = "cohort_id")
   private Cohort cohort;
 
+  @Column(name = "cohort_id", insertable = false, updatable = false)
+  private Integer cohortId;
+
   public Integer getUserId() {
     return userId;
   }
@@ -105,6 +108,10 @@ public class User implements Cohortable {
 
   public String getMmUsername() {
     return mmUsername;
+  }
+
+  public Integer getCohortId() {
+    return cohortId;
   }
 
   public void setUsername(String username) {
