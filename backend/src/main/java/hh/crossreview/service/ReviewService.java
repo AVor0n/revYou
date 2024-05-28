@@ -162,9 +162,11 @@ public class ReviewService {
 
   private void clearPreviewsReviewer(Homework homework, Review review) {
     User oldReviewer = review.getReviewer();
-    if (oldReviewer.getRole().equals(UserRole.STUDENT)) {
+    if (oldReviewer.getRole().equals(UserRole.STUDENT) &&
+        reviewersPoolService.checkStatus(oldReviewer, homework, ReviewerStatus.BUSY)) {
       reviewersPoolService.releaseReviewer(oldReviewer, homework);
     }
+    review.getCommentsThreads().clear();
     review.getReviewAttempts().clear();
   }
 
