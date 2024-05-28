@@ -4,6 +4,7 @@ import hh.crossreview.dto.comment.CommentDto;
 import hh.crossreview.dto.comment.CommentPostDto;
 import hh.crossreview.dto.commentsthread.CommentsThreadDto;
 import hh.crossreview.dto.commentsthread.CommentsThreadPostDto;
+import hh.crossreview.dto.commentsthread.CommentsThreadResolveDto;
 import hh.crossreview.dto.commentsthread.CommentsThreadWrapperDto;
 import hh.crossreview.dto.exception.ExceptionDto;
 import hh.crossreview.dto.exception.ExceptionValidationDto;
@@ -176,21 +177,28 @@ public class CommentsThreadResource {
 
   @PATCH
   @Path("/{threadId}/resolve")
+  @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   @Operation(summary = "Resolve thread. Available to author of the thread and admin")
+  @ApiResponse(
+          responseCode = "200",
+          description = "Successful operation",
+          content = @Content(schema = @Schema(implementation = CommentsThreadDto.class)))
   @ApiResponse(
           responseCode = "400",
           description = "Bad request",
           content = @Content(schema = @Schema(implementation = ExceptionValidationDto.class))
   )
   public Response resolveCommentsThread(
+          CommentsThreadResolveDto commentsThreadResolveDto,
           @PathParam("threadId") Integer commentsThreadId,
           @Context SecurityContext securityContext
   ) {
     User author = userService.findByPrincipal(securityContext.getUserPrincipal());
-    commentsThreadService.resolveThread(author, commentsThreadId);
+    CommentsThreadDto commentsThreadDto = commentsThreadService.resolveThread(author, commentsThreadId, commentsThreadResolveDto);
     return Response
             .status(Response.Status.OK)
+            .entity(commentsThreadDto)
             .build();
   }
 
