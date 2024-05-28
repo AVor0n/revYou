@@ -28,8 +28,7 @@ public class HomeworkPostDto {
 
   @Schema(
       requiredMode = Schema.RequiredMode.REQUIRED,
-      allowableValues =  {"24", "48"}
-  )
+      allowableValues =  {"24", "48"})
   private Integer reviewDuration;
 
   public String getName() {
