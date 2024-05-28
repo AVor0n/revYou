@@ -94,4 +94,16 @@ public class ReviewDao extends GenericDao {
         .setParameter("reviewer", homework.getAuthor())
         .getSingleResult();
   }
+
+  public List<Review> findByHomework(Homework homework) {
+    return getEntityManager()
+        .createQuery(
+            "SELECT r FROM Review r " +
+                "JOIN r.solution s " +
+                "WHERE s.homework = :homework ",
+            Review.class
+        )
+        .setParameter("homework", homework)
+        .getResultList();
+  }
 }

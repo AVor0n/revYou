@@ -4,6 +4,7 @@ import hh.crossreview.dto.exception.ExceptionDto;
 import hh.crossreview.dto.exception.ExceptionValidationDto;
 import hh.crossreview.dto.review.ReviewResolutionDto;
 import hh.crossreview.dto.review.ReviewWrapperDto;
+import hh.crossreview.dto.review.info.ReviewInfoWrapperDto;
 import hh.crossreview.entity.Homework;
 import hh.crossreview.entity.User;
 import hh.crossreview.service.HomeworkService;
@@ -119,6 +120,26 @@ public class ReviewResource {
             .build();
   }
 
+  @GET
+  @Path("/reviews-info")
+  @Produces(MediaType.APPLICATION_JSON)
+  @ApiResponse(
+      responseCode = "200",
+      description = "Successful operation",
+      content = @Content(schema = @Schema(implementation = ReviewInfoWrapperDto.class)))
+  public Response getReviewsInfo(
+      @PathParam("homeworkId") Integer homeworkId,
+      @Context SecurityContext securityContext
+  ) {
+    User user = userService.findByPrincipal(securityContext.getUserPrincipal());
+    Homework homework = homeworkService.getHomeworkEntity(homeworkId);
+    ReviewInfoWrapperDto reviewInfoWrapperDto = reviewService.getReviewsInfo(homework, user);
+    return Response
+        .status(Response.Status.OK)
+        .entity(reviewInfoWrapperDto)
+        .build();
+  }
+
   @POST
   @Path("/{reviewId}/start")
   @Produces(MediaType.APPLICATION_JSON)
@@ -156,7 +177,7 @@ public class ReviewResource {
     User user = userService.findByPrincipal(securityContext.getUserPrincipal());
     Homework homework = homeworkService.getHomeworkEntity(homeworkId);
     reviewService.uploadCorrections(homework, user, reviewId);
-    return  Response
+    return Response
         .status(Response.Status.CREATED)
         .build();
   }

@@ -14,12 +14,12 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
 @Table
-@SuppressWarnings({"unused"})
+@SuppressWarnings({"unused"}) 
 public class Lecture implements Authorable {
 
   @Id
@@ -31,7 +31,7 @@ public class Lecture implements Authorable {
   private String name;
 
   @Column(name = "lecture_date")
-  private Date lectureDate;
+  private LocalDateTime lectureDate;
 
   @Column(name = "zoom_link")
   private String zoomLink;
@@ -50,8 +50,8 @@ public class Lecture implements Authorable {
   @ManyToMany(fetch = FetchType.EAGER)
   @JoinTable(
       name = "lecture_cohort",
-      joinColumns = { @JoinColumn(name = "lecture_id") },
-      inverseJoinColumns = { @JoinColumn(name = "cohort_id") }
+      joinColumns = {@JoinColumn(name = "lecture_id")},
+      inverseJoinColumns = {@JoinColumn(name = "cohort_id")}
   )
   private List<Cohort> cohorts;
 
@@ -59,26 +59,13 @@ public class Lecture implements Authorable {
     return lectureId;
   }
 
-  public String getName() {
-    return name;
-  }
-
-  public User getLector() {
-    return lector;
-  }
-
-  public List<Cohort> getCohorts() {
-    return cohorts;
-  }
-
-  @Override
-  public Integer getAuthorId() {
-    return lector.getUserId();
-  }
-
   public Lecture setLectureId(Integer lectureId) {
     this.lectureId = lectureId;
     return this;
+  }
+
+  public String getName() {
+    return name;
   }
 
   public Lecture setName(String name) {
@@ -86,19 +73,8 @@ public class Lecture implements Authorable {
     return this;
   }
 
-  public Lecture setLectureDate(Date lectureDate) {
-    this.lectureDate = lectureDate;
-    return this;
-  }
-
-  public Lecture setZoomLink(String zoomLink) {
-    this.zoomLink = zoomLink;
-    return this;
-  }
-
-  public Lecture setPresentationLink(String presentationLink) {
-    this.presentationLink = presentationLink;
-    return this;
+  public User getLector() {
+    return lector;
   }
 
   public Lecture setLector(User lector) {
@@ -106,13 +82,49 @@ public class Lecture implements Authorable {
     return this;
   }
 
+  public List<Cohort> getCohorts() {
+    return cohorts;
+  }
+
+  public Lecture setCohorts(List<Cohort> cohorts) {
+    this.cohorts = cohorts;
+    return this;
+  }
+
+  @Override
+  public Integer getAuthorId() {
+    return lector.getUserId();
+  }
+
   public Lecture setHomeworks(List<Homework> homeworks) {
     this.homeworks = homeworks;
     return this;
   }
 
-  public Lecture setCohorts(List<Cohort> cohorts) {
-    this.cohorts = cohorts;
+  public LocalDateTime getLectureDate() {
+    return lectureDate;
+  }
+
+  public Lecture setLectureDate(LocalDateTime lectureDate) {
+    this.lectureDate = lectureDate;
+    return this;
+  }
+
+  public String getZoomLink() {
+    return zoomLink;
+  }
+
+  public Lecture setZoomLink(String zoomLink) {
+    this.zoomLink = zoomLink;
+    return this;
+  }
+
+  public String getPresentationLink() {
+    return presentationLink;
+  }
+
+  public Lecture setPresentationLink(String presentationLink) {
+    this.presentationLink = presentationLink;
     return this;
   }
 }

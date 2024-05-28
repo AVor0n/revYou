@@ -2,7 +2,6 @@
   display: flex;
   flex-direction: column;
   gap: 4px;
-  inline-size: 250px;
   block-size: 80vh;
   overflow-y: auto;
   user-select: none;
@@ -32,6 +31,7 @@
       overflow: hidden;
 
       & .itemText {
+        text-wrap: nowrap;
         text-overflow: ellipsis;
         overflow: hidden;
       }

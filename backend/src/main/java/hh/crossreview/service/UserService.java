@@ -10,6 +10,7 @@ import hh.crossreview.entity.enums.UserStatus;
 import hh.crossreview.utils.RandomUtils;
 import jakarta.inject.Named;
 import jakarta.inject.Singleton;
+import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.ForbiddenException;
 import java.security.Principal;
 import java.util.Collection;
@@ -49,6 +50,13 @@ public class UserService implements UserDetailsService {
       throw new ForbiddenException("Bad token");
     }
     return users.getFirst();
+  }
+  public User findByUserId(Integer userId) {
+    var user =  userDao.find(User.class, userId);
+    if (user == null) {
+      throw new BadRequestException("Lector not found");
+    }
+    return user;
   }
 
   public List<User> findByEmail(String email) {
