@@ -1,6 +1,7 @@
-import { editor as IEditor } from 'monaco-editor';
-import { useRef } from 'react';
+import { editor } from 'monaco-editor';
+import { useState } from 'react';
 import { MonacoDiffEditor } from 'react-monaco-editor';
+import useResizeObserver from 'use-resize-observer';
 
 interface DiffViewerProps {
   sourceContent: string;
@@ -8,13 +9,20 @@ interface DiffViewerProps {
 }
 
 export const DiffViewer = ({ sourceContent, targetContent }: DiffViewerProps) => {
-  const editorRef = useRef<IEditor.IStandaloneDiffEditor | null>(null);
+  const [diffEditor, setDiffEditor] = useState<editor.IDiffEditor | null>(null);
+
+  const onResizeEditorContainer = () => {
+    editor.getDiffEditors().forEach(editorPart => editorPart.layout());
+  };
+
+  useResizeObserver({
+    ref: diffEditor?.getContainerDomNode(),
+    onResize: onResizeEditorContainer,
+  });
 
   return (
     <MonacoDiffEditor
-      editorDidMount={editor => {
-        editorRef.current = editor;
-      }}
+      editorDidMount={setDiffEditor}
       height="80vh"
       language="typescript"
       original={sourceContent}
@@ -33,7 +41,7 @@ export const DiffViewer = ({ sourceContent, targetContent }: DiffViewerProps) =>
         renderOverviewRuler: true,
         lightbulb: {
           // FIXME: doesn't work https://github.com/microsoft/monaco-editor/issues/3873
-          enabled: IEditor.ShowLightbulbIconMode.Off,
+          enabled: editor.ShowLightbulbIconMode.Off,
         },
         lineNumbersMinChars: 4,
         quickSuggestions: false,

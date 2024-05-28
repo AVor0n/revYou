@@ -1,5 +1,6 @@
 import { Loader, Text } from '@gravity-ui/uikit';
 import { useSelector } from 'react-redux';
+import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
 import {
   getActiveFilePath,
   getFilesTree,
@@ -43,26 +44,30 @@ export const FilesTab = () => {
   };
 
   return (
-    <div className={styles.FilesTab}>
-      {fileTree ? (
-        <FilesTree data={fileTree} activeFilePath={activeFilePath} onClick={onClickTreeItem} />
-      ) : (
-        <SkeletonFileTree />
-      )}
+    <PanelGroup className={styles.FilesTab} direction="horizontal">
+      <Panel defaultSize={10}>
+        {fileTree ? (
+          <FilesTree data={fileTree} activeFilePath={activeFilePath} onClick={onClickTreeItem} />
+        ) : (
+          <SkeletonFileTree />
+        )}
+      </Panel>
+      <PanelResizeHandle className={styles.resizer} />
+      <Panel defaultSize={90}>
+        {hasFilesForComparison && <DiffViewer sourceContent={sourceFileContent} targetContent={targetFileContent} />}
 
-      {hasFilesForComparison && <DiffViewer sourceContent={sourceFileContent} targetContent={targetFileContent} />}
-
-      {!hasFilesForComparison && (
-        <div className={styles.placeholderContainer}>
-          {activeFilePath ? (
-            <Loader size="m" />
-          ) : (
-            <Text variant="body-2" color="hint">
-              Выберите файл для просмотра изменений
-            </Text>
-          )}
-        </div>
-      )}
-    </div>
+        {!hasFilesForComparison && (
+          <div className={styles.placeholderContainer}>
+            {activeFilePath ? (
+              <Loader size="m" />
+            ) : (
+              <Text variant="body-2" color="hint">
+                Выберите файл для просмотра изменений
+              </Text>
+            )}
+          </div>
+        )}
+      </Panel>
+    </PanelGroup>
   );
 };
