@@ -2,12 +2,19 @@ package hh.crossreview.dto.commentsthread;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-@Schema(name = "ThreadPost")
+@Schema(
+    name = "ThreadPost",
+    requiredProperties = {
+        "reviewId", "commitSha", "filePath" , "startLine",
+        "startSymbol", "endLine", "endSymbol", "content"
+    }
+)
 public class CommentsThreadPostDto {
 
   private Integer reviewId;
 
   private String commitSha;
+
   private String filePath;
 
   private Integer startLine;

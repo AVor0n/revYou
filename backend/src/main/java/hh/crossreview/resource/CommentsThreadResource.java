@@ -1,6 +1,8 @@
 package hh.crossreview.resource;
 
+import hh.crossreview.dto.comment.CommentDto;
 import hh.crossreview.dto.comment.CommentPostDto;
+import hh.crossreview.dto.commentsthread.CommentsThreadDto;
 import hh.crossreview.dto.commentsthread.CommentsThreadPostDto;
 import hh.crossreview.dto.commentsthread.CommentsThreadWrapperDto;
 import hh.crossreview.dto.exception.ExceptionDto;
@@ -33,7 +35,7 @@ import jakarta.ws.rs.core.SecurityContext;
 @Named
 @Path("/threads")
 @Singleton
-@Tag(name = "threads")
+@Tag(name = "Threads")
 @ApiResponse(
         responseCode = "403",
         description = "Forbidden request",
@@ -62,7 +64,7 @@ public class CommentsThreadResource {
   @ApiResponse(
           responseCode = "201",
           description = "Created",
-          content = @Content(schema = @Schema(implementation = CommentsThreadPostDto.class))
+          content = @Content(schema = @Schema(implementation = CommentsThreadDto.class))
   )
   @ApiResponse(
           responseCode = "400",
@@ -72,9 +74,10 @@ public class CommentsThreadResource {
           CommentsThreadPostDto commentsThreadPostDto,
           @Context SecurityContext securityContext) {
     User user = userService.findByPrincipal(securityContext.getUserPrincipal());
-    commentsThreadService.createCommentsThread(commentsThreadPostDto, user);
+    CommentsThreadDto commentsThreadDto = commentsThreadService.createCommentsThread(commentsThreadPostDto, user);
     return Response
             .status(Response.Status.CREATED)
+            .entity(commentsThreadDto)
             .build();
   }
 
@@ -106,7 +109,7 @@ public class CommentsThreadResource {
   @ApiResponse(
           responseCode = "201",
           description = "Created",
-          content = @Content(schema = @Schema(implementation = CommentPostDto.class))
+          content = @Content(schema = @Schema(implementation = CommentDto.class))
   )
   @ApiResponse(
           responseCode = "400",
@@ -119,9 +122,10 @@ public class CommentsThreadResource {
       @Context SecurityContext securityContext
   ) {
     User author = userService.findByPrincipal(securityContext.getUserPrincipal());
-    commentsThreadService.addComment(commentPostDto, commentsThreadId, author);
+    CommentDto commentDto = commentsThreadService.addComment(commentPostDto, commentsThreadId, author);
     return Response
             .status(Response.Status.CREATED)
+            .entity(commentDto)
             .build();
   }
 
@@ -163,9 +167,10 @@ public class CommentsThreadResource {
           @Context SecurityContext securityContext
   ) {
     User author = userService.findByPrincipal(securityContext.getUserPrincipal());
-    commentsThreadService.updateComment(author, commentId, commentPostDto);
+    CommentDto commentDto = commentsThreadService.updateComment(author, commentId, commentPostDto);
     return Response
             .status(Response.Status.OK)
+            .entity(commentDto)
             .build();
   }
 

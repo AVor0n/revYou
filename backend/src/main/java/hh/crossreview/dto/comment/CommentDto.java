@@ -3,7 +3,12 @@ package hh.crossreview.dto.comment;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;
 
-@Schema(name = "Comment")
+@Schema(
+    name = "Comment",
+    requiredProperties = {
+        "commentId", "authorId", "content", "createdAt", "updatedAt"
+    }
+)
 public class CommentDto {
   private Integer commentId;
 

@@ -9,6 +9,7 @@ import hh.crossreview.utils.JwtTokenUtils;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.inject.Singleton;
@@ -23,15 +24,16 @@ import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.SecurityContext;
 
 @Named
-@Path("/feedbacks")
+@Path("/feedback")
+@Tag(name = "Feedback")
 @Singleton
-public class FeedbackResourse {
+public class FeedbackResource {
 
   private final FeedbackService feedbackService;
   private final JwtTokenUtils jwtTokenUtils;
 
   @Inject
-  public FeedbackResourse(FeedbackService feedbackService, JwtTokenUtils jwtTokenUtils) {
+  public FeedbackResource(FeedbackService feedbackService, JwtTokenUtils jwtTokenUtils) {
     this.feedbackService = feedbackService;
     this.jwtTokenUtils = jwtTokenUtils;
   }
