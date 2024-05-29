@@ -1,11 +1,14 @@
 package hh.crossreview.service;
 
 import hh.crossreview.converter.ReviewConverter;
+import hh.crossreview.converter.UserDetailConverter;
 import hh.crossreview.dao.ReviewAttemptDao;
 import hh.crossreview.dao.ReviewDao;
+import hh.crossreview.dao.SolutionDao;
 import hh.crossreview.dto.review.ReviewResolutionDto;
 import hh.crossreview.dto.review.ReviewWrapperDto;
 import hh.crossreview.dto.review.info.ReviewInfoWrapperDto;
+import hh.crossreview.dto.user.UserDetailWrapperDto;
 import hh.crossreview.entity.Homework;
 import hh.crossreview.entity.Review;
 import hh.crossreview.entity.ReviewAttempt;
@@ -22,6 +25,7 @@ import jakarta.transaction.Transactional;
 import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.ForbiddenException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -44,23 +48,29 @@ public class ReviewService {
 
   private final ReviewDao reviewDao;
 
+  private final SolutionDao solutionDao;
+
   private final ReviewAttemptDao reviewAttemptDao;
 
   private final ReviewConverter reviewConverter;
+
+  private final UserDetailConverter userDetailConverter;
 
   public ReviewService(
           RequirementsUtils reqUtils,
           SolutionService solutionService,
           ReviewersPoolService reviewersPoolService,
-          ReviewDao reviewDao,
+          ReviewDao reviewDao, SolutionDao solutionDao,
           ReviewAttemptDao reviewAttemptDao,
-          ReviewConverter reviewConverter) {
+          ReviewConverter reviewConverter, UserDetailConverter userDetailConverter) {
     this.reqUtils = reqUtils;
     this.solutionService = solutionService;
     this.reviewersPoolService = reviewersPoolService;
     this.reviewDao = reviewDao;
+    this.solutionDao = solutionDao;
     this.reviewAttemptDao = reviewAttemptDao;
     this.reviewConverter = reviewConverter;
+    this.userDetailConverter = userDetailConverter;
   }
 
   @Transactional
@@ -256,6 +266,21 @@ public class ReviewService {
     reqUtils.requireUserHasRole(user, UserRole.TEACHER);
     List<Review> reviews =  reviewDao.findByHomework(homework);
     return wrapReviewInfo(homework, reviews);
+  }
+
+  public UserDetailWrapperDto getAvailableReviewers(
+          User user, Homework homework
+  ) {
+    reqUtils.requireAuthorPermissionOrAdmin(user, homework);
+    List<User> studentsWithCompleteHw = solutionDao.getStudentsBySolutionStatusAndHomeworkId(
+            SolutionStatus.COMPLETE, homework.getHomeworkId()
+    );
+    List<User> availableReviewers = new ArrayList<>();
+    availableReviewers.add(user);
+    availableReviewers.addAll(studentsWithCompleteHw);
+    return userDetailConverter.convertToUserDetailWrapperDto(availableReviewers);
+
+
   }
 
   public void setStatus(Review review, ReviewStatus status) {

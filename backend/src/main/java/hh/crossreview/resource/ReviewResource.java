@@ -5,6 +5,7 @@ import hh.crossreview.dto.exception.ExceptionValidationDto;
 import hh.crossreview.dto.review.ReviewResolutionDto;
 import hh.crossreview.dto.review.ReviewWrapperDto;
 import hh.crossreview.dto.review.info.ReviewInfoWrapperDto;
+import hh.crossreview.dto.user.UserDetailWrapperDto;
 import hh.crossreview.entity.Homework;
 import hh.crossreview.entity.User;
 import hh.crossreview.service.HomeworkService;
@@ -201,9 +202,37 @@ public class ReviewResource {
     User user = userService.findByPrincipal(securityContext.getUserPrincipal());
     Homework homework = homeworkService.getHomeworkEntity(homeworkId);
     reviewService.addReviewResolution(homework, user, reviewId, reviewResolutionDto);
-    return  Response
+    return Response
             .status(Response.Status.CREATED)
             .build();
   }
+
+  @GET
+  @Path("/available-reviewers")
+  @Produces(MediaType.APPLICATION_JSON)
+  @ApiResponse(
+          responseCode = "200",
+          description = "Successful operation",
+          content = @Content(schema = @Schema(implementation = ReviewInfoWrapperDto.class))
+  )
+  @ApiResponse(
+          responseCode = "400",
+          description = "Bad request",
+          content = @Content(schema = @Schema(implementation = ExceptionValidationDto.class))
+  )
+  public Response getAvailableReviewers(
+          @PathParam("homeworkId") Integer homeworkId,
+          @Context SecurityContext securityContext
+  ) {
+    User user = userService.findByPrincipal(securityContext.getUserPrincipal());
+    Homework homework = homeworkService.getHomeworkEntity(homeworkId);
+    UserDetailWrapperDto availableReviewers = reviewService.getAvailableReviewers(user, homework);
+    return Response
+            .status(Response.Status.OK)
+            .entity(availableReviewers)
+            .build();
+  }
+
+
 
 }
