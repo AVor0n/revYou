@@ -206,12 +206,12 @@ public class ReviewResource {
             .build();
   }
 
-  @POST
+  @PATCH
   @Path("/approve-student/{studentId}")
   @Produces(MediaType.APPLICATION_JSON)
   @ApiResponse(
-      responseCode = "201",
-      description = "Created")
+      responseCode = "200",
+      description = "Successful operation")
   @ApiResponse(
       responseCode = "400",
       description = "Bad request",
@@ -225,7 +225,7 @@ public class ReviewResource {
     Homework homework = homeworkService.getHomeworkEntity(homeworkId);
     reviewService.approveStudent(homework, teacher, student);
     return Response
-        .status(Response.Status.CREATED)
+        .status(Response.Status.OK)
         .build();
   }
 

@@ -107,8 +107,4 @@ public class ReviewDao extends GenericDao {
         .getResultList();
   }
 
-  public void deleteReview(Review review) {
-    getEntityManager().remove(review);
-  }
-
 }
