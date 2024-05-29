@@ -49,11 +49,10 @@ public class AuthenticationService {
     }
     User user = requireUserExist(signInRequestDto.getUsername());
     UserDetails userDetails = userService.generateUserDetails(user);
-    String userRole = userDetails.getAuthorities().toString();
     String accessToken = jwtTokenUtils.generateAccessToken(userDetails);
     String refreshToken = jwtTokenUtils.generateRefreshToken(userDetails);
 
-    return Response.ok(new SignInResponseDto(accessToken, refreshToken, userRole, user))
+    return Response.ok(new SignInResponseDto(accessToken, refreshToken, user))
             .type(MediaType.APPLICATION_JSON)
             .build();
   }
@@ -76,9 +75,8 @@ public class AuthenticationService {
       final String username = claims.getSubject();
       User user = requireUserExist(username);
       UserDetails userDetails = userService.generateUserDetails(user);
-      String userRole = userDetails.getAuthorities().toString();
       final String accessToken = jwtTokenUtils.generateAccessToken(userDetails);
-      return Response.ok(new SignInResponseDto(accessToken, refreshToken, userRole, user))
+      return Response.ok(new SignInResponseDto(accessToken, refreshToken, user))
               .type(MediaType.APPLICATION_JSON)
               .build();
     }

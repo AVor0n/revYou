@@ -1,11 +1,12 @@
 package hh.crossreview.dto.user;
 
 import hh.crossreview.entity.User;
+import hh.crossreview.entity.enums.UserRole;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(name = "SignInResponse", requiredProperties = {
     "accessToken", "refreshToken", "userId",
-    "username", "email"
+    "role", "username", "email"
 })
 @SuppressWarnings({"unused"})
 public class SignInResponseDto {
@@ -13,7 +14,7 @@ public class SignInResponseDto {
   private String refreshToken;
   private Integer userId;
   private Integer cohortId;
-  private String role;
+  private UserRole role;
   private String username;
   private String name;
   private String surname;
@@ -21,16 +22,16 @@ public class SignInResponseDto {
   private String gitlabUsername;
   private String mmUsername;
 
-  public SignInResponseDto(String accessToken, String refreshToken, String role) {
+  public SignInResponseDto(String accessToken, String refreshToken, UserRole role) {
     this.accessToken = accessToken;
     this.refreshToken = refreshToken;
     this.role = role;
   }
 
-  public SignInResponseDto(String accessToken, String refreshToken, String role, User user) {
+  public SignInResponseDto(String accessToken, String refreshToken, User user) {
     this.accessToken = accessToken;
     this.refreshToken = refreshToken;
-    this.role = role;
+    this.role = user.getRole();
     this.cohortId = user.getCohortId();
     this.email = user.getEmail();
     this.mmUsername = user.getMmUsername();
@@ -59,11 +60,11 @@ public class SignInResponseDto {
     return this;
   }
 
-  public String getRole() {
+  public UserRole getRole() {
     return role;
   }
 
-  public SignInResponseDto setRole(String role) {
+  public SignInResponseDto setRole(UserRole role) {
     this.role = role;
     return this;
   }
