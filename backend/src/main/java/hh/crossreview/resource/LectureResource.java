@@ -7,7 +7,6 @@ import hh.crossreview.dto.lecture.LecturePostDto;
 import hh.crossreview.dto.lecture.LecturePostPesponseDto;
 import hh.crossreview.service.LectureService;
 import hh.crossreview.service.UserService;
-import hh.crossreview.utils.JwtTokenUtils;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -34,13 +33,11 @@ import jakarta.ws.rs.core.SecurityContext;
 public class LectureResource {
   private final LectureService lectureService;
   private final UserService userService;
-  private final JwtTokenUtils jwtTokenUtils;
 
   @Inject
-  public LectureResource(LectureService lectureService, UserService userService, JwtTokenUtils jwtTokenUtils) {
+  public LectureResource(LectureService lectureService, UserService userService) {
     this.lectureService = lectureService;
     this.userService = userService;
-    this.jwtTokenUtils = jwtTokenUtils;
   }
 
   @GET
