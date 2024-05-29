@@ -3,7 +3,10 @@ package hh.crossreview.dto.review;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;
 
-@Schema(name = "ReviewAttempt")
+@Schema(name = "ReviewAttempt", requiredProperties = {
+    "reviewAttemptId", "reviewId", "solutionAttemptId", "createdAt"
+})
+@SuppressWarnings({"unused"})
 public class ReviewAttemptDto {
   private Integer reviewAttemptId;
 

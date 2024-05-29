@@ -42,7 +42,7 @@ public class SolutionConverter {
         .map(this::convertToSolutionAttemptDto)
         .toList();
     return new SolutionDto()
-        .setStatus(solution.getStatus().toString())
+        .setStatus(solution.getStatus())
         .setProjectId(solution.getProjectId())
         .setBranch(solution.getBranch())
         .setSourceCommitId(solution.getSourceCommitId())

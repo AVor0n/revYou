@@ -71,7 +71,7 @@ class SolutionServiceTests extends TestsUtil {
     assertTrue(solutionDto.getSolutionAttempts().isEmpty());
     assertEquals(projectId, solutionDto.getProjectId());
     assertEquals(branch, solutionDto.getBranch());
-    assertEquals(SolutionStatus.IN_PROGRESS.toString(), solutionDto.getStatus());
+    assertEquals(SolutionStatus.IN_PROGRESS, solutionDto.getStatus());
     assertEquals(student.getUserId(), solutionDto.getStudentId());
     assertEquals(0, solutionDto.getApproveScore());
     assertEquals(0, solutionDto.getReviewScore());
@@ -122,7 +122,7 @@ class SolutionServiceTests extends TestsUtil {
     List<SolutionDto> solutionsDto = solutionService.getSolutions(homework, student).getData();
 
     assertEquals(1, solutionsDto.size());
-    assertEquals(solution.getStatus().toString(), solutionsDto.get(0).getStatus());
+    assertEquals(solution.getStatus(), solutionsDto.get(0).getStatus());
     assertEquals(1, solution.getSolutionAttempts().size());
     assertEquals(solutionAttempt.getCommitId(), solutionsDto.get(0).getSolutionAttempts().get(0).getCommitId());
   }
