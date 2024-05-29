@@ -206,4 +206,27 @@ public class ReviewResource {
             .build();
   }
 
+  @POST
+  @Path("/approve-student/{studentId}")
+  @Produces(MediaType.APPLICATION_JSON)
+  @ApiResponse(
+      responseCode = "201",
+      description = "Created")
+  @ApiResponse(
+      responseCode = "400",
+      description = "Bad request",
+      content = @Content(schema = @Schema(implementation = ExceptionDto.class)))
+  public Response approveStudent(
+      @PathParam("homeworkId") Integer homeworkId,
+      @PathParam("studentId") Integer studentId,
+      @Context SecurityContext securityContext) {
+    User teacher = userService.findByPrincipal(securityContext.getUserPrincipal());
+    User student = userService.findByUserId(studentId);
+    Homework homework = homeworkService.getHomeworkEntity(homeworkId);
+    reviewService.approveStudent(homework, teacher, student);
+    return Response
+        .status(Response.Status.CREATED)
+        .build();
+  }
+
 }
