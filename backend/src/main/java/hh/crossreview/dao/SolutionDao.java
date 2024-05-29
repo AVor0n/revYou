@@ -57,17 +57,17 @@ public class SolutionDao extends GenericDao {
   }
 
   public List<User> getStudentsBySolutionStatusAndHomeworkId(
-          SolutionStatus solutionStatus, Integer homeworkId
+          SolutionStatus solutionStatus, Homework homework
   ){
     return getEntityManager()
             .createQuery(
                 "SELECT s.student FROM Solution s " +
-                        "WHERE s.homework.id = :homeworkId AND " +
+                        "WHERE s.homework = :homework AND " +
                         "s.status = :status " +
                         "ORDER BY s.student.surname",
                     User.class
             )
-            .setParameter("homeworkId", homeworkId)
+            .setParameter("homework", homework)
             .setParameter("status", solutionStatus)
             .getResultList();
   }

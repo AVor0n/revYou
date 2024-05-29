@@ -273,7 +273,7 @@ public class ReviewService {
   ) {
     reqUtils.requireAuthorPermissionOrAdmin(user, homework);
     List<User> studentsWithCompleteHw = solutionDao.getStudentsBySolutionStatusAndHomeworkId(
-            SolutionStatus.COMPLETE, homework.getHomeworkId()
+            SolutionStatus.COMPLETE, homework
     );
     List<User> availableReviewers = new ArrayList<>();
     availableReviewers.add(user);

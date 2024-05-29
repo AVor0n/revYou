@@ -213,12 +213,7 @@ public class ReviewResource {
   @ApiResponse(
           responseCode = "200",
           description = "Successful operation",
-          content = @Content(schema = @Schema(implementation = ReviewInfoWrapperDto.class))
-  )
-  @ApiResponse(
-          responseCode = "400",
-          description = "Bad request",
-          content = @Content(schema = @Schema(implementation = ExceptionValidationDto.class))
+          content = @Content(schema = @Schema(implementation = UserDetailWrapperDto.class))
   )
   public Response getAvailableReviewers(
           @PathParam("homeworkId") Integer homeworkId,
