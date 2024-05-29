@@ -30,7 +30,7 @@ public class ReviewConverter {
           String commitId) {
     ReviewDto reviewDto = new ReviewDto()
         .setReviewId(review.getReviewId())
-        .setStatus(review.getStatus().toString())
+        .setStatus(review.getStatus())
         .setCommitId(commitId)
         .setProjectId(review.getSolution().getProjectId())
         .setSourceCommitId(sourceCommitId);

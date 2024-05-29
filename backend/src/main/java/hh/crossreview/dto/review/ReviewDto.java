@@ -1,13 +1,18 @@
 package hh.crossreview.dto.review;
 
+import hh.crossreview.entity.enums.ReviewStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
 
-@Schema(name = "Review")
+@Schema(name = "Review", requiredProperties = {
+    "reviewId", "status", "projectId",
+    "sourceCommitId", "commitId"
+})
+@SuppressWarnings({"unused"})
 public class ReviewDto {
   private Integer reviewId;
 
-  private String status;
+  private ReviewStatus status;
 
   private Integer projectId;
 
@@ -28,11 +33,11 @@ public class ReviewDto {
     return this;
   }
 
-  public String getStatus() {
+  public ReviewStatus getStatus() {
     return status;
   }
 
-  public ReviewDto setStatus(String status) {
+  public ReviewDto setStatus(ReviewStatus status) {
     this.status = status;
     return this;
   }

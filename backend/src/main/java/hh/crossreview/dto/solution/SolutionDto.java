@@ -1,5 +1,6 @@
 package hh.crossreview.dto.solution;
 
+import hh.crossreview.entity.enums.SolutionStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
 
@@ -14,7 +15,7 @@ import java.util.List;
 @SuppressWarnings({"unused"})
 public class SolutionDto {
 
-  private String status;
+  private SolutionStatus status;
 
   private Integer projectId;
 
@@ -30,7 +31,7 @@ public class SolutionDto {
 
   private List<SolutionAttemptDto> solutionAttempts;
 
-  public String getStatus() {
+  public SolutionStatus getStatus() {
     return status;
   }
 
@@ -62,7 +63,7 @@ public class SolutionDto {
     return solutionAttempts;
   }
 
-  public SolutionDto setStatus(String status) {
+  public SolutionDto setStatus(SolutionStatus status) {
     this.status = status;
     return this;
   }
