@@ -12,8 +12,9 @@ import hh.crossreview.entity.User;
 import jakarta.inject.Named;
 import jakarta.inject.Singleton;
 import jakarta.transaction.Transactional;
+import jakarta.ws.rs.ForbiddenException;
 import java.util.List;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import java.util.Objects;
 
 @Named
 @Singleton
@@ -42,12 +43,18 @@ public class FeedbackService extends GenericService {
   }
 
   @Transactional
-  public FeedbackPostResponseDto createFeedback(FeedbackPostDto feedbackPostDto, UsernamePasswordAuthenticationToken token) {
-    var student = feedbackDao.find(User.class, feedbackPostDto.getStudent());
-    var review = feedbackDao.find(Review.class, feedbackPostDto.getReview());
+  public FeedbackPostResponseDto createFeedback(FeedbackPostDto feedbackPostDto, User student) {
+    var review = feedbackDao.find(Review.class, feedbackPostDto.getReviewId());
+    requireStudentRequestedReview(student, review);
     var feedback = feedbackConverter.convertToFeedback(feedbackPostDto, review, student);
     feedbackDao.save(feedback);
     return feedbackConverter.convertToFeedbackPostResponseDto(feedback.getFeedbackId());
+  }
+
+  private void requireStudentRequestedReview(User student, Review review) {
+    if (!Objects.equals(review.getStudent().getUserId(), student.getUserId())) {
+      throw new ForbiddenException("Action forbidden");
+    }
   }
 
 }

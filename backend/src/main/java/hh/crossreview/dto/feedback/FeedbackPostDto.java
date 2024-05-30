@@ -3,33 +3,23 @@ package hh.crossreview.dto.feedback;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(name = "FeedbackPost")
+@SuppressWarnings({"unused"})
 public class FeedbackPostDto {
 
   @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
-  private Integer review;
-  @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
-  private Integer student;
+  private Integer reviewId;
   @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
   private Integer rating;
   @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
   private String description;
 
-  public Integer getReview() {
-    return review;
+  public Integer getReviewId() {
+    return reviewId;
   }
 
-  public void setReview(Integer review) {
-    this.review = review;
+  public void setReviewId(Integer reviewId) {
+    this.reviewId = reviewId;
   }
-
-  public Integer getStudent() {
-    return student;
-  }
-
-  public void setStudent(Integer student) {
-    this.student = student;
-  }
-
 
   public Integer getRating() {
     return rating;
