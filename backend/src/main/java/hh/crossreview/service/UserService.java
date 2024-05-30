@@ -63,6 +63,10 @@ public class UserService implements UserDetailsService {
     return userDao.findByEmail(email);
   }
 
+  public User findById(Integer userId) {
+    return userDao.find(User.class, userId);
+  }
+
 
 
   @Override

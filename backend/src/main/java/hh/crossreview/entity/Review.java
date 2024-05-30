@@ -43,9 +43,16 @@ public class Review implements Statusable {
   private Solution solution;
 
   @OneToMany(
+      cascade = CascadeType.PERSIST,
+      mappedBy = "review",
+      orphanRemoval = true)
+  private List<CommentsThread> commentsThreads;
+
+  @OneToMany(
           cascade = CascadeType.ALL,
           mappedBy = "review",
-          fetch = FetchType.EAGER)
+          fetch = FetchType.EAGER,
+          orphanRemoval = true)
   private List<ReviewAttempt> reviewAttempts;
 
   public Review(User student, Solution solution) {
@@ -106,5 +113,13 @@ public class Review implements Statusable {
 
   public void setReviewAttempts(List<ReviewAttempt> reviewAttempts) {
     this.reviewAttempts = reviewAttempts;
+  }
+
+  public List<CommentsThread> getCommentsThreads() {
+    return commentsThreads;
+  }
+
+  public void setCommentsThreads(List<CommentsThread> commentsThreads) {
+    this.commentsThreads = commentsThreads;
   }
 }
