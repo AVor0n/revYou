@@ -3,8 +3,10 @@ package hh.crossreview.service;
 import hh.crossreview.converter.UserConverter;
 import hh.crossreview.dao.CohortDao;
 import hh.crossreview.dao.UserDao;
-import hh.crossreview.dto.user.SignUpRequestDto;
-import hh.crossreview.dto.user.UserPatchDto;
+import hh.crossreview.dto.user.auth.SignUpRequestDto;
+import hh.crossreview.dto.user.info.UserInfoDto;
+import hh.crossreview.dto.user.update.PasswordPatchDto;
+import hh.crossreview.dto.user.update.UserPatchDto;
 import hh.crossreview.entity.Cohort;
 import hh.crossreview.entity.User;
 import hh.crossreview.entity.enums.UserRole;
@@ -17,6 +19,7 @@ import jakarta.ws.rs.ForbiddenException;
 import java.security.Principal;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -106,21 +109,21 @@ public class UserService implements UserDetailsService {
 
   }
 
-
   @Transactional
-  public void updateProfile(Principal principal, UserPatchDto userPatchDto) {
-    String username = userPatchDto.getUsername();
-    if (userPatchDto.getUsername() != null) {
-      requireUsernameUnique(username);
+  public void updatePassword(Principal principal, PasswordPatchDto passwordPatchDto) {
+    String password = passwordPatchDto.getPassword();
+    String confirmationPassword = passwordPatchDto.getConfirmationPassword();
+    if (!Objects.equals(password, confirmationPassword)) {
+      throw new BadRequestException("Password mismatch");
     }
-    User user = findByPrincipal(principal);
-    userConverter.merge(user, userPatchDto);
+    findByPrincipal(principal).setPassword(passwordEncoder.encode(password));
   }
 
-  private void requireUsernameUnique(String username) {
-    if (!userDao.findByUsername(username).isEmpty()) {
-      throw new BadRequestException("Username already taken");
-    }
+  @Transactional
+  public UserInfoDto updateProfile(Principal principal, UserPatchDto userPatchDto) {
+    User user = findByPrincipal(principal);
+    userConverter.merge(user, userPatchDto);
+    return new UserInfoDto(user);
   }
 
 }

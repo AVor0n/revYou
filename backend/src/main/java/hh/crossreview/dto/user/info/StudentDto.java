@@ -1,4 +1,4 @@
-package hh.crossreview.dto.user;
+package hh.crossreview.dto.user.info;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import hh.crossreview.entity.User;

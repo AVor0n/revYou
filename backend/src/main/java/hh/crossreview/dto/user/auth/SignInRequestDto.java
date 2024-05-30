@@ -1,4 +1,4 @@
-package hh.crossreview.dto.user;
+package hh.crossreview.dto.user.auth;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;

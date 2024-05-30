@@ -1,17 +1,14 @@
-package hh.crossreview.dto.user;
+package hh.crossreview.dto.user.info;
 
 import hh.crossreview.entity.User;
 import hh.crossreview.entity.enums.UserRole;
 import io.swagger.v3.oas.annotations.media.Schema;
 
-@Schema(name = "SignInResponse", requiredProperties = {
-    "accessToken", "refreshToken", "userId",
-    "role", "username", "email"
+@Schema(name = "UserInfo", requiredProperties = {
+    "userId", "role", "username", "email"
 })
-@SuppressWarnings({"unused"})
-public class SignInResponseDto {
-  private String accessToken;
-  private String refreshToken;
+public class UserInfoDto {
+  
   private Integer userId;
   private Integer cohortId;
   private UserRole role;
@@ -22,15 +19,7 @@ public class SignInResponseDto {
   private String gitlabUsername;
   private String mmUsername;
 
-  public SignInResponseDto(String accessToken, String refreshToken, UserRole role) {
-    this.accessToken = accessToken;
-    this.refreshToken = refreshToken;
-    this.role = role;
-  }
-
-  public SignInResponseDto(String accessToken, String refreshToken, User user) {
-    this.accessToken = accessToken;
-    this.refreshToken = refreshToken;
+  public UserInfoDto(User user) {
     this.role = user.getRole();
     this.cohortId = user.getCohortId();
     this.email = user.getEmail();
@@ -42,29 +31,11 @@ public class SignInResponseDto {
     this.username = user.getUsername();
   }
 
-  public String getAccessToken() {
-    return accessToken;
-  }
-
-  public SignInResponseDto setAccessToken(String accessToken) {
-    this.accessToken = accessToken;
-    return this;
-  }
-
-  public String getRefreshToken() {
-    return refreshToken;
-  }
-
-  public SignInResponseDto setRefreshToken(String refreshToken) {
-    this.refreshToken = refreshToken;
-    return this;
-  }
-
   public UserRole getRole() {
     return role;
   }
 
-  public SignInResponseDto setRole(UserRole role) {
+  public UserInfoDto setRole(UserRole role) {
     this.role = role;
     return this;
   }
@@ -73,7 +44,7 @@ public class SignInResponseDto {
     return userId;
   }
 
-  public SignInResponseDto setUserId(Integer userId) {
+  public UserInfoDto setUserId(Integer userId) {
     this.userId = userId;
     return this;
   }
@@ -82,7 +53,7 @@ public class SignInResponseDto {
     return cohortId;
   }
 
-  public SignInResponseDto setCohortId(Integer cohortId) {
+  public UserInfoDto setCohortId(Integer cohortId) {
     this.cohortId = cohortId;
     return this;
   }
@@ -91,7 +62,7 @@ public class SignInResponseDto {
     return username;
   }
 
-  public SignInResponseDto setUsername(String username) {
+  public UserInfoDto setUsername(String username) {
     this.username = username;
     return this;
   }
@@ -100,7 +71,7 @@ public class SignInResponseDto {
     return name;
   }
 
-  public SignInResponseDto setName(String name) {
+  public UserInfoDto setName(String name) {
     this.name = name;
     return this;
   }
@@ -109,7 +80,7 @@ public class SignInResponseDto {
     return surname;
   }
 
-  public SignInResponseDto setSurname(String surname) {
+  public UserInfoDto setSurname(String surname) {
     this.surname = surname;
     return this;
   }
@@ -118,7 +89,7 @@ public class SignInResponseDto {
     return email;
   }
 
-  public SignInResponseDto setEmail(String email) {
+  public UserInfoDto setEmail(String email) {
     this.email = email;
     return this;
   }
@@ -127,7 +98,7 @@ public class SignInResponseDto {
     return gitlabUsername;
   }
 
-  public SignInResponseDto setGitlabUsername(String gitlabUsername) {
+  public UserInfoDto setGitlabUsername(String gitlabUsername) {
     this.gitlabUsername = gitlabUsername;
     return this;
   }
@@ -136,9 +107,9 @@ public class SignInResponseDto {
     return mmUsername;
   }
 
-  public SignInResponseDto setMmUsername(String mmUsername) {
+  public UserInfoDto setMmUsername(String mmUsername) {
     this.mmUsername = mmUsername;
     return this;
   }
-
+  
 }

@@ -1,6 +1,6 @@
 package hh.crossreview.dto.feedback;
 
-import hh.crossreview.dto.user.UserDto;
+import hh.crossreview.dto.user.info.UserDto;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
