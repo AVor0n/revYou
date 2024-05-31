@@ -1,10 +1,12 @@
 package hh.crossreview.resource;
 
+import hh.crossreview.dto.exception.ExceptionDto;
 import hh.crossreview.dto.exception.ExceptionValidationDto;
 import hh.crossreview.dto.lecture.LectureDto;
 import hh.crossreview.dto.lecture.LecturePatchDto;
 import hh.crossreview.dto.lecture.LecturePostDto;
-import hh.crossreview.dto.lecture.LecturePostPesponseDto;
+import hh.crossreview.dto.lecture.LecturePostResponseDto;
+import hh.crossreview.dto.lecture.LectureWrapperDto;
 import hh.crossreview.service.LectureService;
 import hh.crossreview.service.UserService;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -29,6 +31,11 @@ import jakarta.ws.rs.core.SecurityContext;
 @Named
 @Singleton
 @Tag(name = "Lecture")
+@ApiResponse(
+    responseCode = "403",
+    description = "Forbidden request",
+    content = @Content(schema = @Schema(implementation = ExceptionDto.class))
+)
 @Path("/lectures")
 public class LectureResource {
   private final LectureService lectureService;
@@ -56,7 +63,7 @@ public class LectureResource {
   @ApiResponse(
       responseCode = "201",
       description = "Created",
-      content = @Content(schema = @Schema(implementation = LecturePostPesponseDto.class)))
+      content = @Content(schema = @Schema(implementation = LecturePostResponseDto.class)))
   @ApiResponse(
       responseCode = "400",
       description = "Bad request",
@@ -96,11 +103,11 @@ public class LectureResource {
       content = @Content(schema = @Schema(implementation = ExceptionValidationDto.class)))
   public Response patchLecture(
       @PathParam("lectureId") Integer lectureId,
-      LecturePatchDto lecturePatchtDto,
+      LecturePatchDto lecturePatchDto,
       @Context SecurityContext securityContext
   ) {
     var lector = userService.findByPrincipal(securityContext.getUserPrincipal());
-    lectureService.updateLecture(lectureId, lecturePatchtDto, lector);
+    lectureService.updateLecture(lectureId, lecturePatchDto, lector);
     return Response.status(Response.Status.OK).build();
   }
 
@@ -108,7 +115,7 @@ public class LectureResource {
   @Produces(MediaType.APPLICATION_JSON)
   @ApiResponse(responseCode = "200",
       description = "Successful operation",
-      content = @Content(schema = @Schema(implementation = LectureDto.class)))
+      content = @Content(schema = @Schema(implementation = LectureWrapperDto.class)))
   public Response getAllLectures(@Context SecurityContext securityContext) {
     var user = userService.findByPrincipal(securityContext.getUserPrincipal());
     var lectures = lectureService.getLectures(user);
