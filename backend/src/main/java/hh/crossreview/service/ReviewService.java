@@ -353,5 +353,42 @@ public class ReviewService {
     }
   }
 
+  @Transactional
+  public void approveStudent(Homework homework, User teacher, User student) {
+    reqUtils.requireAuthorPermissionOrAdmin(teacher, homework);
+
+    Solution solution = solutionService.requireSolutionExist(homework, student);
+    solution.setStatus(SolutionStatus.COMPLETE);
+
+    List<Review> reviewsByStudent = reviewDao.findByHomeworkAndReviewer(homework, student);
+    recreateReviewsStartedByStudent(homework, reviewsByStudent);
+
+    reviewersPoolService.resolveReviewer(student, homework);
+
+    List<Review> reviewsForStudent = reviewDao.findByHomeworkAndStudent(homework, student);
+    releaseReviewersAssignedForStudentSolution(homework, reviewsForStudent);
+  }
+
+  private void recreateReviewsStartedByStudent(Homework homework, List<Review> reviewsByStudent) {
+    reviewsByStudent.forEach(review -> {
+      if (!review.getStatus().equals(ReviewStatus.APPROVED)) {
+        review.setStatus(ReviewStatus.ARCHIVED);
+        createReview(homework, review.getSolution(), review.getStudent());
+      }
+    });
+  }
+
+  private void releaseReviewersAssignedForStudentSolution(Homework homework, List<Review> reviewsForStudent) {
+    reviewsForStudent.forEach(review -> {
+      if (!review.getStatus().equals(ReviewStatus.APPROVED)) {
+        User reviewer = review.getReviewer();
+        if (Objects.nonNull(reviewer) && reviewer.getRole().equals(UserRole.STUDENT)) {
+          reviewersPoolService.releaseReviewer(review.getReviewer(), homework);
+        }
+        setStatus(review, ReviewStatus.ARCHIVED);
+      }
+    });
+  }
+
 }
 
