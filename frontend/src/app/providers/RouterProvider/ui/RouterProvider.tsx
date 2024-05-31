@@ -7,7 +7,7 @@ import { AuthRequire } from './AuthRequire';
 const onLogout = () => {
   localStorage.removeItem('accessToken');
   localStorage.removeItem('refreshToken');
-  localStorage.removeItem('role');
+  localStorage.removeItem('userInfo');
 };
 
 const navLinks = [{ title: 'Выйти', href: '/auth', element: <AuthPage />, onClick: onLogout }];

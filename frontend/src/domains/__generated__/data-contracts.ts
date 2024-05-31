@@ -10,9 +10,19 @@
  */
 
 export interface SignInResponse {
-  accessToken?: string;
-  refreshToken?: string;
-  role?: string;
+  accessToken: string;
+  refreshToken: string;
+  /** @format int32 */
+  userId: number;
+  /** @format int32 */
+  cohortId?: number;
+  role: SignInResponseRoleEnum;
+  username: string;
+  name?: string;
+  surname?: string;
+  email: string;
+  gitlabUsername?: string;
+  mmUsername?: string;
 }
 
 export interface Exception {
@@ -92,6 +102,10 @@ export interface CommentsThread {
 
 export interface ThreadWrapper {
   data: CommentsThread[];
+}
+
+export interface CommentsThreadResolveDto {
+  status: string;
 }
 
 export interface ThreadPost {
@@ -262,24 +276,24 @@ export interface ReviewResolutionDto {
 
 export interface Review {
   /** @format int32 */
-  reviewId?: number;
-  status?: string;
+  reviewId: number;
+  status: ReviewStatusEnum;
   /** @format int32 */
-  projectId?: number;
-  sourceCommitId?: string;
-  commitId?: string;
+  projectId: number;
+  sourceCommitId: string;
+  commitId: string;
   reviewAttempts?: ReviewAttempt[];
 }
 
 export interface ReviewAttempt {
   /** @format int32 */
-  reviewAttemptId?: number;
+  reviewAttemptId: number;
   /** @format int32 */
-  reviewId?: number;
+  reviewId: number;
   /** @format int32 */
-  solutionAttemptId?: number;
+  solutionAttemptId: number;
   /** @format date-time */
-  createdAt?: string;
+  createdAt: string;
   /** @format date-time */
   finishedAt?: string;
   resolution?: string;
@@ -321,7 +335,7 @@ export interface Student {
 }
 
 export interface Solution {
-  status: string;
+  status: SolutionStatusEnum;
   /** @format int32 */
   projectId: number;
   branch: string;
@@ -353,6 +367,8 @@ export interface SolutionPatch {
   branchLink: string;
 }
 
+export type SignInResponseRoleEnum = 'STUDENT' | 'TEACHER' | 'ADMIN';
+
 export type CommentsThreadStatusEnum = 'ACTIVE' | 'RESOLVED';
 
 /** @format int32 */
@@ -363,6 +379,16 @@ export type HomeworkReviewDurationEnum = 24 | 48;
 
 /** @format int32 */
 export type HomeworkPatchReviewDurationEnum = 24 | 48;
+
+export type ReviewStatusEnum =
+  | 'REVIEWER_SEARCH'
+  | 'REVIEWER_FOUND'
+  | 'REVIEW_STARTED'
+  | 'CORRECTIONS_REQUIRED'
+  | 'CORRECTIONS_LOADED'
+  | 'APPROVED';
+
+export type SolutionStatusEnum = 'IN_PROGRESS' | 'REVIEW_STAGE' | 'REVIEWER_STAGE' | 'COMPLETE';
 
 export interface GetDiffsParams {
   /** Commit SHA */

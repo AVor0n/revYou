@@ -13,6 +13,7 @@ import {
   Comment,
   CommentPostDto,
   CommentsThread,
+  CommentsThreadResolveDto,
   DiffsWrapper,
   Exception,
   ExceptionValidation,
@@ -195,15 +196,19 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
    * @summary Resolve thread. Available to author of the thread and admin
    * @request PATCH:/api/threads/{threadId}/resolve
    * @secure
+   * @response `200` `CommentsThread` Successful operation
    * @response `400` `ExceptionValidation` Bad request
    * @response `403` `Exception` Forbidden request
    * @response `404` `Exception` Not found
    */
-  resolveCommentsThread = (threadId: number, params: RequestParams = {}) =>
-    this.request<any, ExceptionValidation | Exception>({
+  resolveCommentsThread = (threadId: number, data: CommentsThreadResolveDto, params: RequestParams = {}) =>
+    this.request<CommentsThread, ExceptionValidation | Exception>({
       path: `/api/threads/${threadId}/resolve`,
       method: 'PATCH',
+      body: data,
       secure: true,
+      type: ContentType.Json,
+      format: 'json',
       ...params,
     });
   /**

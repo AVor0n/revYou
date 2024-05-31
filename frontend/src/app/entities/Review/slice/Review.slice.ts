@@ -1,7 +1,7 @@
 import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
 import {
   addComment,
-  resolveThread,
+  changeThreadStatus,
   createThread,
   loadFileDiff,
   loadReview,
@@ -69,11 +69,11 @@ export const reviewSlice = createSlice({
         return thread;
       });
     });
-    builder.addCase(resolveThread.fulfilled, (state, { payload }) => {
+    builder.addCase(changeThreadStatus.fulfilled, (state, { payload }) => {
       if (!state.threads) return;
       state.threads = state.threads.map(thread => {
-        if (thread.threadId === payload) {
-          thread.status = 'RESOLVED';
+        if (thread.threadId === payload.threadId) {
+          thread.status = payload.status;
         }
         return thread;
       });

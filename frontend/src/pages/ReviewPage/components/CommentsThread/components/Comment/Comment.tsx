@@ -2,12 +2,12 @@ import { dateTimeParse } from '@gravity-ui/date-utils';
 import { Person } from '@gravity-ui/icons';
 import { Avatar, Tooltip, Label, Text } from '@gravity-ui/uikit';
 import clsx from 'clsx';
-import { type CommentsThread, type Comment as IComment } from '@domains';
+import { type CommentsThreadStatusEnum, type Comment as IComment } from '@domains';
 import styles from './Comment.module.scss';
 
 interface CommentProps {
   comment: IComment;
-  threadStatus: CommentsThread['status'];
+  threadStatus: CommentsThreadStatusEnum;
 }
 
 export const Comment = ({ comment, threadStatus }: CommentProps) => (

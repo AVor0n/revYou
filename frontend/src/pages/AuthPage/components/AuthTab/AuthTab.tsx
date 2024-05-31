@@ -18,8 +18,8 @@ export const AuthTab = () => {
     dispatch(signInUser(data))
       .unwrap()
       .then(({ accessToken, refreshToken }) => {
-        setRefreshToken(refreshToken ?? '');
-        setAccessToken(accessToken ?? '');
+        setRefreshToken(refreshToken);
+        setAccessToken(accessToken);
         nav('/homeworks');
       });
   };

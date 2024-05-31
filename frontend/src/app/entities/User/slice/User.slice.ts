@@ -2,15 +2,10 @@ import { toaster } from '@gravity-ui/uikit/toaster-singleton-react-18';
 import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { signInUser } from '../services/signInUser.thunk';
 import { signUpUser } from '../services/signUpUser.thunk';
-import { type Role, type UserSchema } from '../types/User.types';
+import { type UserSchema } from '../types/User.types';
 
 const initialState: UserSchema = {
-  authData: {
-    userId: 0,
-    username: '',
-    email: '',
-  },
-  role: null,
+  authData: null,
   error: '',
 };
 
@@ -18,22 +13,21 @@ export const userSlice = createSlice({
   name: 'User',
   initialState,
   reducers: {
-    setUserRole(state, { payload }: PayloadAction<Role>) {
-      state.role = payload;
+    setUserInfo(state, { payload }: PayloadAction<UserSchema['authData']>) {
+      state.authData = payload;
     },
   },
   extraReducers(builder) {
     builder
       .addCase(signInUser.fulfilled, (state, { payload }) => {
         state.error = '';
-        state.role = (payload.role || null) as Role;
+        state.authData = payload;
         toaster.remove('authError');
       })
       .addCase(signInUser.rejected, (state, action: PayloadAction<string | undefined>) => {
         state.error = action.payload || '';
       })
-      .addCase(signUpUser.fulfilled, (state, action) => {
-        state.authData = { ...action.payload };
+      .addCase(signUpUser.fulfilled, state => {
         state.error = '';
         toaster.remove('authError');
       })
@@ -43,5 +37,4 @@ export const userSlice = createSlice({
   },
 });
 
-export const { actions: userActions } = userSlice;
-export const { reducer: userReducer } = userSlice;
+export const { actions: userActions, reducer: userReducer } = userSlice;
