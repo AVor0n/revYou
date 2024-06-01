@@ -1,25 +1,26 @@
 import { TextArea, Button } from '@gravity-ui/uikit';
 import clsx from 'clsx';
 import { useState } from 'react';
-import { type CommentsThread } from '@domains';
+import { type CommentsThreadStatusEnum } from '@domains';
+import { addComment, changeThreadStatus, useAppDispatch } from 'app';
 import styles from './ThreadActions.module.scss';
 
 interface ThreadActionsProps {
-  threadStatus: CommentsThread['status'];
-  onReply: (text: string) => void;
-  onResolve: () => void;
+  threadId: number;
+  threadStatus: CommentsThreadStatusEnum;
 }
 
-export const ThreadActions = ({ threadStatus, ...props }: ThreadActionsProps) => {
+export const ThreadActions = ({ threadId, threadStatus }: ThreadActionsProps) => {
+  const dispatch = useAppDispatch();
   const [newComment, setNewComment] = useState('');
 
   const onReply = () => {
-    props.onReply(newComment);
+    dispatch(addComment({ threadId, comment: { content: newComment } }));
     setNewComment('');
   };
 
-  const onResolve = () => {
-    props.onResolve();
+  const onChangeStatus = () => {
+    dispatch(changeThreadStatus([threadId, { status: threadStatus === 'ACTIVE' ? 'RESOLVED' : 'ACTIVE' }]));
     setNewComment('');
   };
 
@@ -34,8 +35,8 @@ export const ThreadActions = ({ threadStatus, ...props }: ThreadActionsProps) =>
         Ответить
       </Button>
 
-      <Button view="outlined-action" onClick={onResolve} disabled={threadStatus === 'RESOLVED'}>
-        Завершить
+      <Button view="outlined-action" onClick={onChangeStatus}>
+        {threadStatus === 'ACTIVE' ? 'Завершить' : 'Возобновить'}
       </Button>
     </div>
   );

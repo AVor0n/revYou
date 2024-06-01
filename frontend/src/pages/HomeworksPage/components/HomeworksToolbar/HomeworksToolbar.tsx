@@ -24,7 +24,7 @@ export const HomeworksToolbar = ({ search, onSearch, onCreate, disabled }: Homew
         startContent={<Icon data={Magnifier} />}
         disabled={disabled}
       />
-      {role === '[TEACHER]' && (
+      {role === 'TEACHER' && (
         <Button view="action" onClick={onCreate}>
           <Icon data={Plus} />
           Создать

@@ -3,7 +3,8 @@ package hh.crossreview.converter;
 import hh.crossreview.dto.lecture.LectureDto;
 import hh.crossreview.dto.lecture.LecturePatchDto;
 import hh.crossreview.dto.lecture.LecturePostDto;
-import hh.crossreview.dto.lecture.LecturePostPesponseDto;
+import hh.crossreview.dto.lecture.LecturePostResponseDto;
+import hh.crossreview.dto.lecture.LectureWrapperDto;
 import hh.crossreview.dto.user.info.UserDto;
 import hh.crossreview.entity.Cohort;
 import hh.crossreview.entity.Lecture;
@@ -23,6 +24,14 @@ public class LectureConverter {
         .setLector(convertToUserDto(lecture.getLector()));
   }
 
+  public LectureWrapperDto convertToLectureWrapperDto(List<Lecture> lectures) {
+    List<LectureDto> lecturesDto = lectures
+        .stream()
+        .map(this::convertToLectureDto)
+        .toList();
+    return new LectureWrapperDto(lecturesDto);
+  }
+
   public UserDto convertToUserDto(User lector) {
     return new UserDto()
         .setUserId(lector.getUserId())
@@ -40,8 +49,8 @@ public class LectureConverter {
         .setCohorts(cohorts);
   }
 
-  public LecturePostPesponseDto convertToLecturePostResponseDto(Integer lectureId) {
-    return new LecturePostPesponseDto(lectureId);
+  public LecturePostResponseDto convertToLecturePostResponseDto(Integer lectureId) {
+    return new LecturePostResponseDto(lectureId);
   }
 
   public void merge(Lecture lecture, LecturePatchDto lecturePatchDto, User lector) {

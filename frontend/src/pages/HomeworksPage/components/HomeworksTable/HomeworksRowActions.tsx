@@ -11,7 +11,7 @@ export const HomeworksRowActions: FC<RenderRowActionsProps<Homework>> = ({ item 
   const navigate = useNavigate();
   const role = useSelector(getUserRole);
 
-  if (role === '[STUDENT]') return null;
+  if (role === 'STUDENT') return null;
 
   return (
     <div onClick={event => event.stopPropagation()}>

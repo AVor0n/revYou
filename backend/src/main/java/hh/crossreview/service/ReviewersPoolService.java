@@ -75,7 +75,17 @@ public class ReviewersPoolService {
     }
   }
 
+  public boolean checkStatus(User student, Homework homework, ReviewerStatus reviewerStatus) {
+    var reviewerOptional = reviewersPoolDao.findByUserAndHomework(student, homework);
+    return reviewerOptional.map(reviewer -> reviewer
+        .getStatus()
+        .equals(reviewerStatus)).orElse(false);
+  }
+
   private void makeReviewerAvailable(Reviewer reviewer) {
+    if (reviewer.getStatus().equals(ReviewerStatus.COMPLETE)) {
+      return;
+    }
     reviewer.setStatus(ReviewerStatus.AVAILABLE);
     reviewersPoolDao.save(reviewer);
   }

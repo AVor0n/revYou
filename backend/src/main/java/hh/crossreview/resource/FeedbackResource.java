@@ -1,11 +1,12 @@
 package hh.crossreview.resource;
 
+import hh.crossreview.dto.exception.ExceptionDto;
 import hh.crossreview.dto.exception.ExceptionValidationDto;
 import hh.crossreview.dto.feedback.FeedbackDto;
 import hh.crossreview.dto.feedback.FeedbackPostDto;
 import hh.crossreview.dto.feedback.FeedbackWrapperDto;
 import hh.crossreview.service.FeedbackService;
-import hh.crossreview.utils.JwtTokenUtils;
+import hh.crossreview.service.UserService;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -26,16 +27,21 @@ import jakarta.ws.rs.core.SecurityContext;
 @Named
 @Path("/feedback")
 @Tag(name = "Feedback")
+@ApiResponse(
+    responseCode = "403",
+    description = "Forbidden request",
+    content = @Content(schema = @Schema(implementation = ExceptionDto.class))
+)
 @Singleton
 public class FeedbackResource {
 
   private final FeedbackService feedbackService;
-  private final JwtTokenUtils jwtTokenUtils;
+  private final UserService userService;
 
   @Inject
-  public FeedbackResource(FeedbackService feedbackService, JwtTokenUtils jwtTokenUtils) {
+  public FeedbackResource(FeedbackService feedbackService, UserService userService) {
     this.feedbackService = feedbackService;
-    this.jwtTokenUtils = jwtTokenUtils;
+    this.userService = userService;
   }
 
   @GET
@@ -71,8 +77,12 @@ public class FeedbackResource {
       responseCode = "400",
       description = "Bad request",
       content = @Content(schema = @Schema(implementation = ExceptionValidationDto.class)))
-  public Response createFeedback(FeedbackPostDto feedbackPostDto, @Context SecurityContext securityContext) {
-    var feedback = feedbackService.createFeedback(feedbackPostDto, jwtTokenUtils.retrieveTokenFromContext(securityContext));
+  public Response createFeedback(
+      FeedbackPostDto feedbackPostDto,
+      @Context SecurityContext securityContext
+  ) {
+    var user = userService.findByPrincipal(securityContext.getUserPrincipal());
+    var feedback = feedbackService.createFeedback(feedbackPostDto, user);
     return Response.status(Response.Status.CREATED).entity(feedback).build();
   }
 }

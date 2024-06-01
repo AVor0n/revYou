@@ -3,9 +3,14 @@
   flex-direction: column;
   gap: 8px;
   padding: 16px;
-  border: 1px solid var(--g-color-line-generic-active);
+  border: 1px solid var(--g-color-line-info);
   border-radius: 6px;
-  background-color: var(--g-color-base-background);
+  background-color: var(--g-color-base-info-light);
+
+  &.myComment {
+    border-color: var(--g-color-line-generic);
+    background-color: var(--g-color-base-neutral-light);
+  }
 
   &.resolved {
     background-color: var(--g-color-base-generic);

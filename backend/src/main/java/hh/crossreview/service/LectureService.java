@@ -7,7 +7,8 @@ import hh.crossreview.dao.UserDao;
 import hh.crossreview.dto.lecture.LectureDto;
 import hh.crossreview.dto.lecture.LecturePatchDto;
 import hh.crossreview.dto.lecture.LecturePostDto;
-import hh.crossreview.dto.lecture.LecturePostPesponseDto;
+import hh.crossreview.dto.lecture.LecturePostResponseDto;
+import hh.crossreview.dto.lecture.LectureWrapperDto;
 import hh.crossreview.entity.Cohort;
 import hh.crossreview.entity.Lecture;
 import hh.crossreview.entity.User;
@@ -15,7 +16,6 @@ import hh.crossreview.entity.enums.UserRole;
 import hh.crossreview.utils.RequirementsUtils;
 import jakarta.inject.Named;
 import jakarta.transaction.Transactional;
-import java.util.List;
 
 @Named
 public class LectureService extends GenericService {
@@ -58,7 +58,7 @@ public class LectureService extends GenericService {
   }
 
   @Transactional
-  public LecturePostPesponseDto createLecture(LecturePostDto lecturePostDto, User lector, User admin) {
+  public LecturePostResponseDto createLecture(LecturePostDto lecturePostDto, User lector, User admin) {
     reqUtils.requireUserHasRole(admin, UserRole.ADMIN);
     var cohorts = lecturePostDto.getCohortsId().stream().map(id -> {
       var cohort = cohortDao.find(Cohort.class, id);
@@ -71,15 +71,15 @@ public class LectureService extends GenericService {
   }
 
   @Transactional
-  public List<LectureDto> getLectures(User user) {
+  public LectureWrapperDto getLectures(User user) {
     if (user.getRole() == UserRole.STUDENT) {
       var cohortId = user.getCohort().getCohortId();
       var cohort = cohortDao.find(Cohort.class, cohortId);
       reqUtils.requireEntityNotNull(cohort, String.format("Cohort with id %d was not found", cohortId));
-      return cohort.getLectures().stream().map(lectureConverter::convertToLectureDto).toList();
+      return lectureConverter.convertToLectureWrapperDto(cohort.getLectures());
     }
     var lectures = lectureDao.findLecturesByAuthor(user);
-    return lectures.stream().map(lectureConverter::convertToLectureDto).toList();
+    return lectureConverter.convertToLectureWrapperDto(lectures);
   }
 
 }

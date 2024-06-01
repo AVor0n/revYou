@@ -1,7 +1,7 @@
 import { settings } from '@gravity-ui/date-utils';
 import { ToasterComponent, ToasterProvider } from '@gravity-ui/uikit';
 import { useEffect } from 'react';
-import { type Role, userActions } from './entities';
+import { type FullUserInfo, userActions } from './entities';
 import { useAppDispatch } from './hooks';
 import { RouterProvider, ThemeProvider } from './providers';
 
@@ -15,7 +15,14 @@ export const App = () => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    dispatch(userActions.setUserRole(localStorage.getItem('role') as Role));
+    const userInfoRaw = localStorage.getItem('userInfo');
+    if (!userInfoRaw) return;
+    try {
+      const userInfo = JSON.parse(userInfoRaw) as FullUserInfo;
+      dispatch(userActions.setUserInfo(userInfo));
+    } catch {
+      dispatch(userActions.setUserInfo(null));
+    }
   }, [dispatch]);
 
   return (

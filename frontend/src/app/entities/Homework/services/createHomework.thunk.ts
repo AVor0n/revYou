@@ -14,7 +14,7 @@ export const createHomework = createAsyncThunk<null, HomeworkPost, ThunkConfig<s
       const error = (e as AxiosError).response?.data as { message: string };
       toaster.add({
         name: 'createHomework',
-        title: 'Ошибка сохранения',
+        title: 'Ошибка создания',
         content: error.message,
         theme: 'danger',
       });

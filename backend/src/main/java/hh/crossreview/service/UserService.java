@@ -58,16 +58,21 @@ public class UserService implements UserDetailsService {
     }
     return users.getFirst();
   }
+
   public User findByUserId(Integer userId) {
     var user =  userDao.find(User.class, userId);
     if (user == null) {
-      throw new BadRequestException("Lector not found");
+      throw new BadRequestException(String.format("User with id %d was not found", userId));
     }
     return user;
   }
 
   public List<User> findByEmail(String email) {
     return userDao.findByEmail(email);
+  }
+
+  public User findById(Integer userId) {
+    return userDao.find(User.class, userId);
   }
 
 

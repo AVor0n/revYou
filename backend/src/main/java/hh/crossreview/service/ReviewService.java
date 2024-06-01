@@ -5,6 +5,7 @@ import hh.crossreview.dao.ReviewAttemptDao;
 import hh.crossreview.dao.ReviewDao;
 import hh.crossreview.dto.review.ReviewResolutionDto;
 import hh.crossreview.dto.review.ReviewWrapperDto;
+import hh.crossreview.dto.review.ReviewerChangeDto;
 import hh.crossreview.dto.review.info.ReviewInfoWrapperDto;
 import hh.crossreview.entity.Homework;
 import hh.crossreview.entity.Review;
@@ -13,6 +14,7 @@ import hh.crossreview.entity.Solution;
 import hh.crossreview.entity.SolutionAttempt;
 import hh.crossreview.entity.User;
 import hh.crossreview.entity.enums.ReviewStatus;
+import hh.crossreview.entity.enums.ReviewerStatus;
 import hh.crossreview.entity.enums.SolutionStatus;
 import hh.crossreview.entity.enums.UserRole;
 import hh.crossreview.utils.RequirementsUtils;
@@ -40,6 +42,8 @@ public class ReviewService {
 
   private final SolutionService solutionService;
 
+  private final UserService userService;
+
   private final ReviewersPoolService reviewersPoolService;
 
   private final ReviewDao reviewDao;
@@ -51,12 +55,14 @@ public class ReviewService {
   public ReviewService(
           RequirementsUtils reqUtils,
           SolutionService solutionService,
+          UserService userService,
           ReviewersPoolService reviewersPoolService,
           ReviewDao reviewDao,
           ReviewAttemptDao reviewAttemptDao,
           ReviewConverter reviewConverter) {
     this.reqUtils = reqUtils;
     this.solutionService = solutionService;
+    this.userService = userService;
     this.reviewersPoolService = reviewersPoolService;
     this.reviewDao = reviewDao;
     this.reviewAttemptDao = reviewAttemptDao;
@@ -112,6 +118,56 @@ public class ReviewService {
     solutionService.createSolutionAttempt(solution);
     createReviewAttempt(review);
     setStatus(review, ReviewStatus.CORRECTIONS_LOADED);
+  }
+
+  @Transactional
+  public void assignReviewer(User privilegedUser, Homework homework, ReviewerChangeDto reviewerChangeDto) {
+    reqUtils.requireAuthorPermissionOrAdmin(privilegedUser, homework);
+    Integer reviewId = reviewerChangeDto.getReviewId();
+    Integer reviewerId = reviewerChangeDto.getReviewerId();
+    Review review = requireReviewExist(reviewId);
+    reqUtils.requireEntityHasStatus(review, ReviewStatus.REVIEWER_SEARCH.toString());
+
+    User reviewer = getAndValidateReviewerForAssignment(homework, reviewerId);
+    tryAppointReviewer(review, reviewer);
+  }
+
+  @Transactional
+  public void replaceReviewer(User privilegedUser, Homework homework, ReviewerChangeDto reviewerChangeDto) {
+    reqUtils.requireAuthorPermissionOrAdmin(privilegedUser, homework);
+    Integer reviewId = reviewerChangeDto.getReviewId();
+    Integer reviewerId = reviewerChangeDto.getReviewerId();
+    Review review = requireReviewExist(reviewId);
+    User newReviewer = getAndValidateReviewerForAssignment(homework, reviewerId);
+    if (review.getReviewer() == null) {
+      throw new BadRequestException(
+          "Review does not have a reviewer. " +
+          "If you want to assign a reviewer to such review, use the endpoint 'assign-review'"
+      );
+    }
+
+    clearPreviewsReviewer(homework, review);
+    tryAppointReviewer(review, newReviewer);
+  }
+
+  private User getAndValidateReviewerForAssignment(Homework homework, Integer reviewerId) {
+    User reviewer = userService.findById(reviewerId);
+    reqUtils.requireEntityNotNull(reviewer, String.format("Reviewer with id %d was not found", reviewerId));
+    if (!reviewer.getRole().equals(UserRole.TEACHER) &&
+        !reviewersPoolService.checkStatus(reviewer, homework, ReviewerStatus.COMPLETE)) {
+      throw new BadRequestException("Reviewer has not completed homework yet");
+    }
+    return reviewer;
+  }
+
+  private void clearPreviewsReviewer(Homework homework, Review review) {
+    User oldReviewer = review.getReviewer();
+    if (oldReviewer.getRole().equals(UserRole.STUDENT) &&
+        reviewersPoolService.checkStatus(oldReviewer, homework, ReviewerStatus.BUSY)) {
+      reviewersPoolService.releaseReviewer(oldReviewer, homework);
+    }
+    review.getCommentsThreads().clear();
+    review.getReviewAttempts().clear();
   }
 
   private void createReview(Homework homework, Solution solution, User user){
@@ -295,6 +351,43 @@ public class ReviewService {
             && user.getRole() != UserRole.ADMIN) {
       throw new ForbiddenException("User doesn't have permissions for this action");
     }
+  }
+
+  @Transactional
+  public void approveStudent(Homework homework, User teacher, User student) {
+    reqUtils.requireAuthorPermissionOrAdmin(teacher, homework);
+
+    Solution solution = solutionService.requireSolutionExist(homework, student);
+    solution.setStatus(SolutionStatus.COMPLETE);
+
+    List<Review> reviewsByStudent = reviewDao.findByHomeworkAndReviewer(homework, student);
+    recreateReviewsStartedByStudent(homework, reviewsByStudent);
+
+    reviewersPoolService.resolveReviewer(student, homework);
+
+    List<Review> reviewsForStudent = reviewDao.findByHomeworkAndStudent(homework, student);
+    releaseReviewersAssignedForStudentSolution(homework, reviewsForStudent);
+  }
+
+  private void recreateReviewsStartedByStudent(Homework homework, List<Review> reviewsByStudent) {
+    reviewsByStudent.forEach(review -> {
+      if (!review.getStatus().equals(ReviewStatus.APPROVED)) {
+        review.setStatus(ReviewStatus.ARCHIVED);
+        createReview(homework, review.getSolution(), review.getStudent());
+      }
+    });
+  }
+
+  private void releaseReviewersAssignedForStudentSolution(Homework homework, List<Review> reviewsForStudent) {
+    reviewsForStudent.forEach(review -> {
+      if (!review.getStatus().equals(ReviewStatus.APPROVED)) {
+        User reviewer = review.getReviewer();
+        if (Objects.nonNull(reviewer) && reviewer.getRole().equals(UserRole.STUDENT)) {
+          reviewersPoolService.releaseReviewer(review.getReviewer(), homework);
+        }
+        setStatus(review, ReviewStatus.ARCHIVED);
+      }
+    });
   }
 
 }

@@ -1,10 +1,15 @@
 package hh.crossreview.dto.feedback;
 
 import hh.crossreview.dto.user.info.UserDto;
-import java.io.Serializable;
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;
 
-public class FeedbackDto implements Serializable {
+@Schema(name = "Feedback", requiredProperties = {
+    "feedbackId", "reviewId", "student",
+    "description", "rating", "feedbackDate"
+})
+@SuppressWarnings({"unused"})
+public class FeedbackDto {
 
   private Integer feedbackId;
   private Integer reviewId;
