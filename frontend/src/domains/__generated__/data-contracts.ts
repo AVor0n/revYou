@@ -126,29 +126,27 @@ export interface ThreadPost {
 
 export interface FeedbackPost {
   /** @format int32 */
-  review: number;
-  /** @format int32 */
-  student: number;
+  reviewId: number;
   /** @format int32 */
   rating: number;
   description: string;
 }
 
-export interface FeedbackDto {
+export interface Feedback {
   /** @format int32 */
-  feedbackId?: number;
+  feedbackId: number;
   /** @format int32 */
-  reviewId?: number;
-  student?: User;
-  description?: string;
+  reviewId: number;
+  student: User;
+  description: string;
   /** @format int32 */
-  rating?: number;
+  rating: number;
   /** @format date-time */
-  feedbackDate?: string;
+  feedbackDate: string;
 }
 
 export interface FeedbackWrapper {
-  data: FeedbackDto[];
+  data: Feedback[];
 }
 
 export interface Diff {
@@ -232,7 +230,7 @@ export interface HomeworkPatch {
   reviewDuration?: HomeworkPatchReviewDurationEnum;
 }
 
-export interface LecturePostPesponseDto {
+export interface LecturePostResponse {
   /** @format int32 */
   lectureId?: number;
 }
@@ -259,6 +257,10 @@ export interface Lecture {
   lector: User;
 }
 
+export interface LectureWrapper {
+  data: Lecture[];
+}
+
 export interface LecturePatch {
   name?: string;
   /** @format date-time */
@@ -272,6 +274,13 @@ export interface LecturePatch {
 export interface ReviewResolutionDto {
   status?: string;
   resolution?: string;
+}
+
+export interface ReviewerChange {
+  /** @format int32 */
+  reviewId: number;
+  /** @format int32 */
+  reviewerId: number;
 }
 
 export interface Review {
@@ -319,7 +328,7 @@ export interface ReviewInfo {
   status: string;
   duration: ReviewDuration;
   student: Student;
-  reviewer: Student;
+  reviewer?: Student;
   reviewAttempts: ReviewAttempt[];
 }
 
@@ -386,7 +395,8 @@ export type ReviewStatusEnum =
   | 'REVIEW_STARTED'
   | 'CORRECTIONS_REQUIRED'
   | 'CORRECTIONS_LOADED'
-  | 'APPROVED';
+  | 'APPROVED'
+  | 'ARCHIVED';
 
 export type SolutionStatusEnum = 'IN_PROGRESS' | 'REVIEW_STAGE' | 'REVIEWER_STAGE' | 'COMPLETE';
 
