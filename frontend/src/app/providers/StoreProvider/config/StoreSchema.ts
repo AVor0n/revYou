@@ -1,5 +1,5 @@
 import { type Api } from '@domains';
-import { type UserSchema, type HomeworkSchema, type ReviewSchema } from 'app/entities';
+import { type UserSchema, type HomeworkSchema, type ReviewSchema, type LectureSchema } from 'app/entities';
 import { type SolutionSchema } from 'app/entities/Solution/types';
 
 export interface StoreSchema {
@@ -7,6 +7,7 @@ export interface StoreSchema {
   homework: HomeworkSchema;
   review: ReviewSchema;
   solution: SolutionSchema;
+  lecture: LectureSchema;
 }
 
 export interface ThunkExtraArg {

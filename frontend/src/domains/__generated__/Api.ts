@@ -17,7 +17,7 @@ import {
   DiffsWrapper,
   Exception,
   ExceptionValidation,
-  FeedbackDto,
+  Feedback,
   FeedbackPost,
   FeedbackWrapper,
   GetDiffsParams,
@@ -30,11 +30,13 @@ import {
   Lecture,
   LecturePatch,
   LecturePost,
-  LecturePostPesponseDto,
+  LecturePostResponse,
+  LectureWrapper,
   RefreshAccessTokenRequestDto,
   ReviewInfoWrapper,
   ReviewResolutionDto,
   ReviewWrapper,
+  ReviewerChange,
   SignInRequest,
   SignInResponse,
   SignUpRequest,
@@ -241,9 +243,10 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
    * @name GetFeedbacks
    * @request GET:/api/feedback
    * @response `200` `FeedbackWrapper` Successful operation
+   * @response `403` `Exception` Forbidden request
    */
   getFeedbacks = (params: RequestParams = {}) =>
-    this.request<FeedbackWrapper, any>({
+    this.request<FeedbackWrapper, Exception>({
       path: `/api/feedback`,
       method: 'GET',
       format: 'json',
@@ -257,9 +260,10 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
    * @request POST:/api/feedback
    * @response `201` `FeedbackPost` Created
    * @response `400` `ExceptionValidation` Bad request
+   * @response `403` `Exception` Forbidden request
    */
   createFeedback = (data: FeedbackPost, params: RequestParams = {}) =>
-    this.request<FeedbackPost, ExceptionValidation>({
+    this.request<FeedbackPost, ExceptionValidation | Exception>({
       path: `/api/feedback`,
       method: 'POST',
       body: data,
@@ -272,10 +276,11 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
    * @tags Feedback
    * @name GetFeedback
    * @request GET:/api/feedback/{feedbackId}
-   * @response `200` `FeedbackDto` Successful operation
+   * @response `200` `Feedback` Successful operation
+   * @response `403` `Exception` Forbidden request
    */
   getFeedback = (feedbackId: number, params: RequestParams = {}) =>
-    this.request<FeedbackDto, any>({
+    this.request<Feedback, Exception>({
       path: `/api/feedback/${feedbackId}`,
       method: 'GET',
       format: 'json',
@@ -436,10 +441,11 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
    * @tags Lecture
    * @name GetAllLectures
    * @request GET:/api/lectures
-   * @response `200` `Lecture` Successful operation
+   * @response `200` `LectureWrapper` Successful operation
+   * @response `403` `Exception` Forbidden request
    */
   getAllLectures = (params: RequestParams = {}) =>
-    this.request<Lecture, any>({
+    this.request<LectureWrapper, Exception>({
       path: `/api/lectures`,
       method: 'GET',
       format: 'json',
@@ -451,11 +457,12 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
    * @tags Lecture
    * @name CreateLecture
    * @request POST:/api/lectures
-   * @response `201` `LecturePostPesponseDto` Created
+   * @response `201` `LecturePostResponse` Created
    * @response `400` `ExceptionValidation` Bad request
+   * @response `403` `Exception` Forbidden request
    */
   createLecture = (data: LecturePost, params: RequestParams = {}) =>
-    this.request<LecturePostPesponseDto, ExceptionValidation>({
+    this.request<LecturePostResponse, ExceptionValidation | Exception>({
       path: `/api/lectures`,
       method: 'POST',
       body: data,
@@ -469,9 +476,10 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
    * @name GetLecture
    * @request GET:/api/lectures/{lectureId}
    * @response `200` `Lecture` Successful operation
+   * @response `403` `Exception` Forbidden request
    */
   getLecture = (lectureId: number, params: RequestParams = {}) =>
-    this.request<Lecture, any>({
+    this.request<Lecture, Exception>({
       path: `/api/lectures/${lectureId}`,
       method: 'GET',
       format: 'json',
@@ -485,9 +493,10 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
    * @request DELETE:/api/lectures/{lectureId}
    * @response `200` `Lecture` Successful operation
    * @response `400` `ExceptionValidation` Bad request
+   * @response `403` `Exception` Forbidden request
    */
   deleteLecture = (lectureId: number, params: RequestParams = {}) =>
-    this.request<Lecture, ExceptionValidation>({
+    this.request<Lecture, ExceptionValidation | Exception>({
       path: `/api/lectures/${lectureId}`,
       method: 'DELETE',
       format: 'json',
@@ -501,9 +510,10 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
    * @request PATCH:/api/lectures/{lectureId}
    * @response `200` `Lecture` Successful operation
    * @response `400` `ExceptionValidation` Bad request
+   * @response `403` `Exception` Forbidden request
    */
   patchLecture = (lectureId: number, data: LecturePatch, params: RequestParams = {}) =>
-    this.request<Lecture, ExceptionValidation>({
+    this.request<Lecture, ExceptionValidation | Exception>({
       path: `/api/lectures/${lectureId}`,
       method: 'PATCH',
       body: data,
@@ -525,6 +535,28 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
   addReviewResolution = (homeworkId: number, reviewId: number, data: ReviewResolutionDto, params: RequestParams = {}) =>
     this.request<unknown, ExceptionValidation | Exception>({
       path: `/api/homeworks/${homeworkId}/reviews/${reviewId}/resolution`,
+      method: 'PATCH',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags Reviews
+   * @name AssignReviewer
+   * @summary Manually assign a reviewer to the review. Available to teacher and admin. If the flag is set in the body of the request, then the author of the request will be appointed as a reviewer using a token.
+   * @request PATCH:/api/homeworks/{homeworkId}/reviews/assign-reviewer
+   * @secure
+   * @response `200` `unknown` Review is assigned
+   * @response `400` `ExceptionValidation` Bad request
+   * @response `403` `Exception` Forbidden request
+   * @response `404` `Exception` Not found
+   */
+  assignReviewer = (homeworkId: number, data: ReviewerChange, params: RequestParams = {}) =>
+    this.request<unknown, ExceptionValidation | Exception>({
+      path: `/api/homeworks/${homeworkId}/reviews/assign-reviewer`,
       method: 'PATCH',
       body: data,
       secure: true,
@@ -611,6 +643,28 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
    * No description
    *
    * @tags Reviews
+   * @name ReplaceReviewer
+   * @summary Manually replace a reviewer to the review. Available to teacher and admin. If the flag is set in the body of the request, then the author of the request will be appointed as a reviewer using a token.
+   * @request PATCH:/api/homeworks/{homeworkId}/reviews/replace-reviewer
+   * @secure
+   * @response `200` `unknown` Review is assigned
+   * @response `400` `ExceptionValidation` Bad request
+   * @response `403` `Exception` Forbidden request
+   * @response `404` `Exception` Not found
+   */
+  replaceReviewer = (homeworkId: number, data: ReviewerChange, params: RequestParams = {}) =>
+    this.request<unknown, ExceptionValidation | Exception>({
+      path: `/api/homeworks/${homeworkId}/reviews/replace-reviewer`,
+      method: 'PATCH',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags Reviews
    * @name StartReview
    * @request POST:/api/homeworks/{homeworkId}/reviews/{reviewId}/start
    * @secure
@@ -642,6 +696,25 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
     this.request<unknown, ExceptionValidation | Exception>({
       path: `/api/homeworks/${homeworkId}/reviews/${reviewId}/upload-corrections`,
       method: 'POST',
+      secure: true,
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags Solutions
+   * @name ApproveStudent
+   * @request PATCH:/api/homeworks/{homeworkId}/solutions/approve-student/{studentId}
+   * @secure
+   * @response `200` `unknown` Successful operation
+   * @response `400` `Exception` Bad request
+   * @response `403` `Exception` Forbidden request
+   * @response `404` `Exception` Not found
+   */
+  approveStudent = (homeworkId: number, studentId: number, params: RequestParams = {}) =>
+    this.request<unknown, Exception>({
+      path: `/api/homeworks/${homeworkId}/solutions/approve-student/${studentId}`,
+      method: 'PATCH',
       secure: true,
       ...params,
     });
