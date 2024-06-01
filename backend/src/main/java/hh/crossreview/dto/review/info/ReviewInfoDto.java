@@ -1,7 +1,7 @@
 package hh.crossreview.dto.review.info;
 
 import hh.crossreview.dto.review.ReviewAttemptDto;
-import hh.crossreview.dto.user.StudentDto;
+import hh.crossreview.dto.user.info.StudentDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.Duration;
 import java.util.List;

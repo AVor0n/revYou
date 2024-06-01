@@ -5,7 +5,7 @@ import hh.crossreview.dto.review.ReviewDto;
 import hh.crossreview.dto.review.ReviewWrapperDto;
 import hh.crossreview.dto.review.info.ReviewInfoDto;
 import hh.crossreview.dto.review.info.ReviewInfoWrapperDto;
-import hh.crossreview.dto.user.StudentDto;
+import hh.crossreview.dto.user.info.StudentDto;
 import hh.crossreview.entity.Review;
 import hh.crossreview.entity.ReviewAttempt;
 import hh.crossreview.entity.User;

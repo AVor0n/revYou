@@ -1,10 +1,10 @@
 package hh.crossreview.service;
 
-import hh.crossreview.dto.user.RefreshAccessTokenRequestDto;
-import hh.crossreview.dto.user.SignInRequestDto;
-import hh.crossreview.dto.user.SignInResponseDto;
-import hh.crossreview.dto.user.SignUpRequestDto;
-import hh.crossreview.dto.user.UserDto;
+import hh.crossreview.dto.user.auth.RefreshAccessTokenRequestDto;
+import hh.crossreview.dto.user.auth.SignInRequestDto;
+import hh.crossreview.dto.user.auth.SignInResponseDto;
+import hh.crossreview.dto.user.auth.SignUpRequestDto;
+import hh.crossreview.dto.user.info.UserDto;
 import hh.crossreview.entity.User;
 import hh.crossreview.utils.JwtTokenUtils;
 import io.jsonwebtoken.Claims;

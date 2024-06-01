@@ -5,7 +5,7 @@ import hh.crossreview.dto.lecture.LecturePatchDto;
 import hh.crossreview.dto.lecture.LecturePostDto;
 import hh.crossreview.dto.lecture.LecturePostResponseDto;
 import hh.crossreview.dto.lecture.LectureWrapperDto;
-import hh.crossreview.dto.user.UserDto;
+import hh.crossreview.dto.user.info.UserDto;
 import hh.crossreview.entity.Cohort;
 import hh.crossreview.entity.Lecture;
 import hh.crossreview.entity.User;
