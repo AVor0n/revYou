@@ -137,7 +137,7 @@ export const CreateHomeworkWindow = ({ open }: CreateHomeworkWindowProps) => {
               size="l"
               validationState={errors.lectureId?.message ? 'invalid' : undefined}
               errorMessage={errors.lectureId?.message}
-              onUpdate={values => field.onChange(+values[0])}
+              onUpdate={values => values[0] && field.onChange(+values[0])}
             />
           )}
         />
