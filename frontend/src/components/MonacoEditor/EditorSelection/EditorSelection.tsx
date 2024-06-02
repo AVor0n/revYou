@@ -3,7 +3,7 @@ import { type ReactNode, useEffect } from 'react';
 
 interface EditorSelectionProps {
   editor: IEditor.ICodeEditor;
-  className: string;
+  className?: string;
   startLineNumber: number;
   startColumn: number;
   endLineNumber: number;

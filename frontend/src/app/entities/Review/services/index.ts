@@ -1,4 +1,4 @@
-export * from './loadFileDiff.thunk';
+export * from './loadFile.thunk';
 export * from './loadReview.thunk';
 export * from './requestReview.thunk';
 export * from './requestRepeatReview.thunk';

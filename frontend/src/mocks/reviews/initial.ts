@@ -12,7 +12,7 @@ export const initialReviews: Review[] = [
     status: 'CORRECTIONS_REQUIRED',
     reviewId: 2,
     projectId: 57233481,
-    commitId: 'develop',
+    commitId: 'edc989fe17e56cf6b74ba1cfc19517261efb11f5',
     sourceCommitId: 'main',
     reviewAttempts: [
       {
@@ -39,7 +39,7 @@ export const initialThreads: CommentsThread[] = [
   {
     threadId: 4,
     authorId: 2,
-    commitSha: 'develop',
+    commitSha: '7bc691fea43ff336596403e45d9860a9c6f7417d',
     filePath: '/tsconfig.json',
     status: 'ACTIVE',
     comments: [
@@ -60,7 +60,7 @@ export const initialThreads: CommentsThread[] = [
   {
     threadId: 2,
     authorId: 1,
-    commitSha: 'develop',
+    commitSha: '7bc691fea43ff336596403e45d9860a9c6f7417d',
     filePath: '/tsconfig.json',
     status: 'ACTIVE',
     comments: [
@@ -79,15 +79,15 @@ export const initialThreads: CommentsThread[] = [
         updatedAt: '2024-03-04T10:30:28.265Z',
       },
     ],
-    startLine: 5,
-    startSymbol: 2,
-    endLine: 10,
-    endSymbol: 5,
+    startLine: 6,
+    startSymbol: 14,
+    endLine: 6,
+    endSymbol: 20,
   },
   {
     threadId: 3,
     authorId: 2,
-    commitSha: 'develop',
+    commitSha: '3e7158ee1259fa6e55eb26c6da7a02a89eb5a420',
     filePath: '/src/app/global.css',
     status: 'ACTIVE',
     comments: [
@@ -115,7 +115,7 @@ export const initialThreads: CommentsThread[] = [
   {
     threadId: 1,
     authorId: 1,
-    commitSha: 'develop',
+    commitSha: '3e7158ee1259fa6e55eb26c6da7a02a89eb5a420',
     filePath: '/package.json',
     status: 'ACTIVE',
     comments: [

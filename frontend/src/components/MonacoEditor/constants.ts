@@ -1,6 +1,6 @@
 import { editor as IEditor } from 'monaco-editor';
 
-export const editorOptions: IEditor.IDiffEditorConstructionOptions = {
+export const defaultDiffEditorOptions: IEditor.IDiffEditorConstructionOptions = {
   renderSideBySide: true,
   readOnly: true,
   automaticLayout: false,

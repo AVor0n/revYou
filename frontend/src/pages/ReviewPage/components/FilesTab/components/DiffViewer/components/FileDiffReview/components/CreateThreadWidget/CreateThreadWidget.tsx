@@ -3,9 +3,8 @@ import { type editor as IEditor, type Selection } from 'monaco-editor';
 import { useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useSelector } from 'react-redux';
-import { createThread, getActiveFilePath, getCreateThreadInProgress, useAppDispatch } from 'app';
-import { EditorSelection } from '../EditorSelection';
-import { ResizableViewZone } from '../ResizableViewZone';
+import { EditorSelection, ResizableViewZone } from '@components/MonacoEditor';
+import { createThread, getActiveFilePath, getRequestInProgress, useAppDispatch } from 'app';
 import { CreateThreadCard } from './components';
 import { useEditorSelection } from './hooks';
 import styles from './CreateThreadWidget.module.scss';
@@ -18,7 +17,7 @@ interface CreateThreadWidgetProps {
 
 export const CreateThreadWidget = ({ editor, reviewId, commitSha }: CreateThreadWidgetProps) => {
   const dispatch = useAppDispatch();
-  const createInProgress = useSelector(getCreateThreadInProgress);
+  const requestInProgress = useSelector(getRequestInProgress);
   const filePath = useSelector(getActiveFilePath);
   const [selection, setSelection] = useState<Selection | null>(null);
   const { tooltipNode } = useEditorSelection({ editor, onSelection: setSelection });
@@ -68,7 +67,7 @@ export const CreateThreadWidget = ({ editor, reviewId, commitSha }: CreateThread
             <CreateThreadCard
               onCreate={onCreateThread}
               onCancel={() => setSelection(null)}
-              isLoading={createInProgress}
+              isLoading={requestInProgress.createThread}
             />
           </div>
         </ResizableViewZone>

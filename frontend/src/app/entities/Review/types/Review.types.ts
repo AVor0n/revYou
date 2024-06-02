@@ -1,13 +1,12 @@
 import type { CommentsThread, Review } from '@domains';
 
 export interface ReviewSchema {
+  filesCache: Record<string, Record<string, string>>;
   reviewInfo: Review | null;
   filesTree: FilesTree | null;
   activeFilePath: string;
-  sourceActiveFileContent: string | null;
-  targetActiveFileContent: string | null;
   threads: CommentsThread[] | null;
-  createThreadInProgress: boolean;
+  requestInProgress: Record<string, boolean>;
   error: string;
 }
 
