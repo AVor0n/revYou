@@ -2,7 +2,7 @@ import type { FileNode, FolderNode, FilesTree } from '../types';
 import type { Diff } from '@domains';
 
 export function buildFileTree(changedFiles: Diff[]) {
-  const changedFilesMap = new Map(changedFiles.map(file => [file.new_path, file]));
+  const changedFilesMap = new Map(changedFiles.map(file => [`/${file.new_path}`, file]));
 
   const pathToNodeMap = new Map<string, FileNode | FolderNode>(
     changedFiles.flatMap(({ new_path }) =>

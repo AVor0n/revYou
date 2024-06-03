@@ -1,6 +1,5 @@
 import { toaster } from '@gravity-ui/uikit/toaster-singleton-react-18';
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
 import { type ThunkConfig } from 'app/providers';
 
 interface LoadFileOutput {
@@ -27,11 +26,6 @@ export const loadFile = createAsyncThunk<LoadFileOutput, { filePath: string; ref
         content: data,
       };
     } catch (error) {
-      // TODO: переделать так, чтоб вовсе не слать запрос
-      if (axios.isAxiosError(error) && error.response?.status === 404) {
-        return { ref, filePath, content: '' };
-      }
-
       toaster.add({
         name: `loadDiff/${filePath}`,
         content: `Не удалось загрузить изменения для файла ${filePath}`,

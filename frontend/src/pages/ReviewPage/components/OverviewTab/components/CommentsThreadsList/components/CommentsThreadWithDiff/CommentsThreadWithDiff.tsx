@@ -40,7 +40,7 @@ export const CommentsThreadWithDiff = ({ thread, sourceSha, targetSha }: Comment
     });
   }, [diffEditor, thread.endLine, thread.endSymbol, thread.startLine]);
 
-  if (sourceFile === null || targetFile === null || latestFile === null) {
+  if (sourceFile === undefined || targetFile === undefined || latestFile === undefined) {
     return <Skeleton className={styles.skeleton} />;
   }
 
@@ -61,8 +61,8 @@ export const CommentsThreadWithDiff = ({ thread, sourceSha, targetSha }: Comment
           height={editorHeight}
           // TODO: сделать автоопределение языка на основе расширения файла
           language="typescript"
-          original={sourceFile}
-          value={showOriginalDiff ? targetFile : latestFile}
+          original={sourceFile ?? ''}
+          value={showOriginalDiff ? targetFile ?? '' : latestFile ?? ''}
           options={defaultDiffEditorOptions}
           editorDidMount={editorDidMount}
         />

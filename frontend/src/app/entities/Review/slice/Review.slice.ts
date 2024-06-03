@@ -37,6 +37,12 @@ export const reviewSlice = createSlice({
     addRequestInProgress(state, { payload }: PayloadAction<string>) {
       state.requestInProgress[payload] = true;
     },
+    addFileContent(state, { payload }: PayloadAction<{ path: string; ref: string; content: string | null }>) {
+      if (!state.filesCache[payload.path]) {
+        state.filesCache[payload.path] = {};
+      }
+      state.filesCache[payload.path]![payload.ref] = payload.content;
+    },
   },
   extraReducers(builder) {
     builder.addCase(loadReview.fulfilled, (state, { payload }) => {

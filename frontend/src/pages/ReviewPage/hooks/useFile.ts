@@ -11,10 +11,10 @@ export const useFile = ({ filePath, ref }: UseFile) => {
   const dispatch = useAppDispatch();
   const cache = useSelector(getFilesCache);
 
-  const content = cache[filePath]?.[ref] ?? null;
+  const content = cache[filePath]?.[ref];
 
   useEffect(() => {
-    if (content === null) {
+    if (content === undefined) {
       dispatch(loadFile({ filePath, ref }));
       dispatch(reviewActions.addRequestInProgress(`loadFile/${filePath}/${ref}`));
     }

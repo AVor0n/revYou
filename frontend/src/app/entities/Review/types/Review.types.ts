@@ -1,7 +1,7 @@
 import type { CommentsThread, Review } from '@domains';
 
 export interface ReviewSchema {
-  filesCache: Record<string, Record<string, string>>;
+  filesCache: Record<string, Record<string, string | null>>;
   reviewInfo: Review | null;
   filesTree: FilesTree | null;
   activeFilePath: string;
@@ -10,7 +10,9 @@ export interface ReviewSchema {
   error: string;
 }
 
-export type FilesTree = (FolderNode | FileNode)[];
+export type FilesTree = FilesTreeItem[];
+
+export type FilesTreeItem = FolderNode | FileNode;
 
 export interface FolderNode {
   id: string;
@@ -28,3 +30,6 @@ export interface FileNode {
   deleted: boolean;
   children?: never;
 }
+
+export const isFile = (item: FilesTreeItem): item is FileNode => !item.children;
+export const isFolder = (item: FilesTreeItem): item is FolderNode => !!item.children;
