@@ -11,7 +11,7 @@ export const useFileDiffComments = () => {
     const fileThreads = threads?.filter(thread => thread.filePath === activeFilePath) ?? [];
     return [
       fileThreads.filter(thread => thread.commitSha === reviewInfo.sourceCommitId),
-      fileThreads.filter(thread => thread.commitSha !== reviewInfo.commitId),
+      fileThreads.filter(thread => thread.commitSha !== reviewInfo.sourceCommitId),
       fileThreads,
     ];
   }, [activeFilePath, reviewInfo, threads]);
