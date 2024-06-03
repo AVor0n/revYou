@@ -24,9 +24,13 @@ public class HomeworkConverter {
   public HomeworksWrapperDto convertToHomeworksWrapperDto(List<Homework> homeworks, List<SolutionStatus> solutionStatuses) {
     List<HomeworkDto> homeworkDtos = new ArrayList<>();
     for (int i = 0; i < homeworks.size(); i++) {
-      homeworkDtos.add(convertToHomeworkDto(homeworks.get(i), solutionStatuses.get(i)));
+      homeworkDtos.add(convertToHomeworkDto(homeworks.get(i), getSolutionStatus(solutionStatuses, i)));
     }
     return new HomeworksWrapperDto(homeworkDtos);
+  }
+
+  private static SolutionStatus getSolutionStatus(List<SolutionStatus> solutionStatuses, int i) {
+    return solutionStatuses.isEmpty() ? null : solutionStatuses.get(i);
   }
 
   public HomeworkDto convertToHomeworkDto(Homework homework, SolutionStatus solutionStatus) {
@@ -47,7 +51,7 @@ public class HomeworkConverter {
         .setStartDate(homework.getStartDate())
         .setCompletionDeadline(homework.getCompletionDeadline())
         .setReviewDuration(homework.getReviewDuration().getHours())
-        .setSolution(solutionStatus);
+        .setStatus(solutionStatus);
   }
 
 

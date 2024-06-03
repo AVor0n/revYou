@@ -12,7 +12,8 @@ import java.util.List;
         "departments", "author",
         "lecture", "repositoryLink",
         "startDate", "completionDeadline",
-        "reviewDuration"
+        "reviewDuration",
+        "status"
     }
 )
 @SuppressWarnings({"unused"})
@@ -40,7 +41,7 @@ public class HomeworkDto {
 
   private Date completionDeadline;
 
-  private SolutionStatus solution;
+  private SolutionStatus status;
 
   @Schema(allowableValues = {"24", "48"})
   private Integer reviewDuration;
@@ -153,12 +154,12 @@ public class HomeworkDto {
     return this;
   }
 
-  public SolutionStatus getSolution() {
-    return solution;
+  public SolutionStatus getStatus() {
+    return status;
   }
 
-  public HomeworkDto setSolution(SolutionStatus solution) {
-    this.solution = solution;
+  public HomeworkDto setStatus(SolutionStatus status) {
+    this.status = status;
     return this;
   }
 
