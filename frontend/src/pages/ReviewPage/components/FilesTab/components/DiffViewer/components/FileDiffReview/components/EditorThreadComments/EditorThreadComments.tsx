@@ -11,7 +11,7 @@ interface EditorThreadCommentsProps {
 
 export const EditorThreadComments = ({ editor, threads }: EditorThreadCommentsProps) =>
   threads.map(thread => (
-    <ResizableViewZone editor={editor} afterLine={thread.endLine} key={thread.threadId}>
+    <ResizableViewZone id={String(thread.threadId)} editor={editor} afterLine={thread.endLine} key={thread.threadId}>
       <EditorSelection
         editor={editor}
         className={styles.commentSelection}

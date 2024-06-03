@@ -54,7 +54,7 @@ export const CreateThreadWidget = ({ editor, reviewId, commitSha }: CreateThread
         )}
 
       {selection && (
-        <ResizableViewZone editor={editor} afterLine={selection.endLineNumber}>
+        <ResizableViewZone id={commitSha} editor={editor} afterLine={selection.endLineNumber}>
           <div className={styles.commentCardWrapper}>
             <EditorSelection
               editor={editor}
