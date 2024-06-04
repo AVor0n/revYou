@@ -3,6 +3,7 @@ package hh.crossreview.dao;
 import hh.crossreview.entity.Homework;
 import hh.crossreview.entity.Solution;
 import hh.crossreview.entity.User;
+import hh.crossreview.entity.enums.SolutionStatus;
 import jakarta.inject.Named;
 import jakarta.inject.Singleton;
 import java.util.List;
@@ -56,4 +57,19 @@ public class SolutionDao extends GenericDao {
     getEntityManager().remove(solution);
   }
 
+  public List<User> getStudentsBySolutionStatusAndHomeworkId(
+          SolutionStatus solutionStatus, Homework homework
+  ){
+    return getEntityManager()
+            .createQuery(
+                "SELECT s.student FROM Solution s " +
+                        "WHERE s.homework = :homework AND " +
+                        "s.status = :status " +
+                        "ORDER BY s.student.surname",
+                    User.class
+            )
+            .setParameter("homework", homework)
+            .setParameter("status", solutionStatus)
+            .getResultList();
+  }
 }
