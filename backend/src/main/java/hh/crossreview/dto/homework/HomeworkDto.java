@@ -12,8 +12,7 @@ import java.util.List;
         "departments", "author",
         "lecture", "repositoryLink",
         "startDate", "completionDeadline",
-        "reviewDuration",
-        "status"
+        "reviewDuration"
     }
 )
 @SuppressWarnings({"unused"})
