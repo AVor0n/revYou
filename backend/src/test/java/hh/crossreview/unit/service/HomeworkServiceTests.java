@@ -156,7 +156,10 @@ class HomeworkServiceTests extends TestsUtil {
 
     assertThrows(
         NotFoundException.class,
-        () -> homeworkService.getHomework(1)
+        () -> {
+          User user = createUser(1, UserRole.TEACHER, new Cohort());
+          homeworkService.getHomework(1, user);
+        }
     );
   }
 
