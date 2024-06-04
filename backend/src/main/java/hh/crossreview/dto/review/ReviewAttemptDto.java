@@ -2,6 +2,8 @@ package hh.crossreview.dto.review;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 
 @Schema(name = "ReviewAttempt", requiredProperties = {
     "reviewAttemptId", "reviewId", "solutionAttemptId", "createdAt"
@@ -14,9 +16,9 @@ public class ReviewAttemptDto {
 
   private Integer solutionAttemptId;
 
-  private LocalDateTime createdAt;
+  private OffsetDateTime createdAt;
 
-  private LocalDateTime finishedAt;
+  private OffsetDateTime finishedAt;
 
   private String resolution;
 
@@ -48,21 +50,21 @@ public class ReviewAttemptDto {
     return this;
   }
 
-  public LocalDateTime getCreatedAt() {
+  public OffsetDateTime getCreatedAt() {
     return createdAt;
   }
 
   public ReviewAttemptDto setCreatedAt(LocalDateTime createdAt) {
-    this.createdAt = createdAt;
+    this.createdAt = createdAt.atOffset(ZoneOffset.UTC);
     return this;
   }
 
-  public LocalDateTime getFinishedAt() {
+  public OffsetDateTime getFinishedAt() {
     return finishedAt;
   }
 
   public ReviewAttemptDto setFinishedAt(LocalDateTime finishedAt) {
-    this.finishedAt = finishedAt;
+    this.finishedAt = finishedAt != null ? finishedAt.atOffset(ZoneOffset.UTC) : null;
     return this;
   }
 

@@ -14,6 +14,7 @@ import hh.crossreview.entity.enums.SolutionStatus;
 import hh.crossreview.entity.enums.StudyDirection;
 import hh.crossreview.entity.enums.UserRole;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 public class TestsUtil {
@@ -42,7 +43,9 @@ public class TestsUtil {
         .setHomeworkId(homeworkId)
         .setLecture(lecture)
         .setAuthor(author)
-        .setReviewDuration(reviewDuration);
+        .setReviewDuration(reviewDuration)
+        .setStartDate(new Date())
+        .setCompletionDeadline(new Date());
   }
 
   public Lecture createLecture(

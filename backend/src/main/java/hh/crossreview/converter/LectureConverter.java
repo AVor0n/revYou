@@ -10,6 +10,7 @@ import hh.crossreview.entity.Cohort;
 import hh.crossreview.entity.Lecture;
 import hh.crossreview.entity.User;
 import jakarta.inject.Named;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Named
@@ -42,7 +43,7 @@ public class LectureConverter {
   public Lecture convertToLecture(LecturePostDto lecturePostDto, User lector, List<Cohort> cohorts) {
     return new Lecture()
         .setName(lecturePostDto.getName())
-        .setLectureDate(lecturePostDto.getLectureDate())
+        .setLectureDate(LocalDateTime.from(lecturePostDto.getLectureDate()))
         .setZoomLink(lecturePostDto.getZoomLink())
         .setPresentationLink(lecturePostDto.getPresentationLink())
         .setLector(lector)
@@ -58,7 +59,7 @@ public class LectureConverter {
       lecture.setName(lecturePatchDto.getName());
     }
     if (lecturePatchDto.getLectureDate() != null) {
-      lecture.setLectureDate(lecturePatchDto.getLectureDate());
+      lecture.setLectureDate(LocalDateTime.from(lecturePatchDto.getLectureDate()));
     }
     if (lecturePatchDto.getZoomLink() != null) {
       lecture.setZoomLink(lecturePatchDto.getZoomLink());

@@ -1,6 +1,8 @@
 package hh.crossreview.dto.homework;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.Date;
 
 @Schema(name = "HomeworkPatch")
@@ -8,8 +10,8 @@ public class HomeworkPatchDto {
   private String name;
   private String topic;
   private String description;
-  private Date startDate;
-  private Date completionDeadline;
+  private OffsetDateTime startDate;
+  private OffsetDateTime completionDeadline;
   @Schema(
       allowableValues =  {"24", "48"}
   )
@@ -27,11 +29,11 @@ public class HomeworkPatchDto {
     return description;
   }
 
-  public Date getStartDate() {
+  public OffsetDateTime getStartDate() {
     return startDate;
   }
 
-  public Date getCompletionDeadline() {
+  public OffsetDateTime getCompletionDeadline() {
     return completionDeadline;
   }
 
@@ -52,11 +54,11 @@ public class HomeworkPatchDto {
   }
 
   public void setStartDate(Date startDate) {
-    this.startDate = startDate;
+    this.startDate = startDate.toInstant().atOffset(ZoneOffset.UTC);
   }
 
   public void setCompletionDeadline(Date completionDeadline) {
-    this.completionDeadline = completionDeadline;
+    this.completionDeadline = completionDeadline.toInstant().atOffset(ZoneOffset.UTC);
   }
 
   public void setReviewDuration(Integer reviewDuration) {

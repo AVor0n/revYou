@@ -2,6 +2,8 @@ package hh.crossreview.dto.comment;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 
 @Schema(
     name = "Comment",
@@ -16,9 +18,9 @@ public class CommentDto {
 
   private String content;
 
-  private LocalDateTime createdAt;
+  private OffsetDateTime createdAt;
 
-  private LocalDateTime updatedAt;
+  private OffsetDateTime updatedAt;
 
   public CommentDto() {
   }
@@ -41,21 +43,22 @@ public class CommentDto {
     return this;
   }
 
-  public LocalDateTime getCreatedAt() {
+
+  public OffsetDateTime getCreatedAt() {
     return createdAt;
   }
 
   public CommentDto setCreatedAt(LocalDateTime createdAt) {
-    this.createdAt = createdAt;
+    this.createdAt = createdAt.atOffset(ZoneOffset.UTC);
     return this;
   }
 
-  public LocalDateTime getUpdatedAt() {
+  public OffsetDateTime getUpdatedAt() {
     return updatedAt;
   }
 
   public CommentDto setUpdatedAt(LocalDateTime updatedAt) {
-    this.updatedAt = updatedAt;
+    this.updatedAt = updatedAt != null ? updatedAt.atOffset(ZoneOffset.UTC) : null;
     return this;
   }
 

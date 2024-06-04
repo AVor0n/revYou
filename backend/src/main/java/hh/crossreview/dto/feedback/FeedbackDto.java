@@ -3,6 +3,8 @@ package hh.crossreview.dto.feedback;
 import hh.crossreview.dto.user.UserDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 
 @Schema(name = "Feedback", requiredProperties = {
     "feedbackId", "reviewId", "student",
@@ -16,7 +18,7 @@ public class FeedbackDto {
   private UserDto student;
   private String description;
   private Integer rating;
-  private LocalDateTime feedbackDate;
+  private OffsetDateTime feedbackDate;
 
   public Integer getFeedbackId() {
     return feedbackId;
@@ -63,12 +65,12 @@ public class FeedbackDto {
     return this;
   }
 
-  public LocalDateTime getFeedbackDate() {
+  public OffsetDateTime getFeedbackDate() {
     return feedbackDate;
   }
 
   public FeedbackDto setFeedbackDate(LocalDateTime feedbackDate) {
-    this.feedbackDate = feedbackDate;
+    this.feedbackDate = feedbackDate.atOffset(ZoneOffset.UTC);
     return this;
   }
 }
