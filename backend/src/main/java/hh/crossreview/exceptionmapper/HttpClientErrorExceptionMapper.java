@@ -4,14 +4,16 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hh.crossreview.dto.exception.ExceptionDto;
 import jakarta.inject.Named;
+import jakarta.inject.Singleton;
 import jakarta.ws.rs.InternalServerErrorException;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.ExceptionMapper;
 import jakarta.ws.rs.ext.Provider;
 import org.springframework.web.client.HttpClientErrorException;
 
-@Provider
 @Named
+@Singleton
+@Provider
 public class HttpClientErrorExceptionMapper implements ExceptionMapper<HttpClientErrorException> {
 
   private final ObjectMapper objectMapper;
