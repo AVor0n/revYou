@@ -2,6 +2,7 @@ package hh.crossreview.unit.service;
 
 import hh.crossreview.converter.HomeworkConverter;
 import hh.crossreview.dao.HomeworkDao;
+import hh.crossreview.dao.SolutionDao;
 import hh.crossreview.dto.homework.HomeworkDto;
 import hh.crossreview.dto.homework.HomeworkPatchDto;
 import hh.crossreview.dto.homework.HomeworkPostDto;
@@ -42,6 +43,9 @@ class HomeworkServiceTests extends TestsUtil {
 
   @Mock
   private HomeworkDao homeworkDao;
+  @Mock
+  @SuppressWarnings("unused")
+  private SolutionDao solutionDao;
   @Spy
   private HomeworkConverter homeworkConverter = new HomeworkConverter();
   @Spy
