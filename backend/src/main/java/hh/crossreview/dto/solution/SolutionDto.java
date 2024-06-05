@@ -15,6 +15,7 @@ import java.util.List;
 @SuppressWarnings({"unused"})
 public class SolutionDto {
 
+  @Schema(enumAsRef = true)
   private SolutionStatus status;
 
   private Integer projectId;

@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
     requiredProperties = {"status"}
 )
 public class CommentsThreadResolveDto {
+  @Schema(allowableValues = {"ACTIVE", "RESOLVED"})
   private String status;
 
   public String getStatus() {

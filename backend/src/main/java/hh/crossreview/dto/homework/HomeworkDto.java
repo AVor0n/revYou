@@ -42,6 +42,7 @@ public class HomeworkDto {
 
   private OffsetDateTime completionDeadline;
 
+  @Schema(enumAsRef = true)
   private SolutionStatus status;
 
   @Schema(allowableValues = {"24", "48"})

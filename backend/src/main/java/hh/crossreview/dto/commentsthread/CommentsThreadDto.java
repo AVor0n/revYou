@@ -1,6 +1,7 @@
 package hh.crossreview.dto.commentsthread;
 
 import hh.crossreview.dto.comment.CommentDto;
+import hh.crossreview.entity.enums.CommentsThreadStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
 @Schema(
@@ -17,8 +18,8 @@ public class CommentsThreadDto {
 
   private Integer authorId;
 
-  @Schema(allowableValues = {"ACTIVE", "RESOLVED"})
-  private String status;
+  @Schema(enumAsRef = true)
+  private CommentsThreadStatus status;
 
   private String commitSha;
 
@@ -56,11 +57,11 @@ public class CommentsThreadDto {
     return this;
   }
 
-  public String getStatus() {
+  public CommentsThreadStatus getStatus() {
     return status;
   }
 
-  public CommentsThreadDto setStatus(String status) {
+  public CommentsThreadDto setStatus(CommentsThreadStatus status) {
     this.status = status;
     return this;
   }

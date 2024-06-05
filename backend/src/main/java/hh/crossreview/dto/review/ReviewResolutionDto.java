@@ -1,6 +1,9 @@
 package hh.crossreview.dto.review;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
 public class ReviewResolutionDto {
+  @Schema(allowableValues = {"CORRECTIONS_REQUIRED", "APPROVED"})
   private String status;
 
   private String resolution;
