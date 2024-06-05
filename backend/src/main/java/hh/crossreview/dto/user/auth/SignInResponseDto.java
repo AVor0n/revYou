@@ -14,6 +14,7 @@ public class SignInResponseDto {
   private String refreshToken;
   private Integer userId;
   private Integer cohortId;
+  @Schema(enumAsRef = true)
   private UserRole role;
   private String username;
   private String name;

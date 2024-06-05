@@ -75,7 +75,7 @@ public class UserResource {
       responseCode = "400",
       description = "Bad request",
       content = @Content(schema = @Schema(implementation = ExceptionValidationDto.class)))
-  public Response updateProfile(
+  public Response updatePassword(
       @Valid PasswordPatchDto passwordPatchDto,
       @Context SecurityContext securityContext
   ) {

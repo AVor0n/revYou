@@ -2,6 +2,7 @@ package hh.crossreview.dto.review.info;
 
 import hh.crossreview.dto.review.ReviewAttemptDto;
 import hh.crossreview.dto.user.info.StudentDto;
+import hh.crossreview.entity.enums.ReviewStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.Duration;
 import java.util.List;
@@ -16,7 +17,8 @@ public class ReviewInfoDto {
   private Integer reviewId;
   private Integer projectId;
   private String commitId;
-  private String status;
+  @Schema(enumAsRef = true)
+  private ReviewStatus status;
   private ReviewDurationDto duration;
   private StudentDto student;
   private StudentDto reviewer;
@@ -37,7 +39,7 @@ public class ReviewInfoDto {
     return this;
   }
 
-  public ReviewInfoDto setStatus(String status) {
+  public ReviewInfoDto setStatus(ReviewStatus status) {
     this.status = status;
     return this;
   }
@@ -74,7 +76,7 @@ public class ReviewInfoDto {
     return commitId;
   }
 
-  public String getStatus() {
+  public ReviewStatus getStatus() {
     return status;
   }
 

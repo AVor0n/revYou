@@ -23,7 +23,7 @@ public class CommentsThreadConverter {
     return new CommentsThreadDto()
         .setThreadId(commentsThread.getCommentsThreadId())
         .setAuthorId(commentsThread.getAuthorId())
-        .setStatus(commentsThread.getStatus().toString())
+        .setStatus(commentsThread.getStatus())
         .setCommitSha(commentsThread.getCommitSha())
         .setFilePath(commentsThread.getFilePath())
         .setStartLine(commentsThread.getStartLine())

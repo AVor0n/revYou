@@ -101,7 +101,7 @@ public class ReviewConverter {
         .setDuration(duration)
         .setStudent(student)
         .setReviewId(review.getReviewId())
-        .setStatus(review.getStatus().toString())
+        .setStatus(review.getStatus())
         .setCommitId(commitId)
         .setProjectId(review.getSolution().getProjectId());
 

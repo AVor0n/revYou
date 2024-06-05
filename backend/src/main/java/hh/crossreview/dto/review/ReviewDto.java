@@ -12,6 +12,7 @@ import java.util.List;
 public class ReviewDto {
   private Integer reviewId;
 
+  @Schema(enumAsRef = true)
   private ReviewStatus status;
 
   private Integer projectId;

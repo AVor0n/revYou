@@ -14,6 +14,7 @@ public class UserDetailDto {
   private String username;
   private String name;
   private String surname;
+  @Schema(enumAsRef = true)
   private UserRole role;
 
   public UserDetailDto() {
