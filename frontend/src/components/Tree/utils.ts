@@ -24,3 +24,19 @@ export const getAllIds = <T extends TreeNode>(tree: T[]) => {
   traversalTree(tree, item => allIds.push(item.id));
   return allIds;
 };
+
+/**
+ * Поиск элемента в дереве
+ * @param items - Корневые узлы дерева
+ * @param predicate - Условие которое должно выполняться для искомого элемента
+ */
+export const findInTree = <T extends TreeNode<T>>(items: T[], predicate: (item: T) => boolean): T | null => {
+  for (const item of items) {
+    if (predicate(item)) return item;
+    if (item.children) {
+      const result = findInTree(item.children, predicate);
+      if (result) return result;
+    }
+  }
+  return null;
+};

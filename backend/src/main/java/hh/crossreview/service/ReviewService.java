@@ -1,12 +1,15 @@
 package hh.crossreview.service;
 
 import hh.crossreview.converter.ReviewConverter;
+import hh.crossreview.converter.UserDetailConverter;
 import hh.crossreview.dao.ReviewAttemptDao;
 import hh.crossreview.dao.ReviewDao;
+import hh.crossreview.dao.SolutionDao;
 import hh.crossreview.dto.review.ReviewResolutionDto;
 import hh.crossreview.dto.review.ReviewWrapperDto;
 import hh.crossreview.dto.review.ReviewerChangeDto;
 import hh.crossreview.dto.review.info.ReviewInfoWrapperDto;
+import hh.crossreview.dto.user.UserDetailWrapperDto;
 import hh.crossreview.entity.Homework;
 import hh.crossreview.entity.Review;
 import hh.crossreview.entity.ReviewAttempt;
@@ -24,6 +27,7 @@ import jakarta.transaction.Transactional;
 import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.ForbiddenException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -48,25 +52,31 @@ public class ReviewService {
 
   private final ReviewDao reviewDao;
 
+  private final SolutionDao solutionDao;
+
   private final ReviewAttemptDao reviewAttemptDao;
 
   private final ReviewConverter reviewConverter;
+
+  private final UserDetailConverter userDetailConverter;
 
   public ReviewService(
           RequirementsUtils reqUtils,
           SolutionService solutionService,
           UserService userService,
           ReviewersPoolService reviewersPoolService,
-          ReviewDao reviewDao,
+          ReviewDao reviewDao, SolutionDao solutionDao,
           ReviewAttemptDao reviewAttemptDao,
-          ReviewConverter reviewConverter) {
+          ReviewConverter reviewConverter, UserDetailConverter userDetailConverter) {
     this.reqUtils = reqUtils;
     this.solutionService = solutionService;
     this.userService = userService;
     this.reviewersPoolService = reviewersPoolService;
     this.reviewDao = reviewDao;
+    this.solutionDao = solutionDao;
     this.reviewAttemptDao = reviewAttemptDao;
     this.reviewConverter = reviewConverter;
+    this.userDetailConverter = userDetailConverter;
   }
 
   @Transactional
@@ -314,6 +324,21 @@ public class ReviewService {
     return wrapReviewInfo(homework, reviews);
   }
 
+  public UserDetailWrapperDto getAvailableReviewers(
+          User user, Homework homework
+  ) {
+    reqUtils.requireAuthorPermissionOrAdmin(user, homework);
+    List<User> studentsWithCompleteHw = solutionDao.getStudentsBySolutionStatusAndHomeworkId(
+            SolutionStatus.COMPLETE, homework
+    );
+    List<User> availableReviewers = new ArrayList<>();
+    availableReviewers.add(user);
+    availableReviewers.addAll(studentsWithCompleteHw);
+    return userDetailConverter.convertToUserDetailWrapperDto(availableReviewers);
+
+
+  }
+
   public void setStatus(Review review, ReviewStatus status) {
     reviewConverter.setStatus(review, status);
   }
@@ -351,6 +376,43 @@ public class ReviewService {
             && user.getRole() != UserRole.ADMIN) {
       throw new ForbiddenException("User doesn't have permissions for this action");
     }
+  }
+
+  @Transactional
+  public void approveStudent(Homework homework, User teacher, User student) {
+    reqUtils.requireAuthorPermissionOrAdmin(teacher, homework);
+
+    Solution solution = solutionService.requireSolutionExist(homework, student);
+    solution.setStatus(SolutionStatus.COMPLETE);
+
+    List<Review> reviewsByStudent = reviewDao.findByHomeworkAndReviewer(homework, student);
+    recreateReviewsStartedByStudent(homework, reviewsByStudent);
+
+    reviewersPoolService.resolveReviewer(student, homework);
+
+    List<Review> reviewsForStudent = reviewDao.findByHomeworkAndStudent(homework, student);
+    releaseReviewersAssignedForStudentSolution(homework, reviewsForStudent);
+  }
+
+  private void recreateReviewsStartedByStudent(Homework homework, List<Review> reviewsByStudent) {
+    reviewsByStudent.forEach(review -> {
+      if (!review.getStatus().equals(ReviewStatus.APPROVED)) {
+        review.setStatus(ReviewStatus.ARCHIVED);
+        createReview(homework, review.getSolution(), review.getStudent());
+      }
+    });
+  }
+
+  private void releaseReviewersAssignedForStudentSolution(Homework homework, List<Review> reviewsForStudent) {
+    reviewsForStudent.forEach(review -> {
+      if (!review.getStatus().equals(ReviewStatus.APPROVED)) {
+        User reviewer = review.getReviewer();
+        if (Objects.nonNull(reviewer) && reviewer.getRole().equals(UserRole.STUDENT)) {
+          reviewersPoolService.releaseReviewer(review.getReviewer(), homework);
+        }
+        setStatus(review, ReviewStatus.ARCHIVED);
+      }
+    });
   }
 
 }

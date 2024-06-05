@@ -90,7 +90,8 @@ public class HomeworkResource {
   )
   public Response createHomework(
       HomeworkPostDto homeworkPostDto,
-      @Context SecurityContext securityContext) {
+      @Context SecurityContext securityContext
+  ) {
     User user = userService.findByPrincipal(securityContext.getUserPrincipal());
     String commitId = gitlabService.validateHomeworkBranchLink(homeworkPostDto.getRepositoryLink());
     HomeworkPostResponseDto homeworkPostResponseDto = homeworkService.createHomework(
@@ -117,8 +118,9 @@ public class HomeworkResource {
       description = "Not found",
       content = @Content(schema = @Schema(implementation = ExceptionDto.class))
   )
-  public Response getHomework(@PathParam("homeworkId") Integer homeworkId) {
-    HomeworkDto homeworkDto = homeworkService.getHomework(homeworkId);
+  public Response getHomework(@PathParam("homeworkId") Integer homeworkId, @Context SecurityContext securityContext) {
+    User user = userService.findByPrincipal(securityContext.getUserPrincipal());
+    HomeworkDto homeworkDto = homeworkService.getHomework(homeworkId, user);
     return Response
         .status(Response.Status.OK)
         .entity(homeworkDto)
@@ -146,7 +148,8 @@ public class HomeworkResource {
   public Response updateHomework(
       @PathParam("homeworkId") Integer homeworkId,
       HomeworkPatchDto homeworkPatchDto,
-      @Context SecurityContext securityContext) {
+      @Context SecurityContext securityContext
+  ) {
     User user = userService.findByPrincipal(securityContext.getUserPrincipal());
     homeworkService.updateHomework(
         homeworkId,
@@ -167,7 +170,8 @@ public class HomeworkResource {
   )
   public Response deleteHomework(
       @PathParam("homeworkId") Integer homeworkId,
-      @Context SecurityContext securityContext) {
+      @Context SecurityContext securityContext
+  ) {
     User user = userService.findByPrincipal(securityContext.getUserPrincipal());
     homeworkService.deleteHomework(
         homeworkId,

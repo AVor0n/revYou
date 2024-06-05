@@ -94,7 +94,6 @@ public class SolutionService {
       User user
   ) {
     reqUtils.requireUserHasRole(user, UserRole.STUDENT);
-
     Solution solution = requireSolutionExist(homework, user);
     return solutionConverter.convertToSolutionDto(solution);
   }

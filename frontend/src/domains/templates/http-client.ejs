@@ -49,7 +49,7 @@ export class HttpClient<SecurityDataType = unknown> {
       this.secure = secure;
       this.format = format;
       this.securityWorker = securityWorker;
-  
+
       // создаем перехватчик запросов
       // который к каждому запросу добавляет accessToken из localStorage
       this.instance.interceptors.request.use(config => {
@@ -59,7 +59,7 @@ export class HttpClient<SecurityDataType = unknown> {
         }
         return config;
       });
-  
+
       // создаем перехватчик ответов
       // который в случае невалидного accessToken попытается его обновить
       // и переотправить запрос с обновленным accessToken
@@ -86,7 +86,6 @@ export class HttpClient<SecurityDataType = unknown> {
               // сохраняем новый accessToken в localStorage
               localStorage.setItem('accessToken', resp.data.accessToken);
               localStorage.setItem('refreshToken', resp.data.refreshToken);
-              localStorage.setItem('role', resp.data.role);
               // переотправляем запрос с обновленным accessToken
               return this.instance.request(originalRequest);
             } catch (error) {

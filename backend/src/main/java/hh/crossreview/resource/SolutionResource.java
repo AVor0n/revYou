@@ -9,6 +9,7 @@ import hh.crossreview.dto.solution.SolutionsWrapperDto;
 import hh.crossreview.entity.Homework;
 import hh.crossreview.entity.User;
 import hh.crossreview.service.HomeworkService;
+import hh.crossreview.service.ReviewService;
 import hh.crossreview.service.SolutionService;
 import hh.crossreview.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -50,12 +51,14 @@ import jakarta.ws.rs.core.SecurityContext;
 public class SolutionResource {
 
   private final SolutionService solutionService;
+  private final ReviewService reviewService;
   private final HomeworkService homeworkService;
   private final UserService userService;
 
   @Inject
-  public SolutionResource(SolutionService solutionService, HomeworkService homeworkService, UserService userService) {
+  public SolutionResource(SolutionService solutionService, ReviewService reviewService, HomeworkService homeworkService, UserService userService) {
     this.solutionService = solutionService;
+    this.reviewService = reviewService;
     this.homeworkService = homeworkService;
     this.userService = userService;
   }
@@ -180,6 +183,29 @@ public class SolutionResource {
     solutionService.deleteSolution(homework, user);
     return Response
         .status(Response.Status.NO_CONTENT)
+        .build();
+  }
+
+  @PATCH
+  @Path("/approve-student/{studentId}")
+  @Produces(MediaType.APPLICATION_JSON)
+  @ApiResponse(
+      responseCode = "200",
+      description = "Successful operation")
+  @ApiResponse(
+      responseCode = "400",
+      description = "Bad request",
+      content = @Content(schema = @Schema(implementation = ExceptionDto.class)))
+  public Response approveStudent(
+      @PathParam("homeworkId") Integer homeworkId,
+      @PathParam("studentId") Integer studentId,
+      @Context SecurityContext securityContext) {
+    User teacher = userService.findByPrincipal(securityContext.getUserPrincipal());
+    User student = userService.findByUserId(studentId);
+    Homework homework = homeworkService.getHomeworkEntity(homeworkId);
+    reviewService.approveStudent(homework, teacher, student);
+    return Response
+        .status(Response.Status.OK)
         .build();
   }
 

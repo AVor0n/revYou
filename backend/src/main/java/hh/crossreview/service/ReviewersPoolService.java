@@ -83,6 +83,9 @@ public class ReviewersPoolService {
   }
 
   private void makeReviewerAvailable(Reviewer reviewer) {
+    if (reviewer.getStatus().equals(ReviewerStatus.COMPLETE)) {
+      return;
+    }
     reviewer.setStatus(ReviewerStatus.AVAILABLE);
     reviewersPoolDao.save(reviewer);
   }

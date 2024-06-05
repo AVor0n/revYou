@@ -1,0 +1,20 @@
+.commentedDiffContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.skeleton {
+  block-size: 200px;
+}
+
+.commentSelection {
+  background-color: var(--g-color-base-selection);
+}
+
+.header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}

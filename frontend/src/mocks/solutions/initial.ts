@@ -2,7 +2,7 @@ import { type Solution } from '@domains';
 
 export const initialSolutions: Solution[] = [
   {
-    status: 'search_reviewer',
+    status: 'REVIEW_STAGE',
     studentId: 1,
     branch: 'http:/solutions/1',
     projectId: 57233480,
@@ -12,7 +12,7 @@ export const initialSolutions: Solution[] = [
     solutionAttempts: [],
   },
   {
-    status: 'review',
+    status: 'REVIEW_STAGE',
     studentId: 2,
     branch: 'http:/solutions/2',
     approveScore: 1,
@@ -31,7 +31,7 @@ export const initialSolutions: Solution[] = [
     ],
   },
   {
-    status: 'wait_correction',
+    status: 'REVIEW_STAGE',
     studentId: 3,
     branch: 'http:/solutions/2',
     approveScore: 0,

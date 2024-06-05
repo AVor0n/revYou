@@ -64,6 +64,7 @@
     "@typescript-eslint/ban-ts-comment": "error",
     "@typescript-eslint/prefer-ts-expect-error": "error",
     "@typescript-eslint/no-misused-promises": "off",
+    "@typescript-eslint/no-non-null-assertion": "warn",
     "@typescript-eslint/no-empty-interface": "off",
     "@typescript-eslint/no-floating-promises": "off",
     "@typescript-eslint/consistent-type-imports": ["warn", { "fixStyle": "inline-type-imports" }],

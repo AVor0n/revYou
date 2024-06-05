@@ -75,6 +75,10 @@ export const homeworksHandlers = [
   }),
   http.delete('/api/homeworks/:id', ({ params }) => {
     const { id } = params;
+    if (!id) {
+      return HttpResponse.json({ error: 'no id ' }, { status: 400 });
+    }
+
     const homework = homeworks.get(+id);
 
     if (!homework) {

@@ -1,8 +1,12 @@
 package hh.crossreview.service;
 
+import hh.crossreview.converter.UserConverter;
 import hh.crossreview.dao.CohortDao;
 import hh.crossreview.dao.UserDao;
-import hh.crossreview.dto.user.SignUpRequestDto;
+import hh.crossreview.dto.user.auth.SignUpRequestDto;
+import hh.crossreview.dto.user.info.UserInfoDto;
+import hh.crossreview.dto.user.update.PasswordPatchDto;
+import hh.crossreview.dto.user.update.UserPatchDto;
 import hh.crossreview.entity.Cohort;
 import hh.crossreview.entity.User;
 import hh.crossreview.entity.enums.UserRole;
@@ -15,6 +19,7 @@ import jakarta.ws.rs.ForbiddenException;
 import java.security.Principal;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -32,11 +37,13 @@ public class UserService implements UserDetailsService {
   private final UserDao userDao;
   private final CohortDao cohortDao;
   private final PasswordEncoder passwordEncoder;
+  private final UserConverter userConverter;
 
-  public UserService(UserDao userDao, CohortDao cohortDao, PasswordEncoder passwordEncoder) {
+  public UserService(UserDao userDao, CohortDao cohortDao, PasswordEncoder passwordEncoder, UserConverter userConverter) {
     this.userDao = userDao;
     this.cohortDao = cohortDao;
     this.passwordEncoder = passwordEncoder;
+    this.userConverter = userConverter;
   }
 
 
@@ -106,4 +113,22 @@ public class UserService implements UserDetailsService {
     return user;
 
   }
+
+  @Transactional
+  public void updatePassword(Principal principal, PasswordPatchDto passwordPatchDto) {
+    String password = passwordPatchDto.getPassword();
+    String confirmationPassword = passwordPatchDto.getConfirmationPassword();
+    if (!Objects.equals(password, confirmationPassword)) {
+      throw new BadRequestException("Password mismatch");
+    }
+    findByPrincipal(principal).setPassword(passwordEncoder.encode(password));
+  }
+
+  @Transactional
+  public UserInfoDto updateProfile(Principal principal, UserPatchDto userPatchDto) {
+    User user = findByPrincipal(principal);
+    userConverter.merge(user, userPatchDto);
+    return new UserInfoDto(user);
+  }
+
 }

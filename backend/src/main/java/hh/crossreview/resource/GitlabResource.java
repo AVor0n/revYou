@@ -29,6 +29,11 @@ import jakarta.ws.rs.core.Response;
     description = "Forbidden request",
     content = @Content(schema = @Schema(implementation = ExceptionDto.class))
 )
+@ApiResponse(
+    responseCode = "404",
+    description = "Not found",
+    content = @Content(schema = @Schema(implementation = ExceptionDto.class))
+)
 @SecurityRequirement(name = "bearerAuth")
 public class GitlabResource {
 
@@ -59,7 +64,7 @@ public class GitlabResource {
   }
 
   @GET
-  @Produces(MediaType.TEXT_PLAIN)
+  @Produces({MediaType.TEXT_PLAIN, MediaType.APPLICATION_JSON})
   @Path("/projects/{projectId}/repository/files/{filePath:.+}/raw")
   @ApiResponse(
       responseCode = "200",

@@ -95,7 +95,6 @@ export class HttpClient<SecurityDataType = unknown> {
             // сохраняем новый accessToken в localStorage
             localStorage.setItem('accessToken', resp.data.accessToken);
             localStorage.setItem('refreshToken', resp.data.refreshToken);
-            localStorage.setItem('role', resp.data.role);
             // переотправляем запрос с обновленным accessToken
             return this.instance.request(originalRequest);
           } catch (error) {

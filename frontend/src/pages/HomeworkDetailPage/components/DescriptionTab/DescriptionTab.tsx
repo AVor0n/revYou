@@ -18,7 +18,7 @@ export const DescriptionTab = ({ homeworkInfo }: DescriptionTabProps) => {
   }
 
   const renderFooter = () => {
-    if (role !== '[STUDENT]') {
+    if (role !== 'STUDENT') {
       return null;
     }
 

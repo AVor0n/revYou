@@ -1,4 +1,4 @@
-export * from './loadFileDiff.thunk';
+export * from './loadFile.thunk';
 export * from './loadReview.thunk';
 export * from './requestReview.thunk';
 export * from './requestRepeatReview.thunk';
@@ -6,5 +6,5 @@ export * from './completeReview.thunk';
 export * from './startReview.thunk';
 export * from './loadThreads.thunk';
 export * from './addComments.thunk';
-export * from './resolveThread.thunk';
+export * from './changeThreadStatus.thunk';
 export * from './createThread.thunk';

@@ -3,7 +3,7 @@ package hh.crossreview.converter;
 import hh.crossreview.dto.feedback.FeedbackDto;
 import hh.crossreview.dto.feedback.FeedbackPostDto;
 import hh.crossreview.dto.feedback.FeedbackPostResponseDto;
-import hh.crossreview.dto.user.UserDto;
+import hh.crossreview.dto.user.info.UserDto;
 import hh.crossreview.entity.Feedback;
 import hh.crossreview.entity.Review;
 import hh.crossreview.entity.User;

@@ -1,9 +1,8 @@
-import { type User } from '@domains';
+import { type SignInResponse } from '@domains';
 
-export type Role = '[STUDENT]' | '[TEACHER]' | null;
+export type FullUserInfo = Omit<SignInResponse, 'accessToken' | 'refreshToken'>;
 
 export interface UserSchema {
-  authData: User;
-  role: Role;
+  authData: FullUserInfo | null;
   error: string;
 }

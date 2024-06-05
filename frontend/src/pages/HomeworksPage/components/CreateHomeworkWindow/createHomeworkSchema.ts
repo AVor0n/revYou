@@ -1,7 +1,8 @@
 import * as yup from 'yup';
+import { type CreateHomework } from '@pages/HomeworksPage/constants';
 import type { HomeworkPatchReviewDurationEnum, HomeworkPost } from '@domains';
 
-export const createHomeworkSchema: yup.ObjectSchema<HomeworkPost> = yup.object({
+export const createHomeworkSchema: yup.ObjectSchema<CreateHomework> = yup.object({
   name: yup.string().required(),
   topic: yup.string().required(),
   description: yup.string().optional(),

@@ -1,6 +1,6 @@
 package hh.crossreview.dto.feedback;
 
-import hh.crossreview.dto.user.UserDto;
+import hh.crossreview.dto.user.info.UserDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;

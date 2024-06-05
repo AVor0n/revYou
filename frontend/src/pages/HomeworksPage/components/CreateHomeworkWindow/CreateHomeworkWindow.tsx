@@ -1,15 +1,24 @@
 import { DatePicker } from '@gravity-ui/date-components';
 import { dateTimeParse } from '@gravity-ui/date-utils';
-import { RadioButton, Text } from '@gravity-ui/uikit';
+import { RadioButton, Select, Text } from '@gravity-ui/uikit';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { FormWindow } from '@components/FormWindow';
 import { Input } from '@components/Input';
-import { type HomeworkPost } from '@domains';
-import { defaultHomework } from '@pages/HomeworksPage/constants';
-import { createHomework, homeworkActions, loadHomeworks, useAppDispatch } from 'app';
+import { type Lecture } from '@domains';
+import { defaultHomework, type CreateHomework } from '@pages/HomeworksPage/constants';
+import {
+  createHomework,
+  getAllLectures,
+  getAuthData,
+  homeworkActions,
+  loadHomeworks,
+  loadLectures,
+  useAppDispatch,
+} from 'app';
 import { createHomeworkSchema } from './createHomeworkSchema';
 import styles from './CreateHomeworkWindow.module.scss';
 
@@ -17,16 +26,27 @@ interface CreateHomeworkWindowProps {
   open: boolean;
 }
 
+const getLecturesOptions = (userId: number | undefined, lectures: Lecture[]) =>
+  userId !== undefined
+    ? lectures
+        .filter(lecture => lecture.lector.userId === userId)
+        .map(lecture => ({ value: String(lecture.lectureId), content: lecture.name }))
+    : [];
+
 export const CreateHomeworkWindow = ({ open }: CreateHomeworkWindowProps) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const userInfo = useSelector(getAuthData);
+  const allLectures = useSelector(getAllLectures);
+  const lecturesOptions = getLecturesOptions(userInfo?.userId, allLectures);
+
   const {
     reset,
     control,
     handleSubmit,
     formState: { errors, isValid },
-  } = useForm<HomeworkPost>({
+  } = useForm<CreateHomework>({
     resolver: yupResolver(createHomeworkSchema),
     mode: 'all',
     defaultValues: defaultHomework,
@@ -43,6 +63,10 @@ export const CreateHomeworkWindow = ({ open }: CreateHomeworkWindowProps) => {
     },
   });
 
+  useEffect(() => {
+    dispatch(loadLectures());
+  }, [dispatch]);
+
   const closeWindow = () => {
     reset();
     dispatch(homeworkActions.setHomeworkForEdit(null));
@@ -51,7 +75,7 @@ export const CreateHomeworkWindow = ({ open }: CreateHomeworkWindowProps) => {
 
   const saveHomework = handleSubmit(async data => {
     setLoading(true);
-    return dispatch(createHomework(data))
+    return dispatch(createHomework({ ...data, lectureId: Number(data.lectureId) }))
       .unwrap()
       .then(() => {
         closeWindow();
@@ -100,7 +124,23 @@ export const CreateHomeworkWindow = ({ open }: CreateHomeworkWindowProps) => {
             />
           )}
         />
-        <Input label="Лекция" value="1" size="l" />
+        <Controller
+          name="lectureId"
+          control={control}
+          render={({ field }) => (
+            <Select
+              filterable
+              {...field}
+              value={field.value === null ? [''] : [String(field.value)]}
+              options={lecturesOptions}
+              label="Лекция"
+              size="l"
+              validationState={errors.lectureId?.message ? 'invalid' : undefined}
+              errorMessage={errors.lectureId?.message}
+              onUpdate={values => values[0] && field.onChange(+values[0])}
+            />
+          )}
+        />
         <Controller
           name="repositoryLink"
           control={control}
