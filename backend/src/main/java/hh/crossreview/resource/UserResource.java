@@ -23,6 +23,7 @@ import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.SecurityContext;
+import jdk.jfr.Name;
 
 @Named
 @Singleton
@@ -75,7 +76,7 @@ public class UserResource {
       responseCode = "400",
       description = "Bad request",
       content = @Content(schema = @Schema(implementation = ExceptionValidationDto.class)))
-  public Response updateProfile(
+  public Response updatePassword(
       @Valid PasswordPatchDto passwordPatchDto,
       @Context SecurityContext securityContext
   ) {
