@@ -5,6 +5,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 
 @Schema(name = "Lecture", requiredProperties = {"lectureId",
     "name",
@@ -17,7 +19,7 @@ public class LectureDto implements Serializable {
   private Integer lectureId;
   @NotNull
   private String name;
-  private LocalDateTime lectureDate;
+  private OffsetDateTime lectureDate;
   private String zoomLink;
   private String presentationLink;
   @NotNull(message = "Field 'teacherId' couldn't be empty")
@@ -41,12 +43,12 @@ public class LectureDto implements Serializable {
     return this;
   }
 
-  public LocalDateTime getLectureDate() {
+  public OffsetDateTime getLectureDate() {
     return lectureDate;
   }
 
   public LectureDto setLectureDate(LocalDateTime lectureDate) {
-    this.lectureDate = lectureDate;
+    this.lectureDate = lectureDate.atOffset(ZoneOffset.UTC);
     return this;
   }
 

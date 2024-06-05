@@ -2,6 +2,8 @@ package hh.crossreview.dto.lecture;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 
 @Schema(name = "LecturePost")
@@ -9,7 +11,7 @@ public class LecturePostDto {
   @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
   private String name;
   @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
-  private LocalDateTime lectureDate;
+  private OffsetDateTime lectureDate;
   private String zoomLink;
   private String presentationLink;
   @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
@@ -25,12 +27,12 @@ public class LecturePostDto {
     this.name = name;
   }
 
-  public LocalDateTime getLectureDate() {
+  public OffsetDateTime getLectureDate() {
     return lectureDate;
   }
 
   public void setLectureDate(LocalDateTime lectureDate) {
-    this.lectureDate = lectureDate;
+    this.lectureDate = lectureDate.atOffset(ZoneOffset.UTC);
   }
 
   public String getZoomLink() {

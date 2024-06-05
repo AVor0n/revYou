@@ -15,6 +15,7 @@ import hh.crossreview.entity.enums.SolutionStatus;
 import jakarta.inject.Named;
 import jakarta.inject.Singleton;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Named
@@ -89,11 +90,11 @@ public class HomeworkConverter {
       String commitId
   ) {
     return new Homework()
-        .setStartDate(homeworkPostDto.getStartDate())
+        .setStartDate(Date.from(homeworkPostDto.getStartDate().toInstant()))
         .setTopic(homeworkPostDto.getTopic())
         .setName(homeworkPostDto.getName())
         .setRepositoryLink(homeworkPostDto.getRepositoryLink())
-        .setCompletionDeadline(homeworkPostDto.getCompletionDeadline())
+        .setCompletionDeadline(Date.from(homeworkPostDto.getCompletionDeadline().toInstant()))
         .setReviewDuration(ReviewDuration.ofHours(homeworkPostDto.getReviewDuration()))
         .setLecture(lecture)
         .setDescription(homeworkPostDto.getDescription())
@@ -116,10 +117,14 @@ public class HomeworkConverter {
       homework.setDescription(homeworkPatchDto.getDescription());
     }
     if (homeworkPatchDto.getStartDate() != null) {
-      homework.setStartDate(homeworkPatchDto.getStartDate());
+      homework.setStartDate(
+          Date.from(homeworkPatchDto.getStartDate().toInstant())
+      );
     }
     if (homeworkPatchDto.getCompletionDeadline() != null) {
-      homework.setCompletionDeadline(homeworkPatchDto.getCompletionDeadline());
+      homework.setCompletionDeadline(
+          Date.from(homeworkPatchDto.getCompletionDeadline().toInstant())
+      );
     }
     if (homeworkPatchDto.getReviewDuration() != null) {
       homework.setReviewDuration(ReviewDuration.ofHours(homeworkPatchDto.getReviewDuration()));

@@ -18,6 +18,7 @@ import hh.crossreview.unit.TestsUtil;
 import hh.crossreview.utils.RequirementsUtils;
 import jakarta.ws.rs.NotFoundException;
 import java.time.Instant;
+import java.time.ZoneOffset;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
@@ -193,8 +194,14 @@ class HomeworkServiceTests extends TestsUtil {
     assertEquals(homework.getName(), homeworkPatchDto.getName());
     assertEquals(homework.getDescription(), homeworkPatchDto.getDescription());
     assertEquals(homework.getTopic(), homeworkPatchDto.getTopic());
-    assertEquals(homework.getStartDate(), homeworkPatchDto.getStartDate());
-    assertEquals(homework.getCompletionDeadline(), homeworkPatchDto.getCompletionDeadline());
+    assertEquals(
+        homework.getStartDate().toInstant().atOffset(ZoneOffset.UTC),
+        homeworkPatchDto.getStartDate()
+    );
+    assertEquals(
+        homework.getCompletionDeadline().toInstant().atOffset(ZoneOffset.UTC),
+        homeworkPatchDto.getCompletionDeadline()
+    );
     assertEquals(homework.getReviewDuration().getHours(), homeworkPatchDto.getReviewDuration());
   }
 
@@ -203,6 +210,8 @@ class HomeworkServiceTests extends TestsUtil {
     HomeworkPostDto homeworkPostDto = new HomeworkPostDto();
     homeworkPostDto.setLectureId(lectureId);
     homeworkPostDto.setReviewDuration(48);
+    homeworkPostDto.setStartDate(new Date());
+    homeworkPostDto.setCompletionDeadline(new Date());
     return homeworkPostDto;
   }
 

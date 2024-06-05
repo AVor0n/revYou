@@ -2,19 +2,21 @@ package hh.crossreview.dto.solution;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 
 @Schema(name = "SolutionAttempt", requiredProperties = {"commitId", "createdAt"})
 @SuppressWarnings({"unused"})
 public class SolutionAttemptDto {
 
   private String commitId;
-  private LocalDateTime createdAt;
+  private OffsetDateTime createdAt;
 
   public String getCommitId() {
     return commitId;
   }
 
-  public LocalDateTime getCreatedAt() {
+  public OffsetDateTime getCreatedAt() {
     return createdAt;
   }
 
@@ -24,13 +26,13 @@ public class SolutionAttemptDto {
   }
 
   public SolutionAttemptDto setCreatedAt(LocalDateTime createdAt) {
-    this.createdAt = createdAt;
+    this.createdAt = createdAt.atOffset(ZoneOffset.UTC);
     return this;
   }
 
   public SolutionAttemptDto(String commitId, LocalDateTime createdAt) {
     this.commitId = commitId;
-    this.createdAt = createdAt;
+    this.createdAt = createdAt.atOffset(ZoneOffset.UTC);
   }
 
 }

@@ -14,6 +14,7 @@ import hh.crossreview.integration.BaseIT;
 import hh.crossreview.service.HomeworkService;
 import jakarta.inject.Inject;
 import java.time.Instant;
+import java.time.ZoneOffset;
 import java.util.Date;
 import java.util.List;
 import org.junit.jupiter.api.AfterEach;
@@ -122,8 +123,14 @@ class HomeworkResourceIT extends BaseIT {
     assertEquals(homeworkPatchDto.getName(), homework.getName());
     assertEquals(homeworkPatchDto.getTopic(), homework.getTopic());
     assertEquals(homeworkPatchDto.getDescription(), homework.getDescription());
-    assertEquals(homeworkPatchDto.getStartDate(), homework.getStartDate());
-    assertEquals(homeworkPatchDto.getCompletionDeadline(), homework.getCompletionDeadline());
+    assertEquals(
+        homeworkPatchDto.getStartDate(),
+        homework.getStartDate().toInstant().atOffset(ZoneOffset.UTC)
+    );
+    assertEquals(
+        homeworkPatchDto.getCompletionDeadline(),
+        homework.getCompletionDeadline().toInstant().atOffset(ZoneOffset.UTC)
+    );
     assertEquals(homeworkPatchDto.getReviewDuration(), homework.getReviewDuration().getHours());
   }
 
