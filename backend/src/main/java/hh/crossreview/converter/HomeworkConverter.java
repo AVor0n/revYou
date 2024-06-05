@@ -11,8 +11,10 @@ import hh.crossreview.entity.Homework;
 import hh.crossreview.entity.Lecture;
 import hh.crossreview.entity.User;
 import hh.crossreview.entity.enums.ReviewDuration;
+import hh.crossreview.entity.enums.SolutionStatus;
 import jakarta.inject.Named;
 import jakarta.inject.Singleton;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -20,15 +22,19 @@ import java.util.List;
 @Singleton
 public class HomeworkConverter {
 
-  public HomeworksWrapperDto convertToHomeworksWrapperDto(List<Homework> homeworks) {
-    List<HomeworkDto> homeworkDtoList = homeworks
-        .stream()
-        .map(this::convertToHomeworkDto)
-        .toList();
-    return new HomeworksWrapperDto(homeworkDtoList);
+  public HomeworksWrapperDto convertToHomeworksWrapperDto(List<Homework> homeworks, List<SolutionStatus> solutionStatuses) {
+    List<HomeworkDto> homeworkDtos = new ArrayList<>();
+    for (int i = 0; i < homeworks.size(); i++) {
+      homeworkDtos.add(convertToHomeworkDto(homeworks.get(i), getSolutionStatus(solutionStatuses, i)));
+    }
+    return new HomeworksWrapperDto(homeworkDtos);
   }
 
-  public HomeworkDto convertToHomeworkDto(Homework homework) {
+  private static SolutionStatus getSolutionStatus(List<SolutionStatus> solutionStatuses, int i) {
+    return solutionStatuses.isEmpty() ? null : solutionStatuses.get(i);
+  }
+
+  public HomeworkDto convertToHomeworkDto(Homework homework, SolutionStatus solutionStatus) {
     List<String> studyDirections = convertToStudyDirections(homework);
     HomeworkAuthorDto homeworkAuthorDto = convertToHomeworkAuthorDto(homework);
     HomeworkLectureDto homeworkLectureDto = convertToHomeworkLectureDto(homework);
@@ -45,7 +51,8 @@ public class HomeworkConverter {
         .setRepositoryLink(homework.getRepositoryLink())
         .setStartDate(homework.getStartDate())
         .setCompletionDeadline(homework.getCompletionDeadline())
-        .setReviewDuration(homework.getReviewDuration().getHours());
+        .setReviewDuration(homework.getReviewDuration().getHours())
+        .setStatus(solutionStatus);
   }
 
 
@@ -80,7 +87,8 @@ public class HomeworkConverter {
   public Homework convertToHomework(
       HomeworkPostDto homeworkPostDto,
       Lecture lecture,
-      String commitId) {
+      String commitId
+  ) {
     return new Homework()
         .setStartDate(Date.from(homeworkPostDto.getStartDate().toInstant()))
         .setTopic(homeworkPostDto.getTopic())
