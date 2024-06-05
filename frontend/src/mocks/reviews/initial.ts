@@ -12,7 +12,7 @@ export const initialReviews: Review[] = [
     status: 'CORRECTIONS_REQUIRED',
     reviewId: 2,
     projectId: 57233481,
-    commitId: 'edc989fe17e56cf6b74ba1cfc19517261efb11f5',
+    commitId: 'd21adc8805660e3e6e64e1bed8a2b89ef4b80da8',
     sourceCommitId: 'main',
     reviewAttempts: [
       {

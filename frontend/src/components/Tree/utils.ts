@@ -40,3 +40,10 @@ export const findInTree = <T extends TreeNode<T>>(items: T[], predicate: (item: 
   }
   return null;
 };
+
+export const sortTree = <T extends TreeNode<T>>(items: T[], sortFn: (itemA: T, itemB: T) => number): T[] =>
+  traversalTree(items.sort(sortFn), item => {
+    if (item.children) {
+      item.children.sort(sortFn);
+    }
+  });

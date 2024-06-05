@@ -1,0 +1,20 @@
+.container {
+  display: flex;
+  align-items: center;
+
+  &.added {
+    color: var(--g-color-line-positive);
+  }
+
+  &.changed {
+    color: var(--g-color-line-warning);
+  }
+
+  &.renamed {
+    color: var(--g-color-line-info);
+  }
+
+  &.deleted {
+    color: var(--g-color-line-danger);
+  }
+}

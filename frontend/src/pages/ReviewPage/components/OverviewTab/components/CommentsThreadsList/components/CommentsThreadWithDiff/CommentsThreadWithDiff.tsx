@@ -3,8 +3,8 @@ import { useEffect, useState } from 'react';
 import { MonacoDiffEditor } from 'react-monaco-editor';
 import { EditorSelection, defaultDiffEditorOptions, useResizableDiffEditor } from '@components/MonacoEditor';
 import { type CommentsThread as ICommentsThread } from '@domains';
-import { Theme, useTheme } from 'app';
-import { useFile } from '../../../../../../hooks';
+import { Theme, useTheme, type FileNode } from 'app';
+import { useFile, useFileDiffContent } from '../../../../../../hooks';
 import { CommentsThread } from '../../../../../CommentsThread';
 import { useRangeEditorHeight } from './hooks';
 import styles from './CommentsThreadWithDiff.module.scss';
@@ -13,20 +13,20 @@ interface CommentsThreadWithDiffProps {
   thread: ICommentsThread;
   sourceSha: string;
   targetSha: string;
+  file: FileNode;
 }
 
-export const CommentsThreadWithDiff = ({ thread, sourceSha, targetSha }: CommentsThreadWithDiffProps) => {
+export const CommentsThreadWithDiff = ({ thread, sourceSha, targetSha, file }: CommentsThreadWithDiffProps) => {
   const { theme } = useTheme();
   const [showOriginalDiff, setShowOriginalDiff] = useState(false);
   const { diffEditor, editorDidMount } = useResizableDiffEditor();
-  const sourceFile = useFile({ filePath: thread.filePath, ref: sourceSha });
-  const latestFile = useFile({ filePath: thread.filePath, ref: targetSha });
-  const targetFile = useFile({ filePath: thread.filePath, ref: thread.commitSha });
+  const { sourceFile, targetFile: latestFile } = useFileDiffContent({ file, sourceSha, targetSha });
+  const commentedFile = useFile({ ref: thread.commitSha, filePath: thread.filePath });
 
   const editorHeight = useRangeEditorHeight({
     diffEditor,
     sourceFile,
-    targetFile,
+    targetFile: latestFile,
     startLine: thread.startLine,
     endLine: thread.endLine,
   });
@@ -40,7 +40,7 @@ export const CommentsThreadWithDiff = ({ thread, sourceSha, targetSha }: Comment
     });
   }, [diffEditor, thread.endLine, thread.endSymbol, thread.startLine]);
 
-  if (sourceFile === undefined || targetFile === undefined || latestFile === undefined) {
+  if (sourceFile === undefined || commentedFile === undefined || latestFile === undefined) {
     return <Skeleton className={styles.skeleton} />;
   }
 
@@ -49,7 +49,7 @@ export const CommentsThreadWithDiff = ({ thread, sourceSha, targetSha }: Comment
       <div className={styles.commentedDiffContainer}>
         <div className={styles.header}>
           <Text>{thread.filePath}</Text>
-          {latestFile !== targetFile && (
+          {latestFile !== commentedFile && (
             <Switch checked={showOriginalDiff} onChange={() => setShowOriginalDiff(!showOriginalDiff)}>
               Показать исходную версию
             </Switch>
@@ -62,7 +62,7 @@ export const CommentsThreadWithDiff = ({ thread, sourceSha, targetSha }: Comment
           // TODO: сделать автоопределение языка на основе расширения файла
           language="typescript"
           original={sourceFile ?? ''}
-          value={showOriginalDiff ? targetFile ?? '' : latestFile ?? ''}
+          value={showOriginalDiff ? commentedFile ?? '' : latestFile ?? ''}
           options={defaultDiffEditorOptions}
           editorDidMount={editorDidMount}
         />

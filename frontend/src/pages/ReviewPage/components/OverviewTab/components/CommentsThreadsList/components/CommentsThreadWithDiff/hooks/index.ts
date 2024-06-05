@@ -1,1 +1,1 @@
-export * from './useSelectionViewPortHeight';
+export { useRangeEditorHeight } from './useSelectionViewPortHeight';

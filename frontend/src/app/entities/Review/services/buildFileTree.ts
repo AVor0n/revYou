@@ -1,5 +1,12 @@
-import type { FileNode, FolderNode, FilesTree } from '../types';
+import type { FileNode, FolderNode, FilesTree, FileStatus } from '../types';
 import type { Diff } from '@domains';
+
+const getFileStatusFromDiff = (file: Diff): FileStatus => {
+  if (file.deleted_file) return 'deleted';
+  if (file.new_file) return 'added';
+  if (file.renamed_file) return 'renamed';
+  return 'changed';
+};
 
 export function buildFileTree(changedFiles: Diff[]) {
   const changedFilesMap = new Map(changedFiles.map(file => [`/${file.new_path}`, file]));
@@ -25,9 +32,8 @@ export function buildFileTree(changedFiles: Diff[]) {
           id: partialPath,
           name: partsOfPath.at(idx) ?? '',
           path: partialPath,
-          newFile: !!changeFileInfo?.new_file,
-          renamed: !!changeFileInfo?.renamed_file,
-          deleted: !!changeFileInfo?.deleted_file,
+          status: changeFileInfo ? getFileStatusFromDiff(changeFileInfo) : 'unchanged',
+          oldPath: `/${changeFileInfo?.old_path ?? changeFileInfo?.new_path}`,
         };
 
         return [partialPath, fileNode];

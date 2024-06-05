@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useSelector } from 'react-redux';
 import { EditorSelection, ResizableViewZone } from '@components/MonacoEditor';
-import { createThread, getActiveFilePath, getRequestInProgress, useAppDispatch } from 'app';
+import { createThread, getRequestInProgress, useAppDispatch } from 'app';
 import { CreateThreadCard } from './components';
 import { useEditorSelection } from './hooks';
 import styles from './CreateThreadWidget.module.scss';
@@ -13,12 +13,12 @@ interface CreateThreadWidgetProps {
   editor: IEditor.ICodeEditor;
   reviewId: number;
   commitSha: string;
+  filePath: string;
 }
 
-export const CreateThreadWidget = ({ editor, reviewId, commitSha }: CreateThreadWidgetProps) => {
+export const CreateThreadWidget = ({ editor, reviewId, commitSha, filePath }: CreateThreadWidgetProps) => {
   const dispatch = useAppDispatch();
   const requestInProgress = useSelector(getRequestInProgress);
-  const filePath = useSelector(getActiveFilePath);
   const [selection, setSelection] = useState<Selection | null>(null);
   const { tooltipNode } = useEditorSelection({ editor, onSelection: setSelection });
 

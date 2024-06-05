@@ -1,3 +1,3 @@
 export { Tree } from './Tree';
 export type { TreeNode } from './types';
-export { getAllIds, traversalTree, findInTree } from './utils';
+export * from './utils';

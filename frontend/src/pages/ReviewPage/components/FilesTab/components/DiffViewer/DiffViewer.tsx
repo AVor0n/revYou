@@ -4,9 +4,9 @@ import { FileDiffReview } from './components';
 import styles from './DiffViewer.module.scss';
 
 export const DiffViewer = () => {
-  const { activeFilePath, reviewInfo } = useAppSelector(state => state.review);
+  const { activeFile, reviewInfo } = useAppSelector(state => state.review);
 
-  if (!activeFilePath || !reviewInfo) {
+  if (!activeFile || !reviewInfo) {
     return (
       <div className={styles.placeholderContainer}>
         <Text variant="body-2" color="hint">
@@ -16,5 +16,5 @@ export const DiffViewer = () => {
     );
   }
 
-  return <FileDiffReview review={reviewInfo} activeFilePath={activeFilePath} />;
+  return <FileDiffReview review={reviewInfo} activeFile={activeFile} />;
 };

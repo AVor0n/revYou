@@ -2,24 +2,29 @@ import { Loader } from '@gravity-ui/uikit';
 import { MonacoDiffEditor } from 'react-monaco-editor';
 import { defaultDiffEditorOptions, useResizableDiffEditor } from '@components/MonacoEditor';
 import { type Review } from '@domains';
-import { Theme, useTheme } from 'app';
+import { Theme, useTheme, type FileNode } from 'app';
+import { useFileDiffContent } from '../../../../../../hooks';
 import { useFileDiffComments } from '../../hooks';
 import { CreateThreadWidget, EditorThreadComments } from './components';
 import { useScrollToChangeOrComment } from './hooks';
-import { useFileDiffContent } from './hooks/useFileDiffContent';
 import styles from './FileDiffReview.module.scss';
 
 interface FileDiffReviewProps {
   review: Review;
-  activeFilePath: string;
+  activeFile: FileNode;
 }
 
-export const FileDiffReview = ({ review, activeFilePath }: FileDiffReviewProps) => {
+export const FileDiffReview = ({ review, activeFile }: FileDiffReviewProps) => {
   const { theme } = useTheme();
   const { diffEditor, editorDidMount } = useResizableDiffEditor();
   const { sourceCommitId: sourceSha, commitId: targetSha, reviewId } = review;
   const { sourceCommentsThreads, targetCommentsThreads, allThreads } = useFileDiffComments();
-  const { sourceFile, targetFile } = useFileDiffContent({ review, filePath: activeFilePath });
+  const { sourceFile, targetFile } = useFileDiffContent({
+    file: activeFile,
+    sourceSha: review.sourceCommitId,
+    targetSha: review.commitId,
+  });
+
   useScrollToChangeOrComment({ editor: diffEditor, threads: allThreads });
 
   if (sourceFile === undefined || targetFile === undefined) {
@@ -46,8 +51,18 @@ export const FileDiffReview = ({ review, activeFilePath }: FileDiffReviewProps) 
         <>
           <EditorThreadComments editor={diffEditor.getOriginalEditor()} threads={sourceCommentsThreads} />
           <EditorThreadComments editor={diffEditor.getModifiedEditor()} threads={targetCommentsThreads} />
-          <CreateThreadWidget editor={diffEditor.getOriginalEditor()} commitSha={sourceSha} reviewId={reviewId} />
-          <CreateThreadWidget editor={diffEditor.getModifiedEditor()} commitSha={targetSha} reviewId={reviewId} />
+          <CreateThreadWidget
+            editor={diffEditor.getOriginalEditor()}
+            commitSha={sourceSha}
+            reviewId={reviewId}
+            filePath={activeFile.oldPath}
+          />
+          <CreateThreadWidget
+            editor={diffEditor.getModifiedEditor()}
+            commitSha={targetSha}
+            reviewId={reviewId}
+            filePath={activeFile.path}
+          />
         </>
       )}
     </>

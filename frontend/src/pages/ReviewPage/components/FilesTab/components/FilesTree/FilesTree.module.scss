@@ -27,10 +27,12 @@
       display: flex;
       gap: 4px;
       align-items: center;
+      inline-size: 100%;
       padding-inline: 4px;
       overflow: hidden;
 
       & .itemText {
+        inline-size: 100%;
         text-wrap: nowrap;
         text-overflow: ellipsis;
         overflow: hidden;

@@ -1,6 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
+import { sortTree } from '@components/Tree';
 import { type ThunkConfig } from 'app/providers';
-import { type FilesTree } from '../types';
+import { isFile, type FilesTree } from '../types';
 import { buildFileTree } from './buildFileTree';
 import type { Review } from '@domains';
 
@@ -19,7 +20,16 @@ export const loadReview = createAsyncThunk<{ diffFileTree: FilesTree }, Review, 
         to: commitId,
       });
 
-      const diffFileTree = buildFileTree(treeDiffInfo.diffs);
+      const diffFileTree = sortTree(buildFileTree(treeDiffInfo.diffs), (itemA, itemB) => {
+        if (isFile(itemA) && !isFile(itemB)) {
+          return 1;
+        }
+        if (!isFile(itemA) && isFile(itemB)) {
+          return -1;
+        }
+
+        return itemA.name.localeCompare(itemB.name);
+      });
 
       return {
         diffFileTree,

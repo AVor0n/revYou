@@ -14,7 +14,7 @@ const initialState: ReviewSchema = {
   filesCache: {},
   reviewInfo: null,
   filesTree: null,
-  activeFilePath: '',
+  activeFile: null,
   threads: [],
   requestInProgress: {},
   error: '',
@@ -24,14 +24,14 @@ export const reviewSlice = createSlice({
   name: 'Review',
   initialState,
   reducers: {
-    setActiveFilePath(state, { payload }: PayloadAction<ReviewSchema['activeFilePath']>) {
-      if (payload === state.activeFilePath) return;
+    setActiveFile(state, { payload }: PayloadAction<ReviewSchema['activeFile']>) {
+      if (payload === state.activeFile) return;
 
-      state.activeFilePath = payload;
+      state.activeFile = payload;
     },
     setReviewInfo(state, { payload }: PayloadAction<ReviewSchema['reviewInfo']>) {
       state.reviewInfo = payload;
-      state.activeFilePath = '';
+      state.activeFile = null;
       state.threads = null;
     },
     addRequestInProgress(state, { payload }: PayloadAction<string>) {

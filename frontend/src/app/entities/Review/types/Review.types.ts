@@ -4,7 +4,7 @@ export interface ReviewSchema {
   filesCache: Record<string, Record<string, string | null>>;
   reviewInfo: Review | null;
   filesTree: FilesTree | null;
-  activeFilePath: string;
+  activeFile: FileNode | null;
   threads: CommentsThread[] | null;
   requestInProgress: Record<string, boolean>;
   error: string;
@@ -13,6 +13,8 @@ export interface ReviewSchema {
 export type FilesTree = FilesTreeItem[];
 
 export type FilesTreeItem = FolderNode | FileNode;
+
+export type FileStatus = 'added' | 'deleted' | 'changed' | 'renamed' | 'unchanged';
 
 export interface FolderNode {
   id: string;
@@ -25,9 +27,8 @@ export interface FileNode {
   id: string;
   name: string;
   path: string;
-  newFile: boolean;
-  renamed: boolean;
-  deleted: boolean;
+  oldPath: string;
+  status: FileStatus;
   children?: never;
 }
 
