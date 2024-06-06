@@ -1,36 +1,40 @@
 package hh.crossreview.dto.homework;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.FutureOrPresent;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.Date;
 
 @Schema(name = "HomeworkPost")
 public class HomeworkPostDto {
-
+  @Pattern(regexp = "[a-zA-Z0-9 ]+", message = "Name can only contain letters, numbers")
   @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
   private String name;
-
+  @Pattern(regexp = "[a-zA-Z0-9 ]+", message = "Name can only contain letters, numbers")
   @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
   private String topic;
-
+  @NotBlank
   private String description;
-
+  @Pattern(regexp = "[0-9]+", message = "Field 'lectureId' must be a number")
   @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
   private Integer lectureId;
-
+  @Pattern(regexp = "https://.*", message = "Field 'repositoryLink' must start with 'https://'")
   @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
   private String repositoryLink;
-
+  @FutureOrPresent(message = "Start date must be in the future or present")
   @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
   private OffsetDateTime startDate;
-
+  @FutureOrPresent(message = "Completion deadline must be in the future or present")
   @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
   private OffsetDateTime completionDeadline;
 
   @Schema(
       requiredMode = Schema.RequiredMode.REQUIRED,
       allowableValues =  {"24", "48"})
+  @Pattern(regexp = "(24)|(48)", message = "Review duration must be 24 or 48 hours")
   private Integer reviewDuration;
 
   public String getName() {

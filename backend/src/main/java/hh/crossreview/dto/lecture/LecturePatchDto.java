@@ -1,16 +1,24 @@
 package hh.crossreview.dto.lecture;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.FutureOrPresent;
+import jakarta.validation.constraints.Pattern;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 
 @Schema(name = "LecturePatch")
 public class LecturePatchDto {
+  @Pattern(regexp = "\\w+", message = "Field 'name' cannot be empty string")
   private String name;
+  @FutureOrPresent(message = "Field 'lectureDate' must be in the future or present")
   private OffsetDateTime lectureDate;
+  @Pattern(regexp = "https://.*", message = "Field 'zoomLink' must start with 'https://'")
   private String zoomLink;
+  @Pattern(regexp = "https://.*", message = "Field 'presentationLink' must start with 'https://'")
   private String presentationLink;
+
+  @Pattern(regexp = "\\w+", message = "Field 'lectorId' cannot be empty string")
   private Integer lectorId;
 
   public OffsetDateTime getLectureDate() {
