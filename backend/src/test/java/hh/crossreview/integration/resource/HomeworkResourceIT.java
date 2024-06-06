@@ -1,6 +1,7 @@
 package hh.crossreview.integration.resource;
 
 import hh.crossreview.dao.HomeworkDao;
+import hh.crossreview.dao.UserDao;
 import hh.crossreview.dto.homework.HomeworkPatchDto;
 import hh.crossreview.dto.homework.HomeworkPostDto;
 import hh.crossreview.dto.homework.HomeworksWrapperDto;
@@ -30,6 +31,8 @@ class HomeworkResourceIT extends BaseIT {
   private HomeworkService homeworkService;
   @Inject
   private HomeworkDao homeworkDao;
+  @Inject
+  private UserDao userDao;
 
   @BeforeEach
   void setup() {
@@ -54,6 +57,7 @@ class HomeworkResourceIT extends BaseIT {
     insertHomeworkInDb(homeworkFront);
 
     User student = createUser(UserRole.STUDENT, homeworkBack.getCohorts().get(0), "user3", "email3");
+    userDao.save(student);
     HomeworksWrapperDto homeworksWrapperDto = homeworkService.getHomeworks(student);
 
     assertEquals(1, homeworksWrapperDto.getData().size());
