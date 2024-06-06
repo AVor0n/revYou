@@ -22,7 +22,6 @@ public class HomeworkPatchDto {
   @Schema(
       allowableValues = {"24", "48"}
   )
-  @Pattern(regexp = "(24)|(48)", message = "Review duration must be 24 or 48 hours")
   private Integer reviewDuration;
 
   public String getName() {

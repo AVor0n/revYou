@@ -1,6 +1,7 @@
 package hh.crossreview.dto.commentsthread;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
 
 @Schema(
     name = "ThreadPost",
@@ -25,6 +26,7 @@ public class CommentsThreadPostDto {
 
   private Integer endSymbol;
 
+  @NotBlank(message = "Content cannot be empty")
   private String content;
 
   public String getCommitSha() {

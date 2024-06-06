@@ -1,17 +1,16 @@
 package hh.crossreview.dto.review;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Min;
 
 @Schema(name = "ReviewerChange", requiredProperties = {
     "reviewId", "reviewerId"
 })
 @SuppressWarnings({"unused"})
 public class ReviewerChangeDto {
-  @Pattern(regexp = "[0-9]+", message = "reviewId must be a number")
+  @Min(value = 0L, message = "The 'reviewId' value must be positive")
   private Integer reviewId;
-
-  @Pattern(regexp = "[0-9]+", message = "reviewerId must be a number")
+  @Min(value = 0L, message = "The 'reviewerId' value must be positive")
   private Integer reviewerId;
 
   public Integer getReviewId() {

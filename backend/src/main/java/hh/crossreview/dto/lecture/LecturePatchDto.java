@@ -2,6 +2,7 @@ package hh.crossreview.dto.lecture;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.FutureOrPresent;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Pattern;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
@@ -17,8 +18,7 @@ public class LecturePatchDto {
   private String zoomLink;
   @Pattern(regexp = "https://.*", message = "Field 'presentationLink' must start with 'https://'")
   private String presentationLink;
-
-  @Pattern(regexp = "[0-9]+", message = "Field 'lectorId' must be a number")
+  @Min(value = 0L, message = "The 'lectorId' value must be positive")
   private Integer lectorId;
 
   public OffsetDateTime getLectureDate() {

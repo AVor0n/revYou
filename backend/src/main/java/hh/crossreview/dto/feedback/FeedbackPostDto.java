@@ -1,17 +1,19 @@
 package hh.crossreview.dto.feedback;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
 
 @Schema(name = "FeedbackPost")
 @SuppressWarnings({"unused"})
 public class FeedbackPostDto {
 
+  @Min(value = 0L, message = "The 'reviewId' value must be positive")
   @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
-  @Pattern(regexp = "[0-9]+", message = "id must be a number")
   private Integer reviewId;
-  @Pattern(regexp = "[0-5]", message = "rating must be a number between 0 and 5")
+  @Min(value = 0L, message = "The 'rating' value must be greater than 0")
+  @Max(value = 5L, message = "The 'rating' value must be less than 5")
   @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
   private Integer rating;
   @NotBlank(message = "Field 'description' cannot be empty")

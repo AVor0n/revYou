@@ -2,6 +2,7 @@ package hh.crossreview.dto.homework;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.FutureOrPresent;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import java.time.OffsetDateTime;
@@ -10,18 +11,17 @@ import java.util.Date;
 
 @Schema(name = "HomeworkPost")
 public class HomeworkPostDto {
-  @NotBlank(message = "Field 'name' cannot be whitespace")
+  @NotBlank(message = "Field 'name' cannot be whitespaces")
   @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
   private String name;
-  @NotBlank(message = "Field 'topic' cannot be whitespace")
+  @NotBlank(message = "Field 'topic' cannot be whitespaces")
   @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
   private String topic;
-  @Pattern(regexp = ".*\\S.*", message = "Field 'description' cannot be whitespace")
+  @Pattern(regexp = ".*\\S.*", message = "Field 'description' cannot be whitespaces")
   private String description;
-  @Pattern(regexp = "[0-9]+", message = "Field 'lectureId' must be a number")
+  @Min(value = 0L, message = "The 'lectureId' value must be positive")
   @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
   private Integer lectureId;
-  @Pattern(regexp = "https://.*", message = "Field 'repositoryLink' must start with 'https://'")
   @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
   private String repositoryLink;
   @FutureOrPresent(message = "Start date must be in the future or present")
@@ -34,7 +34,6 @@ public class HomeworkPostDto {
   @Schema(
       requiredMode = Schema.RequiredMode.REQUIRED,
       allowableValues = {"24", "48"})
-  @Pattern(regexp = "(24)|(48)", message = "Review duration must be 24 or 48 hours")
   private Integer reviewDuration;
 
   public String getName() {
