@@ -46,7 +46,7 @@ public class GitlabService {
 
   public RepositoryInfo validateSolutionBranchLink(String branchLink) {
     try {
-      RepositoryInfo repositoryInfo = parseBranchLink(branchLink);
+      RepositoryInfo repositoryInfo = parseSolutionBranchLink(branchLink);
       Integer projectId = retrieveProjectId(repositoryInfo.getProjectPath());
       repositoryInfo.setProjectId(projectId);
 //      requireBranchUnique(repositoryInfo);
@@ -59,7 +59,7 @@ public class GitlabService {
 
   public String validateHomeworkBranchLink(String branchLink) {
     try {
-      RepositoryInfo repositoryInfo = parseBranchLink(branchLink);
+      RepositoryInfo repositoryInfo = parseHomeworkBranchLink(branchLink);
       Integer projectId = retrieveProjectId(repositoryInfo.getProjectPath());
       return retrieveCommitId(projectId, repositoryInfo.getBranch());
     } catch (HttpClientErrorException | HttpServerErrorException e) {
@@ -181,7 +181,36 @@ public class GitlabService {
     }
   }
 
-  private RepositoryInfo parseBranchLink(String branchLink) {
+  private RepositoryInfo parseHomeworkBranchLink(String branchLink) {
+    String repositoryRegex = String.format("%s/([^/]+/[^/]+)", gitlabUrl);
+    Pattern repositoryPattern = Pattern.compile(repositoryRegex);
+    Matcher repositoryMatcher = repositoryPattern.matcher(branchLink);
+
+    String branchRegex = "/-/tree/([\\w\\-./]+).*";
+    Pattern branchPattern = Pattern.compile(branchRegex);
+    Matcher branchMatcher = branchPattern.matcher(branchLink);
+
+    if (!repositoryMatcher.find()) {
+      throw new BadRequestException("Branch link isn't valid");
+    }
+    String projectPath = repositoryMatcher.group(1);
+
+    String branch = "main";
+    if (repositoryMatcher.end(1) < branchLink.length()) {
+      branch = getHomeworkBranch(branchMatcher);
+    }
+
+    return new RepositoryInfo(projectPath, branch);
+  }
+
+  private String getHomeworkBranch(Matcher branchMatcher) {
+    if (branchMatcher.find()) {
+      return branchMatcher.group(1);
+    }
+    throw new BadRequestException("Branch link isn't valid");
+  }
+
+  private RepositoryInfo parseSolutionBranchLink(String branchLink) {
     String branchLinkRegex = String.format("%s/([^/]+/[^/]+)/-/tree/([\\w\\-./]+).*", gitlabUrl);
     Pattern pattern = Pattern.compile(branchLinkRegex);
     Matcher matcher = pattern.matcher(branchLink);
