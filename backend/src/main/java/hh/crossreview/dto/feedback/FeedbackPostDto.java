@@ -1,7 +1,7 @@
 package hh.crossreview.dto.feedback;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 
 @Schema(name = "FeedbackPost")
@@ -14,7 +14,7 @@ public class FeedbackPostDto {
   @Pattern(regexp = "[0-5]", message = "rating must be a number between 0 and 5")
   @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
   private Integer rating;
-  @NotEmpty
+  @NotBlank(message = "Field 'description' cannot be empty")
   @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
   private String description;
 

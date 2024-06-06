@@ -2,6 +2,7 @@ package hh.crossreview.dto.lecture;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.FutureOrPresent;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
@@ -10,7 +11,7 @@ import java.util.List;
 
 @Schema(name = "LecturePost")
 public class LecturePostDto {
-  @Pattern(regexp = "^[a-zA-Z0-9_]*$", message = "Name can only contain letters, numbers and underscores")
+  @NotBlank(message = "Field 'name' cannot be empty")
   @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
   private String name;
   @FutureOrPresent(message = "Lecture date must be in the future or present")

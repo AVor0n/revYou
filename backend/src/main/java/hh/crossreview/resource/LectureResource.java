@@ -16,6 +16,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.inject.Singleton;
+import jakarta.validation.Valid;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.PATCH;
@@ -68,7 +69,7 @@ public class LectureResource {
       responseCode = "400",
       description = "Bad request",
       content = @Content(schema = @Schema(implementation = ExceptionValidationDto.class)))
-  public Response createLecture(LecturePostDto lecturePostDto, @Context SecurityContext securityContext) {
+  public Response createLecture(@Valid LecturePostDto lecturePostDto, @Context SecurityContext securityContext) {
     var lector = userService.findByUserId(lecturePostDto.getLectorId());
     var admin = userService.findByPrincipal(securityContext.getUserPrincipal());
     var lectureResponse = lectureService.createLecture(lecturePostDto, lector, admin);
@@ -103,7 +104,7 @@ public class LectureResource {
       content = @Content(schema = @Schema(implementation = ExceptionValidationDto.class)))
   public Response patchLecture(
       @PathParam("lectureId") Integer lectureId,
-      LecturePatchDto lecturePatchDto,
+      @Valid LecturePatchDto lecturePatchDto,
       @Context SecurityContext securityContext
   ) {
     var lector = userService.findByPrincipal(securityContext.getUserPrincipal());

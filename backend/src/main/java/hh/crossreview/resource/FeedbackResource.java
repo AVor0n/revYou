@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.inject.Singleton;
+import jakarta.validation.Valid;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
@@ -78,7 +79,7 @@ public class FeedbackResource {
       description = "Bad request",
       content = @Content(schema = @Schema(implementation = ExceptionValidationDto.class)))
   public Response createFeedback(
-      FeedbackPostDto feedbackPostDto,
+      @Valid FeedbackPostDto feedbackPostDto,
       @Context SecurityContext securityContext
   ) {
     var user = userService.findByPrincipal(securityContext.getUserPrincipal());

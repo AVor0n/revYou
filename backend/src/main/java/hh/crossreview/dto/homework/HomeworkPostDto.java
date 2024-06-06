@@ -10,13 +10,13 @@ import java.util.Date;
 
 @Schema(name = "HomeworkPost")
 public class HomeworkPostDto {
-  @Pattern(regexp = "[a-zA-Z0-9 ]+", message = "Name can only contain letters, numbers")
+  @NotBlank(message = "Field 'name' cannot be whitespace")
   @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
   private String name;
-  @Pattern(regexp = "[a-zA-Z0-9 ]+", message = "Name can only contain letters, numbers")
+  @NotBlank(message = "Field 'topic' cannot be whitespace")
   @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
   private String topic;
-  @NotBlank
+  @Pattern(regexp = ".*\\S.*", message = "Field 'description' cannot be whitespace")
   private String description;
   @Pattern(regexp = "[0-9]+", message = "Field 'lectureId' must be a number")
   @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
@@ -33,7 +33,7 @@ public class HomeworkPostDto {
 
   @Schema(
       requiredMode = Schema.RequiredMode.REQUIRED,
-      allowableValues =  {"24", "48"})
+      allowableValues = {"24", "48"})
   @Pattern(regexp = "(24)|(48)", message = "Review duration must be 24 or 48 hours")
   private Integer reviewDuration;
 
@@ -41,60 +41,60 @@ public class HomeworkPostDto {
     return name;
   }
 
-  public String getTopic() {
-    return topic;
-  }
-
-  public String getDescription() {
-    return description;
-  }
-
-  public Integer getLectureId() {
-    return lectureId;
-  }
-
-  public String getRepositoryLink() {
-    return repositoryLink;
-  }
-
-  public OffsetDateTime getStartDate() {
-    return startDate;
-  }
-
-  public OffsetDateTime getCompletionDeadline() {
-    return completionDeadline;
-  }
-
-  public Integer getReviewDuration() {
-    return reviewDuration;
-  }
-
   public void setName(String name) {
     this.name = name;
+  }
+
+  public String getTopic() {
+    return topic;
   }
 
   public void setTopic(String topic) {
     this.topic = topic;
   }
 
+  public String getDescription() {
+    return description;
+  }
+
   public void setDescription(String description) {
     this.description = description;
+  }
+
+  public Integer getLectureId() {
+    return lectureId;
   }
 
   public void setLectureId(Integer lectureId) {
     this.lectureId = lectureId;
   }
 
+  public String getRepositoryLink() {
+    return repositoryLink;
+  }
+
   public void setRepositoryLink(String repositoryLink) {
     this.repositoryLink = repositoryLink;
+  }
+
+  public OffsetDateTime getStartDate() {
+    return startDate;
   }
 
   public void setStartDate(Date startDate) {
     this.startDate = startDate.toInstant().atOffset(ZoneOffset.UTC);
   }
 
+  public OffsetDateTime getCompletionDeadline() {
+    return completionDeadline;
+  }
+
   public void setCompletionDeadline(Date completionDeadline) {
     this.completionDeadline = completionDeadline.toInstant().atOffset(ZoneOffset.UTC);
+  }
+
+  public Integer getReviewDuration() {
+    return reviewDuration;
   }
 
   public void setReviewDuration(Integer reviewDuration) {
