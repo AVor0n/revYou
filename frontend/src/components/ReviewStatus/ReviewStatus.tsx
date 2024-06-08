@@ -1,8 +1,8 @@
 import { Label } from '@gravity-ui/uikit';
-import { type ReviewStatusEnum } from '@domains';
+import { type ReviewStatus as TReviewStatus } from '@domains';
 
 interface ReviewStatusProps {
-  status: ReviewStatusEnum;
+  status: TReviewStatus;
 }
 
 export const ReviewStatus = ({ status }: ReviewStatusProps) => {

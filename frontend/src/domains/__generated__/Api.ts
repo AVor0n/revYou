@@ -32,6 +32,7 @@ import {
   LecturePost,
   LecturePostResponse,
   LectureWrapper,
+  PasswordPatch,
   RefreshAccessTokenRequestDto,
   ReviewInfoWrapper,
   ReviewResolutionDto,
@@ -47,6 +48,9 @@ import {
   ThreadPost,
   ThreadWrapper,
   User,
+  UserInfo,
+  UserPatch,
+  UserWrapper,
 } from './data-contracts';
 import { ContentType, HttpClient, RequestParams } from './http-client';
 
@@ -295,6 +299,7 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
    * @secure
    * @response `200` `DiffsWrapper` Successful operation
    * @response `403` `Exception` Forbidden request
+   * @response `404` `Exception` Not found
    */
   getDiffs = ({ projectId, ...query }: GetDiffsParams, params: RequestParams = {}) =>
     this.request<DiffsWrapper, Exception>({
@@ -314,6 +319,7 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
    * @secure
    * @response `200` `string` Successful operation
    * @response `403` `Exception` Forbidden request
+   * @response `404` `Exception` Not found
    */
   getRawFile = ({ projectId, filePath, ...query }: GetRawFileParams, params: RequestParams = {}) =>
     this.request<string, Exception>({
@@ -586,6 +592,25 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
    * No description
    *
    * @tags Reviews
+   * @name GetAvailableReviewers
+   * @request GET:/api/homeworks/{homeworkId}/reviews/available-reviewers
+   * @secure
+   * @response `200` `UserWrapper` Successful operation
+   * @response `403` `Exception` Forbidden request
+   * @response `404` `Exception` Not found
+   */
+  getAvailableReviewers = (homeworkId: number, params: RequestParams = {}) =>
+    this.request<UserWrapper, Exception>({
+      path: `/api/homeworks/${homeworkId}/reviews/available-reviewers`,
+      method: 'GET',
+      secure: true,
+      format: 'json',
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags Reviews
    * @name GetMyReviews
    * @request GET:/api/homeworks/{homeworkId}/reviews/my-reviews
    * @secure
@@ -819,6 +844,47 @@ export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType
       path: `/api/homeworks/${homeworkId}/solutions/student-solution`,
       method: 'GET',
       secure: true,
+      format: 'json',
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags Users
+   * @name UpdatePassword
+   * @summary Update profile password
+   * @request PATCH:/api/users/update-password
+   * @secure
+   * @response `200` `unknown` Successful operation
+   * @response `400` `ExceptionValidation` Bad request
+   */
+  updatePassword = (data: PasswordPatch, params: RequestParams = {}) =>
+    this.request<unknown, ExceptionValidation>({
+      path: `/api/users/update-password`,
+      method: 'PATCH',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
+      ...params,
+    });
+  /**
+   * No description
+   *
+   * @tags Users
+   * @name UpdateProfile
+   * @summary Update profile data (username, name, surname)
+   * @request PATCH:/api/users/update-profile
+   * @secure
+   * @response `200` `UserInfo` Successful operation
+   * @response `400` `ExceptionValidation` Bad request
+   */
+  updateProfile = (data: UserPatch, params: RequestParams = {}) =>
+    this.request<UserInfo, ExceptionValidation>({
+      path: `/api/users/update-profile`,
+      method: 'PATCH',
+      body: data,
+      secure: true,
+      type: ContentType.Json,
       format: 'json',
       ...params,
     });

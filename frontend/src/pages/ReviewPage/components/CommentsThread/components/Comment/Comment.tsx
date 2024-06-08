@@ -5,14 +5,14 @@ import clsx from 'clsx';
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { IntervalRerender } from '@components/IntervalRerender';
-import { type CommentsThreadStatusEnum, type Comment as IComment } from '@domains';
+import { type CommentsThreadStatus, type Comment as IComment } from '@domains';
 import { getAuthData } from 'app';
 import { dateRelativeNow } from 'utils';
 import styles from './Comment.module.scss';
 
 interface CommentProps {
   comment: IComment;
-  threadStatus: CommentsThreadStatusEnum;
+  threadStatus: CommentsThreadStatus;
 }
 
 export const Comment = ({ comment, threadStatus }: CommentProps) => {

@@ -1,13 +1,13 @@
 import { TextArea, Button } from '@gravity-ui/uikit';
 import clsx from 'clsx';
 import { useState } from 'react';
-import { type CommentsThreadStatusEnum } from '@domains';
+import { type CommentsThreadStatus } from '@domains';
 import { addComment, changeThreadStatus, useAppDispatch } from 'app';
 import styles from './ThreadActions.module.scss';
 
 interface ThreadActionsProps {
   threadId: number;
-  threadStatus: CommentsThreadStatusEnum;
+  threadStatus: CommentsThreadStatus;
 }
 
 export const ThreadActions = ({ threadId, threadStatus }: ThreadActionsProps) => {

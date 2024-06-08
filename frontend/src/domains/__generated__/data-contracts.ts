@@ -16,7 +16,7 @@ export interface SignInResponse {
   userId: number;
   /** @format int32 */
   cohortId?: number;
-  role: SignInResponseRoleEnum;
+  role: UserRole;
   username: string;
   name?: string;
   surname?: string;
@@ -24,6 +24,8 @@ export interface SignInResponse {
   gitlabUsername?: string;
   mmUsername?: string;
 }
+
+export type UserRole = 'STUDENT' | 'TEACHER' | 'ADMIN';
 
 export interface Exception {
   /** @format date-time */
@@ -86,7 +88,7 @@ export interface CommentsThread {
   threadId: number;
   /** @format int32 */
   authorId: number;
-  status: CommentsThreadStatusEnum;
+  status: CommentsThreadStatus;
   commitSha: string;
   filePath: string;
   /** @format int32 */
@@ -100,12 +102,14 @@ export interface CommentsThread {
   comments: Comment[];
 }
 
+export type CommentsThreadStatus = 'ACTIVE' | 'RESOLVED';
+
 export interface ThreadWrapper {
   data: CommentsThread[];
 }
 
 export interface CommentsThreadResolveDto {
-  status: string;
+  status: CommentsThreadResolveDtoStatusEnum;
 }
 
 export interface ThreadPost {
@@ -197,6 +201,7 @@ export interface Homework {
   startDate: string;
   /** @format date-time */
   completionDeadline: string;
+  status?: SolutionStatus;
   /** @format int32 */
   reviewDuration: HomeworkReviewDurationEnum;
 }
@@ -213,6 +218,8 @@ export interface HomeworkLecture {
   id: number;
   name: string;
 }
+
+export type SolutionStatus = 'IN_PROGRESS' | 'REVIEW_STAGE' | 'REVIEWER_STAGE' | 'COMPLETE';
 
 export interface HomeworksWrapper {
   data: Homework[];
@@ -272,7 +279,7 @@ export interface LecturePatch {
 }
 
 export interface ReviewResolutionDto {
-  status?: string;
+  status?: ReviewResolutionDtoStatusEnum;
   resolution?: string;
 }
 
@@ -283,10 +290,23 @@ export interface ReviewerChange {
   reviewerId: number;
 }
 
+export interface UserDetailDto {
+  /** @format int32 */
+  userId: number;
+  username: string;
+  name: string;
+  surname: string;
+  role: UserRole;
+}
+
+export interface UserWrapper {
+  data: UserDetailDto[];
+}
+
 export interface Review {
   /** @format int32 */
   reviewId: number;
-  status: ReviewStatusEnum;
+  status: ReviewStatus;
   /** @format int32 */
   projectId: number;
   sourceCommitId: string;
@@ -308,6 +328,15 @@ export interface ReviewAttempt {
   resolution?: string;
 }
 
+export type ReviewStatus =
+  | 'REVIEWER_SEARCH'
+  | 'REVIEWER_FOUND'
+  | 'REVIEW_STARTED'
+  | 'CORRECTIONS_REQUIRED'
+  | 'CORRECTIONS_LOADED'
+  | 'APPROVED'
+  | 'ARCHIVED';
+
 export interface ReviewWrapper {
   data: Review[];
 }
@@ -325,7 +354,7 @@ export interface ReviewInfo {
   /** @format int32 */
   projectId: number;
   commitId: string;
-  status: string;
+  status: ReviewStatus;
   duration: ReviewDuration;
   student: Student;
   reviewer?: Student;
@@ -344,7 +373,7 @@ export interface Student {
 }
 
 export interface Solution {
-  status: SolutionStatusEnum;
+  status: SolutionStatus;
   /** @format int32 */
   projectId: number;
   branch: string;
@@ -376,9 +405,32 @@ export interface SolutionPatch {
   branchLink: string;
 }
 
-export type SignInResponseRoleEnum = 'STUDENT' | 'TEACHER' | 'ADMIN';
+export interface PasswordPatch {
+  password: string;
+  confirmationPassword: string;
+}
 
-export type CommentsThreadStatusEnum = 'ACTIVE' | 'RESOLVED';
+export interface UserInfo {
+  /** @format int32 */
+  userId: number;
+  /** @format int32 */
+  cohortId?: number;
+  role: UserRole;
+  username: string;
+  name?: string;
+  surname?: string;
+  email: string;
+  gitlabUsername?: string;
+  mmUsername?: string;
+}
+
+export interface UserPatch {
+  mmUsername?: string;
+  name?: string;
+  surname?: string;
+}
+
+export type CommentsThreadResolveDtoStatusEnum = 'ACTIVE' | 'RESOLVED';
 
 /** @format int32 */
 export type HomeworkPostReviewDurationEnum = 24 | 48;
@@ -389,16 +441,7 @@ export type HomeworkReviewDurationEnum = 24 | 48;
 /** @format int32 */
 export type HomeworkPatchReviewDurationEnum = 24 | 48;
 
-export type ReviewStatusEnum =
-  | 'REVIEWER_SEARCH'
-  | 'REVIEWER_FOUND'
-  | 'REVIEW_STARTED'
-  | 'CORRECTIONS_REQUIRED'
-  | 'CORRECTIONS_LOADED'
-  | 'APPROVED'
-  | 'ARCHIVED';
-
-export type SolutionStatusEnum = 'IN_PROGRESS' | 'REVIEW_STAGE' | 'REVIEWER_STAGE' | 'COMPLETE';
+export type ReviewResolutionDtoStatusEnum = 'CORRECTIONS_REQUIRED' | 'APPROVED';
 
 export interface GetDiffsParams {
   /** Commit SHA */
