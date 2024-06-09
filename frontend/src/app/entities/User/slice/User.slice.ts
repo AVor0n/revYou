@@ -16,6 +16,9 @@ export const userSlice = createSlice({
     setUserInfo(state, { payload }: PayloadAction<UserSchema['authData']>) {
       state.authData = payload;
     },
+    clear() {
+      return initialState;
+    },
   },
   extraReducers(builder) {
     builder

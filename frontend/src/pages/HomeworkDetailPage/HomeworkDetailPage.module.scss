@@ -2,12 +2,26 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
+  block-size: 100%;
+  overflow: auto;
 }
 
 .pageContent {
   display: flex;
   flex-direction: column;
   gap: 20px;
+  block-size: 100%;
+  overflow: auto;
+}
+
+.tabs {
+  overflow: initial;
+}
+
+.tabContent {
+  block-size: 100%;
+  padding: 8px;
+  overflow: auto;
 }
 
 .headerSkeleton {

@@ -10,7 +10,11 @@ const initialState: LectureSchema = {
 export const LectureSlice = createSlice({
   name: 'Lecture',
   initialState,
-  reducers: {},
+  reducers: {
+    clear() {
+      return initialState;
+    },
+  },
   extraReducers(builder) {
     builder.addCase(loadLectures.fulfilled, (state, { payload }) => {
       state.lectures = payload;

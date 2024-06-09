@@ -13,10 +13,17 @@ export const CreateThreadCard = ({ onCreate, onCancel, isLoading }: CreateThread
 
   return (
     <Card view="raised" className={styles.commentCard} disabled={isLoading}>
-      <TextArea value={value} onChange={event => setValue(event.target.value)} placeholder="Ваш комментарий..." />
-      <Button view="action" disabled={!value} onClick={() => onCreate(value)}>
+      <TextArea
+        value={value}
+        onChange={event => setValue(event.target.value)}
+        placeholder="Ваш комментарий..."
+        disabled={isLoading}
+      />
+
+      <Button view="action" disabled={!value} onClick={() => onCreate(value)} loading={isLoading}>
         Отправить
       </Button>
+
       <Button view="outlined" onClick={onCancel}>
         Отмена
       </Button>

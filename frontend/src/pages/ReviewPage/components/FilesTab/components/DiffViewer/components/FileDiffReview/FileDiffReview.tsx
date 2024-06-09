@@ -39,7 +39,6 @@ export const FileDiffReview = ({ review, activeFile }: FileDiffReviewProps) => {
     <>
       <MonacoDiffEditor
         theme={theme === Theme.LIGHT ? 'vs' : 'vs-dark'}
-        height="80vh"
         // TODO: сделать автоопределение языка на основе расширения файла
         language="typescript"
         original={sourceFile ?? ''}

@@ -2,6 +2,7 @@ import { Code } from '@gravity-ui/icons';
 import { Icon } from '@gravity-ui/uikit';
 import { NavLink, Outlet } from 'react-router-dom';
 import { ThemeSwitcher } from '../ThemeSwitcher';
+import { LogoutButton } from './components';
 import styles from './Layout.module.scss';
 
 interface LayoutProps {
@@ -28,6 +29,7 @@ export const Layout = ({ navLinks }: LayoutProps) => (
                 ))}
               </nav>
             )}
+            <LogoutButton />
           </div>
         </div>
       </div>

@@ -4,7 +4,6 @@ export interface ReviewSchema {
   filesCache: Record<string, Record<string, string | null>>;
   reviewInfo: Review | null;
   filesTree: FilesTree | null;
-  activeFile: FileNode | null;
   threads: CommentsThread[] | null;
   requestInProgress: Record<string, boolean>;
   error: string;

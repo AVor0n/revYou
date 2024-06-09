@@ -1,10 +1,12 @@
 import { Text } from '@gravity-ui/uikit';
 import { useAppSelector } from 'app/hooks';
+import { useActiveFile } from '../../hooks';
 import { FileDiffReview } from './components';
 import styles from './DiffViewer.module.scss';
 
 export const DiffViewer = () => {
-  const { activeFile, reviewInfo } = useAppSelector(state => state.review);
+  const { activeFile } = useActiveFile();
+  const { reviewInfo } = useAppSelector(state => state.review);
 
   if (!activeFile || !reviewInfo) {
     return (

@@ -4,21 +4,13 @@ import { AuthPage, HomeworksPage, NotFoundPage, ReviewPage } from 'pages';
 import { Layout } from '../../../components';
 import { AuthRequire } from './AuthRequire';
 
-const onLogout = () => {
-  localStorage.removeItem('accessToken');
-  localStorage.removeItem('refreshToken');
-  localStorage.removeItem('userInfo');
-};
-
-const navLinks = [{ title: 'Выйти', href: '/auth', element: <AuthPage />, onClick: onLogout }];
-
 export const RouterProvider = () => (
   <Routes>
     <Route element={<Layout />}>
       <Route index element={<AuthPage />} path="/auth" />
     </Route>
 
-    <Route element={<Layout navLinks={navLinks} />}>
+    <Route element={<Layout />}>
       <Route
         path="/*"
         element={

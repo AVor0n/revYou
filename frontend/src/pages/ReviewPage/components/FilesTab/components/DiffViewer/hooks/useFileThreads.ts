@@ -1,9 +1,11 @@
 import { useMemo } from 'react';
 import { type CommentsThread } from '@domains';
 import { useAppSelector } from 'app/hooks';
+import { useActiveFile } from '../../../hooks';
 
 export const useFileDiffComments = () => {
-  const { activeFile, threads, reviewInfo } = useAppSelector(state => state.review);
+  const { activeFile } = useActiveFile();
+  const { threads, reviewInfo } = useAppSelector(state => state.review);
 
   const [sourceCommentsThreads, targetCommentsThreads, allThreads] = useMemo<CommentsThread[][]>(() => {
     if (!reviewInfo) return [];

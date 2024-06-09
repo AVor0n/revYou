@@ -3,7 +3,6 @@
   flex-direction: column;
   gap: 20px;
   inline-size: 100%;
-  min-block-size: 100px;
   padding: 20px;
 
   & .status {
@@ -16,6 +15,7 @@
     align-items: center;
     block-size: 100%;
     color: var(--g-color-text-hint);
+    overflow: auto;
   }
 
   & .actionsContainer {

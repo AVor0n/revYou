@@ -31,6 +31,8 @@
 .g-root_theme_dark {
   --g-color-base-brand: #1e406b;
   --g-color-base-brand-hover: #1e3f6b86;
+  --g-color-base-selection: #054495;
+  --g-color-base-selection-hover: #013579;
 
   input {
     color-scheme: dark;

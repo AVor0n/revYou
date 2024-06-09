@@ -2,7 +2,8 @@ import { Button, TextArea } from '@gravity-ui/uikit';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FormWindow } from '@components/FormWindow';
-import { completeReview, loadSolutionsForReview, useAppDispatch } from 'app';
+import { completeReview, loadSolutionsForReview, reviewActions, useAppDispatch } from 'app';
+import { useAppSelector } from 'app/hooks';
 import styles from './CompleteReviewWindow.module.scss';
 
 interface CompleteReviewWindowProps {
@@ -16,24 +17,16 @@ export const CompleteReviewWindow = ({ isOpen, onClose, homeworkId, reviewId }: 
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const [comment, setComment] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+  const requestInProgress = useAppSelector(state => state.review.requestInProgress);
+  const rejectLoading = requestInProgress.rejectSolution;
+  const approveLoading = requestInProgress.approveSolution;
+  const loading = rejectLoading || approveLoading;
 
   const onSubmit = async (status: 'APPROVED' | 'CORRECTIONS_REQUIRED') => {
-    setIsLoading(true);
-    try {
-      await dispatch(
-        completeReview({
-          homeworkId,
-          reviewId,
-          comment,
-          status,
-        }),
-      ).unwrap();
-      await dispatch(loadSolutionsForReview(homeworkId));
-      navigate(`/homeworks/${homeworkId}/for-review`);
-    } finally {
-      setIsLoading(false);
-    }
+    dispatch(reviewActions.addRequestInProgress(status === 'APPROVED' ? 'approveSolution' : 'rejectSolution'));
+    await dispatch(completeReview({ homeworkId, reviewId, comment, status }));
+    await dispatch(loadSolutionsForReview(homeworkId));
+    navigate(`/homeworks/${homeworkId}/for-review`);
   };
 
   return (
@@ -44,16 +37,16 @@ export const CompleteReviewWindow = ({ isOpen, onClose, homeworkId, reviewId }: 
       onSubmit={() => {}}
       footer={
         <div className={styles.footer}>
-          <Button view="normal" onClick={onClose} disabled={isLoading} width="max">
+          <Button view="normal" onClick={onClose} disabled={loading} width="max">
             Отмена
           </Button>
 
           <Button
             view="outlined-warning"
             onClick={() => onSubmit('CORRECTIONS_REQUIRED')}
-            disabled={isLoading}
             width="max"
-            loading={isLoading}
+            disabled={approveLoading}
+            loading={rejectLoading}
           >
             Нужны правки
           </Button>
@@ -62,8 +55,8 @@ export const CompleteReviewWindow = ({ isOpen, onClose, homeworkId, reviewId }: 
             view="outlined-success"
             onClick={() => onSubmit('APPROVED')}
             width="max"
-            disabled={isLoading}
-            loading={isLoading}
+            disabled={rejectLoading}
+            loading={approveLoading}
           >
             Утвердить
           </Button>
@@ -75,6 +68,7 @@ export const CompleteReviewWindow = ({ isOpen, onClose, homeworkId, reviewId }: 
         placeholder="Комментарий"
         minRows={10}
         value={comment}
+        disabled={loading}
         onChange={event => setComment(event.target.value)}
       />
     </FormWindow>

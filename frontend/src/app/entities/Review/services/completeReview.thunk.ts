@@ -1,9 +1,10 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { type ThunkConfig } from 'app/providers';
+import type { ReviewResolutionDtoStatusEnum } from '@domains';
 
 export const completeReview = createAsyncThunk<
-  null,
-  { homeworkId: number; reviewId: number; comment: string; status: 'APPROVED' | 'CORRECTIONS_REQUIRED' },
+  ReviewResolutionDtoStatusEnum,
+  { homeworkId: number; reviewId: number; comment: string; status: ReviewResolutionDtoStatusEnum },
   ThunkConfig<string>
 >('solution/completeReview', async ({ homeworkId, reviewId, comment, status }, { extra, rejectWithValue }) => {
   try {
@@ -12,8 +13,8 @@ export const completeReview = createAsyncThunk<
       status,
     });
 
-    return null;
+    return status;
   } catch (e) {
-    return rejectWithValue(String(e));
+    return rejectWithValue(status);
   }
 });

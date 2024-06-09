@@ -13,14 +13,19 @@ interface ThreadActionsProps {
 export const ThreadActions = ({ threadId, threadStatus }: ThreadActionsProps) => {
   const dispatch = useAppDispatch();
   const [newComment, setNewComment] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const onReply = () => {
-    dispatch(addComment({ threadId, comment: { content: newComment } }));
+  const onReply = async () => {
+    setLoading(true);
+    await dispatch(addComment({ threadId, comment: { content: newComment } }));
+    setLoading(false);
     setNewComment('');
   };
 
-  const onChangeStatus = () => {
-    dispatch(changeThreadStatus([threadId, { status: threadStatus === 'ACTIVE' ? 'RESOLVED' : 'ACTIVE' }]));
+  const onChangeStatus = async () => {
+    setLoading(true);
+    await dispatch(changeThreadStatus([threadId, { status: threadStatus === 'ACTIVE' ? 'RESOLVED' : 'ACTIVE' }]));
+    setLoading(false);
     setNewComment('');
   };
 
@@ -30,12 +35,13 @@ export const ThreadActions = ({ threadId, threadStatus }: ThreadActionsProps) =>
         value={newComment}
         onChange={event => setNewComment(event.target.value)}
         placeholder="Ваш комментарий..."
+        disabled={loading}
       />
-      <Button view="action" onClick={onReply} disabled={!newComment}>
+      <Button view="action" onClick={onReply} disabled={!newComment} loading={loading}>
         Ответить
       </Button>
 
-      <Button view="outlined-action" onClick={onChangeStatus}>
+      <Button view="outlined-action" onClick={onChangeStatus} loading={loading}>
         {threadStatus === 'ACTIVE' ? 'Завершить' : 'Возобновить'}
       </Button>
     </div>

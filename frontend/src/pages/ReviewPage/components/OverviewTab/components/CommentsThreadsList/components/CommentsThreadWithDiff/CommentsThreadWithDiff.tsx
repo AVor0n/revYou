@@ -1,6 +1,8 @@
-import { Skeleton, Switch, Text } from '@gravity-ui/uikit';
+import { Skeleton, Switch } from '@gravity-ui/uikit';
 import { useEffect, useState } from 'react';
 import { MonacoDiffEditor } from 'react-monaco-editor';
+import { useParams } from 'react-router-dom';
+import { Link } from '@components/Link';
 import { EditorSelection, defaultDiffEditorOptions, useResizableDiffEditor } from '@components/MonacoEditor';
 import { type CommentsThread as ICommentsThread } from '@domains';
 import { Theme, useTheme, type FileNode } from 'app';
@@ -18,6 +20,7 @@ interface CommentsThreadWithDiffProps {
 
 export const CommentsThreadWithDiff = ({ thread, sourceSha, targetSha, file }: CommentsThreadWithDiffProps) => {
   const { theme } = useTheme();
+  const { homeworkId, reviewId, role } = useParams<Record<'homeworkId' | 'reviewId' | 'role', string>>();
   const [showOriginalDiff, setShowOriginalDiff] = useState(false);
   const { diffEditor, editorDidMount } = useResizableDiffEditor();
   const { sourceFile, targetFile: latestFile } = useFileDiffContent({ file, sourceSha, targetSha });
@@ -48,7 +51,11 @@ export const CommentsThreadWithDiff = ({ thread, sourceSha, targetSha, file }: C
     <CommentsThread thread={thread}>
       <div className={styles.commentedDiffContainer}>
         <div className={styles.header}>
-          <Text>{thread.filePath}</Text>
+          <Link
+            href={`/homeworks/${homeworkId}/review/${reviewId}/${role}/files?path=${encodeURIComponent(thread.filePath)}`}
+          >
+            {thread.filePath}
+          </Link>
           {latestFile !== commentedFile && (
             <Switch checked={showOriginalDiff} onChange={() => setShowOriginalDiff(!showOriginalDiff)}>
               Показать исходную версию

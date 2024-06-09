@@ -20,7 +20,11 @@ const initialState: SolutionSchema = {
 export const solutionSlice = createSlice({
   name: 'Solution',
   initialState,
-  reducers: {},
+  reducers: {
+    clear() {
+      return initialState;
+    },
+  },
   extraReducers(builder) {
     builder.addCase(loadAvailableReviewers.fulfilled, (state, { payload }) => {
       state.availableReviewers = payload;

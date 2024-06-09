@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
 import { Input } from '@components/Input';
 import { createSolution, loadMySolutions, useAppDispatch } from 'app';
+import { useAppSelector } from 'app/hooks';
 import styles from './SendSolutionForm.module.scss';
 
 const sendSolution = yup
@@ -19,6 +20,7 @@ interface SendSolutionFormProps {
 
 export const SendSolutionForm = ({ homeworkId }: SendSolutionFormProps) => {
   const navigate = useNavigate();
+  const requestInProgress = useAppSelector(state => state.solution.requestInProgress);
   const {
     control,
     handleSubmit,
@@ -26,6 +28,7 @@ export const SendSolutionForm = ({ homeworkId }: SendSolutionFormProps) => {
   } = useForm({
     resolver: yupResolver(sendSolution),
     defaultValues: { branchLink: '' },
+    disabled: requestInProgress.sendSolution,
   });
 
   const dispatch = useAppDispatch();
@@ -50,7 +53,7 @@ export const SendSolutionForm = ({ homeworkId }: SendSolutionFormProps) => {
           />
         )}
       />
-      <Button type="submit" view="action" size="m">
+      <Button type="submit" view="action" size="m" loading={requestInProgress.sendSolution}>
         Отправить решение
       </Button>
     </form>

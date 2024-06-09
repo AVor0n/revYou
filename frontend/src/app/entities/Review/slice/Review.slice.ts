@@ -2,11 +2,13 @@ import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
 import {
   addComment,
   changeThreadStatus,
+  completeReview,
   createThread,
   loadFile,
   loadReview,
   loadThreads,
   requestRepeatReview,
+  startReview,
 } from '../services';
 import { type ReviewSchema } from '../types';
 
@@ -14,7 +16,6 @@ const initialState: ReviewSchema = {
   filesCache: {},
   reviewInfo: null,
   filesTree: null,
-  activeFile: null,
   threads: [],
   requestInProgress: {},
   error: '',
@@ -24,14 +25,8 @@ export const reviewSlice = createSlice({
   name: 'Review',
   initialState,
   reducers: {
-    setActiveFile(state, { payload }: PayloadAction<ReviewSchema['activeFile']>) {
-      if (payload === state.activeFile) return;
-
-      state.activeFile = payload;
-    },
     setReviewInfo(state, { payload }: PayloadAction<ReviewSchema['reviewInfo']>) {
       state.reviewInfo = payload;
-      state.activeFile = null;
       state.threads = null;
     },
     addRequestInProgress(state, { payload }: PayloadAction<string>) {
@@ -43,11 +38,35 @@ export const reviewSlice = createSlice({
       }
       state.filesCache[payload.path]![payload.ref] = payload.content;
     },
+    clear() {
+      return initialState;
+    },
   },
   extraReducers(builder) {
+    builder.addCase(startReview.fulfilled, state => {
+      state.requestInProgress.startReview = false;
+    });
+    builder.addCase(startReview.pending, state => {
+      state.requestInProgress.startReview = true;
+    });
+    builder.addCase(startReview.rejected, state => {
+      state.requestInProgress.startReview = false;
+    });
+    builder.addCase(completeReview.fulfilled, (state, { payload }) => {
+      if (payload === 'APPROVED') state.requestInProgress.approveSolution = false;
+      if (payload === 'CORRECTIONS_REQUIRED') state.requestInProgress.rejectSolution = false;
+    });
+    builder.addCase(completeReview.rejected, (state, { payload }) => {
+      if (payload === 'APPROVED') state.requestInProgress.approveSolution = false;
+      if (payload === 'CORRECTIONS_REQUIRED') state.requestInProgress.rejectSolution = false;
+    });
     builder.addCase(loadReview.fulfilled, (state, { payload }) => {
       state.filesTree = payload.diffFileTree;
       state.error = '';
+    });
+    builder.addCase(loadReview.rejected, state => {
+      state.reviewInfo = null;
+      state.error = 'Не удалось загрузить ревью';
     });
     builder.addCase(loadFile.fulfilled, (state, { payload }) => {
       const { filePath, ref, content } = payload;
@@ -64,6 +83,10 @@ export const reviewSlice = createSlice({
     });
     builder.addCase(loadThreads.fulfilled, (state, { payload }) => {
       state.threads = payload;
+    });
+    builder.addCase(loadThreads.rejected, state => {
+      state.threads = null;
+      state.error = 'Не удалось загрузить комментарии';
     });
     builder.addCase(requestRepeatReview.fulfilled, state => {
       state.reviewInfo = null;
@@ -100,14 +123,6 @@ export const reviewSlice = createSlice({
       state.requestInProgress.createThread = false;
       state.threads = null;
       state.error = 'Не удалось создать тред';
-    });
-    builder.addCase(loadThreads.rejected, state => {
-      state.threads = null;
-      state.error = 'Не удалось загрузить комментарии';
-    });
-    builder.addCase(loadReview.rejected, state => {
-      state.reviewInfo = null;
-      state.error = 'Не удалось загрузить ревью';
     });
   },
 });

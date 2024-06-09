@@ -20,6 +20,9 @@ export const homeworkSlice = createSlice({
     setSelectedHomework(state, { payload }: PayloadAction<HomeworkSchema['selectedHomework']>) {
       state.selectedHomework = payload;
     },
+    clear() {
+      return initialState;
+    },
   },
   extraReducers(builder) {
     builder.addCase(loadHomeworks.fulfilled, (state, { payload }) => {

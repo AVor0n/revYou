@@ -33,6 +33,7 @@
   display: flex;
   flex-direction: row;
   gap: 16px;
+  align-items: center;
 }
 
 .navLink {
@@ -47,16 +48,18 @@
 .content {
   display: flex;
   flex-grow: 1;
-  scrollbar-gutter: stable both-edges;
   overflow-y: auto;
+  scrollbar-gutter: stable both-edges;
 }
 
 .pageContent {
   flex-grow: 1;
+  block-size: 100%;
   padding: 20px;
+  overflow: auto;
 }
 
 .rightContent {
   display: flex;
-  gap: 32px;
+  gap: 16px;
 }

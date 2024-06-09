@@ -2,8 +2,8 @@
   display: flex;
   flex-direction: column;
   gap: 4px;
-  block-size: 80vh;
-  overflow-y: auto;
+  block-size: 100%;
+  overflow: auto;
   user-select: none;
 
   & .itemWithChildren {
@@ -30,6 +30,11 @@
       inline-size: 100%;
       padding-inline: 4px;
       overflow: hidden;
+
+      & .icon {
+        flex-grow: 0;
+        flex-shrink: 0;
+      }
 
       & .itemText {
         inline-size: 100%;
