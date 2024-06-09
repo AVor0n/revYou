@@ -13,9 +13,10 @@ interface CompleteReviewWindowProps {
   onClose: () => void;
 }
 
-export const CompleteReviewWindow = ({ isOpen, onClose, homeworkId, reviewId }: CompleteReviewWindowProps) => {
+export const CompleteReviewWindow = ({ isOpen, homeworkId, reviewId, ...props }: CompleteReviewWindowProps) => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const [touched, setTouched] = useState(false);
   const [comment, setComment] = useState('');
   const requestInProgress = useAppSelector(state => state.review.requestInProgress);
   const rejectLoading = requestInProgress.rejectSolution;
@@ -27,6 +28,11 @@ export const CompleteReviewWindow = ({ isOpen, onClose, homeworkId, reviewId }: 
     await dispatch(completeReview({ homeworkId, reviewId, comment, status }));
     await dispatch(loadSolutionsForReview(homeworkId));
     navigate(`/homeworks/${homeworkId}/for-review`);
+  };
+
+  const onClose = () => {
+    setTouched(false);
+    props.onClose();
   };
 
   return (
@@ -45,7 +51,7 @@ export const CompleteReviewWindow = ({ isOpen, onClose, homeworkId, reviewId }: 
             view="outlined-warning"
             onClick={() => onSubmit('CORRECTIONS_REQUIRED')}
             width="max"
-            disabled={approveLoading}
+            disabled={!comment || approveLoading}
             loading={rejectLoading}
           >
             Нужны правки
@@ -55,7 +61,7 @@ export const CompleteReviewWindow = ({ isOpen, onClose, homeworkId, reviewId }: 
             view="outlined-success"
             onClick={() => onSubmit('APPROVED')}
             width="max"
-            disabled={rejectLoading}
+            disabled={!comment || rejectLoading}
             loading={approveLoading}
           >
             Утвердить
@@ -65,11 +71,14 @@ export const CompleteReviewWindow = ({ isOpen, onClose, homeworkId, reviewId }: 
     >
       <TextArea
         view="normal"
-        placeholder="Комментарий"
+        placeholder="Оставьте комментарий..."
         minRows={10}
         value={comment}
         disabled={loading}
+        onBlur={() => setTouched(true)}
         onChange={event => setComment(event.target.value)}
+        error={touched && !comment}
+        errorMessage="Это поле обязательно для заполнения"
       />
     </FormWindow>
   );

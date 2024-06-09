@@ -1,0 +1,14 @@
+.modal {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-block-size: 120px;
+  padding: 20px;
+}
+
+.modalButtons {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  margin-block-start: 32px;
+}

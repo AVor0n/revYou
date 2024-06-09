@@ -1,0 +1,12 @@
+.question {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.warning {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  align-items: center;
+}

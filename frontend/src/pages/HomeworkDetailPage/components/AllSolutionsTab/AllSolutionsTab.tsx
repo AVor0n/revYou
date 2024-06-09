@@ -1,6 +1,7 @@
 import { Skeleton } from '@gravity-ui/uikit';
 import { useEffect, useMemo, useRef } from 'react';
 import { Panel, PanelGroup, type ImperativePanelGroupHandle } from 'react-resizable-panels';
+import { EmptyPlug } from '@components/EmptyPlug';
 import { loadAllSolutions, type FullReviewInfo } from 'app';
 import { useAppDispatch, useAppSelector } from 'app/hooks';
 import { StateColumn } from './components';
@@ -42,6 +43,10 @@ export const AllSolutionsTab = ({ homeworkInfo }: AllSolutionsTabProps) => {
 
   if (!allSolutions) {
     return <Skeleton className={styles.skeleton} />;
+  }
+
+  if (allSolutions.length === 0) {
+    return <EmptyPlug primaryText="Решений ещё нет" secondaryText="Нужно немного подождать..." />;
   }
 
   return (

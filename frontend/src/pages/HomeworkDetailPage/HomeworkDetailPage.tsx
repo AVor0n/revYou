@@ -9,7 +9,9 @@ import {
   getSolutionsForReview,
   loadMySolutions,
   loadSolutionsForReview,
+  reviewActions,
   selectHomeworkForView,
+  solutionActions,
   useAppDispatch,
 } from 'app';
 import { AllSolutionsTab, DescriptionTab, Header, MySolutionsTab, SolutionTab } from './components';
@@ -27,6 +29,8 @@ export const HomeworkDetailPage = () => {
 
   useEffect(() => {
     if (homeworkId !== undefined) {
+      dispatch(solutionActions.clear());
+      dispatch(reviewActions.clear());
       dispatch(selectHomeworkForView(+homeworkId));
       dispatch(loadMySolutions(+homeworkId));
       dispatch(loadSolutionsForReview(+homeworkId));

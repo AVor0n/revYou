@@ -2,4 +2,25 @@
   display: flex;
   flex-direction: column;
   gap: 32px;
+  block-size: 100%;
+}
+
+.filters {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+}
+
+.filter {
+  display: flex;
+  flex-direction: row;
+  gap: 4px;
+  align-items: center;
+}
+
+.placeholder {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  block-size: 100%;
 }

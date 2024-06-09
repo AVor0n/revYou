@@ -10,11 +10,11 @@
   justify-content: center;
   align-items: center;
 
-  &:first-child {
-    justify-content: start;
-  }
-
   &:last-child {
     justify-content: end;
+  }
+
+  &:first-child {
+    justify-content: start;
   }
 }

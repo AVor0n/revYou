@@ -1,5 +1,6 @@
-import { Button, Modal, Select, Text } from '@gravity-ui/uikit';
+import { Select } from '@gravity-ui/uikit';
 import { useEffect, useMemo, useState } from 'react';
+import { ModalWithQuestion } from '@components/ModalWithQuestion';
 import { changeReviewer, loadAvailableReviewers } from 'app';
 import { useAppDispatch, useAppSelector } from 'app/hooks';
 import type { Student } from '@domains';
@@ -53,18 +54,12 @@ export const ReviewerSelect = ({ homeworkId, reviewId, reviewer }: ReviewerSelec
         placeholder="Не выбран"
         options={listOptions}
       />
-      <Modal open={!!reviewerCandidate} contentClassName={styles.modal}>
-        <Text variant="body-2">Выбрать {reviewerCandidate?.username} в качестве нового ревьюера?</Text>
-
-        <div className={styles.modalButtons}>
-          <Button view="normal" width="max" onClick={onCancelChangeReviewer}>
-            Нет
-          </Button>
-          <Button view="action" width="max" onClick={onApproveChangeReviewer}>
-            Да
-          </Button>
-        </div>
-      </Modal>
+      <ModalWithQuestion
+        open={!!reviewerCandidate}
+        question={`Выбрать ${reviewerCandidate?.username} в качестве нового ревьюера?`}
+        onYesClick={onApproveChangeReviewer}
+        onNoClick={onCancelChangeReviewer}
+      />
     </div>
   );
 };

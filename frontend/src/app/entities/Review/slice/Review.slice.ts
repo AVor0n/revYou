@@ -89,7 +89,14 @@ export const reviewSlice = createSlice({
       state.error = 'Не удалось загрузить комментарии';
     });
     builder.addCase(requestRepeatReview.fulfilled, state => {
+      state.requestInProgress.requestRepeatReview = false;
       state.reviewInfo = null;
+    });
+    builder.addCase(requestRepeatReview.pending, state => {
+      state.requestInProgress.requestRepeatReview = true;
+    });
+    builder.addCase(requestRepeatReview.rejected, state => {
+      state.requestInProgress.requestRepeatReview = false;
     });
     builder.addCase(addComment.fulfilled, (state, { payload }) => {
       if (!state.threads) return;

@@ -1,0 +1,12 @@
+.empty {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  justify-content: center;
+  align-items: center;
+  block-size: 100%;
+}
+
+.image {
+  filter: opacity(0.3);
+}

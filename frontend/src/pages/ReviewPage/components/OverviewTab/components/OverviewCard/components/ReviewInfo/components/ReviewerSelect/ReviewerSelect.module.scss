@@ -4,17 +4,3 @@
   gap: 4px;
   align-items: center;
 }
-
-.modal {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  min-block-size: 120px;
-  padding: 20px;
-}
-
-.modalButtons {
-  display: flex;
-  flex-direction: row;
-  gap: 16px;
-}
