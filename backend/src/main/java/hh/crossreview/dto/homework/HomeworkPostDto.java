@@ -4,7 +4,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.Date;
@@ -17,7 +16,6 @@ public class HomeworkPostDto {
   @NotBlank(message = "Field 'topic' cannot be empty and whitespaces")
   @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
   private String topic;
-  @Pattern(regexp = ".*\\S.*", message = "Field 'description' cannot be whitespaces")
   private String description;
   @Min(value = 0L, message = "The 'lectureId' value must be positive")
   @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
