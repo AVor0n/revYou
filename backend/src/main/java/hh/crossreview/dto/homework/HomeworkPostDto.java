@@ -11,10 +11,10 @@ import java.util.Date;
 
 @Schema(name = "HomeworkPost")
 public class HomeworkPostDto {
-  @NotBlank(message = "Field 'name' cannot be whitespaces")
+  @NotBlank(message = "Field 'name' cannot be empty and whitespaces")
   @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
   private String name;
-  @NotBlank(message = "Field 'topic' cannot be whitespaces")
+  @NotBlank(message = "Field 'topic' cannot be empty and whitespaces")
   @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
   private String topic;
   @Pattern(regexp = ".*\\S.*", message = "Field 'description' cannot be whitespaces")

@@ -4,7 +4,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
@@ -12,18 +11,13 @@ import java.util.List;
 
 @Schema(name = "LecturePost")
 public class LecturePostDto {
-  @NotBlank(message = "Field 'name' cannot be whitespaces")
+  @NotBlank(message = "Field 'name' cannot be empty and whitespaces")
   @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
   private String name;
   @FutureOrPresent(message = "Lecture date must be in the future or present")
   @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
   private OffsetDateTime lectureDate;
-  @Pattern(
-      regexp = "https://[a-zA-Z0-9]+.zoom.us/j/[a-zA-Z0-9]+",
-      message = "Zoom link must be a valid Zoom link"
-  )
   private String zoomLink;
-  @Pattern(regexp = "https://.*", message = "Field 'presentationLink' must start with 'https://'")
   private String presentationLink;
   @Min(value = 0L, message = "The 'lectorId' value must be positive")
   @Schema(requiredMode = Schema.RequiredMode.REQUIRED)

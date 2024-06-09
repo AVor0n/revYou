@@ -8,7 +8,7 @@ import jakarta.validation.constraints.NotBlank;
     requiredProperties = {"content"}
 )
 public class CommentPostDto {
-  @NotBlank(message = "Content cannot be empty")
+  @NotBlank(message = "Content cannot be empty and whitespaces")
   private String content;
 
   public String getContent() {

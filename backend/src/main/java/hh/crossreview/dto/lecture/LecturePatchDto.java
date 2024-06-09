@@ -10,13 +10,11 @@ import java.time.ZoneOffset;
 
 @Schema(name = "LecturePatch")
 public class LecturePatchDto {
-  @Pattern(regexp = ".*\\S.*", message = "Field 'name' cannot be empty string")
+  @Pattern(regexp = ".*\\S.*", message = "Field 'name' cannot be whitespaces")
   private String name;
   @FutureOrPresent(message = "Field 'lectureDate' must be in the future or present")
   private OffsetDateTime lectureDate;
-  @Pattern(regexp = "https://.*", message = "Field 'zoomLink' must start with 'https://'")
   private String zoomLink;
-  @Pattern(regexp = "https://.*", message = "Field 'presentationLink' must start with 'https://'")
   private String presentationLink;
   @Min(value = 0L, message = "The 'lectorId' value must be positive")
   private Integer lectorId;

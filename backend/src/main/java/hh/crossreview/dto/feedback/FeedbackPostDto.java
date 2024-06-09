@@ -16,7 +16,7 @@ public class FeedbackPostDto {
   @Max(value = 5L, message = "The 'rating' value must be less than 5")
   @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
   private Integer rating;
-  @NotBlank(message = "Field 'description' cannot be empty")
+  @NotBlank(message = "Field 'description' cannot be empty and whitespaces")
   @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
   private String description;
 

@@ -26,7 +26,7 @@ public class CommentsThreadPostDto {
 
   private Integer endSymbol;
 
-  @NotBlank(message = "Content cannot be empty")
+  @NotBlank(message = "Content cannot be empty and whitespaces")
   private String content;
 
   public String getCommitSha() {

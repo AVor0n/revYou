@@ -1,13 +1,13 @@
 package hh.crossreview.dto.review;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 
-@Schema(name = "ReviewResolution", requiredProperties = {"status", "resolution"})
+@Schema(name = "ReviewResolution", requiredProperties = {"status"})
 public class ReviewResolutionDto {
   @Schema(allowableValues = {"CORRECTIONS_REQUIRED", "APPROVED"})
   private String status;
-  @NotBlank(message = "Resolution cannot be empty")
+  @Pattern(regexp = ".*\\S.*", message = "Field 'resolution' cannot be whitespaces")
   private String resolution;
 
   public String getStatus() {
