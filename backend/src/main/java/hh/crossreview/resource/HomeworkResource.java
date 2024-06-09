@@ -19,6 +19,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.inject.Singleton;
+import jakarta.validation.Valid;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
@@ -89,7 +90,7 @@ public class HomeworkResource {
       content = @Content(schema = @Schema(implementation = ExceptionValidationDto.class))
   )
   public Response createHomework(
-      HomeworkPostDto homeworkPostDto,
+      @Valid HomeworkPostDto homeworkPostDto,
       @Context SecurityContext securityContext
   ) {
     User user = userService.findByPrincipal(securityContext.getUserPrincipal());
@@ -147,7 +148,7 @@ public class HomeworkResource {
   )
   public Response updateHomework(
       @PathParam("homeworkId") Integer homeworkId,
-      HomeworkPatchDto homeworkPatchDto,
+      @Valid HomeworkPatchDto homeworkPatchDto,
       @Context SecurityContext securityContext
   ) {
     User user = userService.findByPrincipal(securityContext.getUserPrincipal());

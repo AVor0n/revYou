@@ -21,6 +21,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.inject.Singleton;
+import jakarta.validation.Valid;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.PATCH;
@@ -98,7 +99,7 @@ public class ReviewResource {
       "If the flag is set in the body of the request, " +
       "then the author of the request will be appointed as a reviewer using a token.")
   public Response assignReviewer(
-      ReviewerChangeDto reviewerChangeDto,
+      @Valid ReviewerChangeDto reviewerChangeDto,
       @PathParam("homeworkId") Integer homeworkId,
       @Context SecurityContext securityContext
   ) {
@@ -126,7 +127,7 @@ public class ReviewResource {
       "If the flag is set in the body of the request, " +
       "then the author of the request will be appointed as a reviewer using a token.")
   public Response replaceReviewer(
-      ReviewerChangeDto reviewerChangeDto,
+      @Valid ReviewerChangeDto reviewerChangeDto,
       @PathParam("homeworkId") Integer homeworkId,
       @Context SecurityContext securityContext
   ) {
@@ -253,7 +254,7 @@ public class ReviewResource {
           description = "Bad request",
           content = @Content(schema = @Schema(implementation = ExceptionValidationDto.class)))
   public Response addReviewResolution(
-          ReviewResolutionDto reviewResolutionDto,
+          @Valid ReviewResolutionDto reviewResolutionDto,
           @PathParam("homeworkId") Integer homeworkId,
           @PathParam("reviewId") Integer reviewId,
           @Context SecurityContext securityContext) {

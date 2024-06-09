@@ -1,6 +1,9 @@
 package hh.crossreview.dto.lecture;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.FutureOrPresent;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
@@ -8,12 +11,15 @@ import java.util.List;
 
 @Schema(name = "LecturePost")
 public class LecturePostDto {
+  @NotBlank(message = "Field 'name' cannot be empty and whitespaces")
   @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
   private String name;
+  @FutureOrPresent(message = "Lecture date must be in the future or present")
   @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
   private OffsetDateTime lectureDate;
   private String zoomLink;
   private String presentationLink;
+  @Min(value = 0L, message = "The 'lectorId' value must be positive")
   @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
   private Integer lectorId;
   @Schema(requiredMode = Schema.RequiredMode.REQUIRED)

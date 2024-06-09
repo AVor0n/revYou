@@ -20,6 +20,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import jakarta.inject.Singleton;
+import jakarta.validation.Valid;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
@@ -72,7 +73,7 @@ public class CommentsThreadResource {
           description = "Bad request",
           content = @Content(schema = @Schema(implementation = ExceptionValidationDto.class)))
   public Response startThread(
-          CommentsThreadPostDto commentsThreadPostDto,
+          @Valid CommentsThreadPostDto commentsThreadPostDto,
           @Context SecurityContext securityContext) {
     User user = userService.findByPrincipal(securityContext.getUserPrincipal());
     CommentsThreadDto commentsThreadDto = commentsThreadService.createCommentsThread(commentsThreadPostDto, user);
@@ -118,7 +119,7 @@ public class CommentsThreadResource {
           content = @Content(schema = @Schema(implementation = ExceptionValidationDto.class))
   )
   public Response addComment(
-      CommentPostDto commentPostDto,
+      @Valid CommentPostDto commentPostDto,
       @PathParam("threadId") Integer commentsThreadId,
       @Context SecurityContext securityContext
   ) {
@@ -163,7 +164,7 @@ public class CommentsThreadResource {
           description = "Bad request",
           content = @Content(schema = @Schema(implementation = ExceptionValidationDto.class)))
   public Response updateComment(
-          CommentPostDto commentPostDto,
+          @Valid CommentPostDto commentPostDto,
           @PathParam("commentId") Integer commentId,
           @Context SecurityContext securityContext
   ) {
