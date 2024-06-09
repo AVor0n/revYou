@@ -1,7 +1,6 @@
 package hh.crossreview.dto.homework;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.Pattern;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
@@ -13,11 +12,8 @@ public class HomeworkPatchDto {
   private String name;
   @Pattern(regexp = ".*\\S.*", message = "Field 'topic' cannot be whitespaces")
   private String topic;
-  @Pattern(regexp = ".*\\S.*", message = "Field 'description' cannot be whitespaces")
   private String description;
-  @FutureOrPresent(message = "Start date must be in the future or present")
   private OffsetDateTime startDate;
-  @FutureOrPresent(message = "Completion deadline must be in the future or present")
   private OffsetDateTime completionDeadline;
   @Schema(
       allowableValues = {"24", "48"}
