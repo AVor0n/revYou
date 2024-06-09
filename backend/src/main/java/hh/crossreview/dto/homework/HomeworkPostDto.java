@@ -1,7 +1,6 @@
 package hh.crossreview.dto.homework;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import java.time.OffsetDateTime;
@@ -22,10 +21,8 @@ public class HomeworkPostDto {
   private Integer lectureId;
   @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
   private String repositoryLink;
-  @FutureOrPresent(message = "Start date must be in the future or present")
   @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
   private OffsetDateTime startDate;
-  @FutureOrPresent(message = "Completion deadline must be in the future or present")
   @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
   private OffsetDateTime completionDeadline;
 
