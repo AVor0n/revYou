@@ -131,32 +131,17 @@ public class ReviewService {
   }
 
   @Transactional
-  public void assignReviewer(User privilegedUser, Homework homework, ReviewerChangeDto reviewerChangeDto) {
-    reqUtils.requireAuthorPermissionOrAdmin(privilegedUser, homework);
-    Integer reviewId = reviewerChangeDto.getReviewId();
-    Integer reviewerId = reviewerChangeDto.getReviewerId();
-    Review review = requireReviewExist(reviewId);
-    reqUtils.requireEntityHasStatus(review, ReviewStatus.REVIEWER_SEARCH.toString());
-
-    User reviewer = getAndValidateReviewerForAssignment(homework, reviewerId);
-    tryAppointReviewer(review, reviewer);
-  }
-
-  @Transactional
   public void replaceReviewer(User privilegedUser, Homework homework, ReviewerChangeDto reviewerChangeDto) {
     reqUtils.requireAuthorPermissionOrAdmin(privilegedUser, homework);
     Integer reviewId = reviewerChangeDto.getReviewId();
     Integer reviewerId = reviewerChangeDto.getReviewerId();
     Review review = requireReviewExist(reviewId);
+
     User newReviewer = getAndValidateReviewerForAssignment(homework, reviewerId);
-    if (review.getReviewer() == null) {
-      throw new BadRequestException(
-          "Review does not have a reviewer. " +
-          "If you want to assign a reviewer to such review, use the endpoint 'assign-review'"
-      );
+    if (!review.getStatus().equals(ReviewStatus.REVIEWER_SEARCH)) {
+      clearPreviewsReviewer(homework, review);
     }
 
-    clearPreviewsReviewer(homework, review);
     tryAppointReviewer(review, newReviewer);
   }
 

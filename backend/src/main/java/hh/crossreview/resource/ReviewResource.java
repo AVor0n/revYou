@@ -94,38 +94,7 @@ public class ReviewResource {
       responseCode = "400",
       description = "Bad request",
       content = @Content(schema = @Schema(implementation = ExceptionValidationDto.class)))
-  @Operation(summary =
-      "Manually assign a reviewer to the review. Available to teacher and admin. " +
-      "If the flag is set in the body of the request, " +
-      "then the author of the request will be appointed as a reviewer using a token.")
-  public Response assignReviewer(
-      @Valid ReviewerChangeDto reviewerChangeDto,
-      @PathParam("homeworkId") Integer homeworkId,
-      @Context SecurityContext securityContext
-  ) {
-    User privilegedUser = userService.findByPrincipal(securityContext.getUserPrincipal());
-    Homework homework = homeworkService.getHomeworkEntity(homeworkId);
-    reviewService.assignReviewer(privilegedUser, homework, reviewerChangeDto);
-    return Response
-        .status(Response.Status.OK)
-        .build();
-  }
-
-  @PATCH
-  @Path("/replace-reviewer")
-  @Consumes(MediaType.APPLICATION_JSON)
-  @Produces(MediaType.APPLICATION_JSON)
-  @ApiResponse(
-      responseCode = "200",
-      description = "Review is assigned")
-  @ApiResponse(
-      responseCode = "400",
-      description = "Bad request",
-      content = @Content(schema = @Schema(implementation = ExceptionValidationDto.class)))
-  @Operation(summary =
-      "Manually replace a reviewer to the review. Available to teacher and admin. " +
-      "If the flag is set in the body of the request, " +
-      "then the author of the request will be appointed as a reviewer using a token.")
+  @Operation(summary = "Manually replace a reviewer to the review. Available to teacher and admin.")
   public Response replaceReviewer(
       @Valid ReviewerChangeDto reviewerChangeDto,
       @PathParam("homeworkId") Integer homeworkId,
