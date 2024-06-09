@@ -4,9 +4,9 @@ import { type SolutionTableColumn } from './types';
 
 export const getSolutionsColumns = (homeworkId: number): SolutionTableColumn[] => [
   {
-    id: 'projectId',
+    id: 'reviewId',
     name: () => <span>Решение</span>,
-    template: ({ projectId }) => projectId,
+    template: ({ reviewId }) => reviewId,
     placeholder: 'Неизвестное решение',
     meta: { sort: true },
   },
@@ -14,9 +14,8 @@ export const getSolutionsColumns = (homeworkId: number): SolutionTableColumn[] =
     id: 'status',
     name: () => <span>Статус</span>,
     template: ({ status, reviewId }) => {
-      if (reviewId === undefined) return null;
       if (status === 'REVIEWER_FOUND') return <StartReviewButton homeworkId={homeworkId} reviewId={reviewId} />;
-      return <ReviewStatus status={status ?? ''} />;
+      return <ReviewStatus status={status} />;
     },
     width: 200,
     meta: { sort: true },

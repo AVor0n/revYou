@@ -7,7 +7,7 @@ import styles from './Header.module.scss';
 export const Header = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const { role } = useParams<{ role: 'student' | 'reviewer' }>();
+  const { role } = useParams<{ role: 'student' | 'reviewer' | 'teacher' }>();
   const selectedHomework = useSelector(getSelectedHomework);
   const selectedReview = useSelector(getReviewInfo);
 
@@ -25,6 +25,12 @@ export const Header = () => {
   const goToMySolutions = () => {
     if (selectedHomework?.id) {
       navigate(`/homeworks/${selectedHomework.id}/my-solution`);
+    }
+  };
+
+  const goToAllSolutions = () => {
+    if (selectedHomework?.id) {
+      navigate(`/homeworks/${selectedHomework.id}/all-solutions`);
     }
   };
 
@@ -46,15 +52,30 @@ export const Header = () => {
             text: selectedHomework?.name ?? 'unknown homework',
             action: goToHomework,
           },
-          role === 'student'
-            ? {
-                text: 'Мои решения',
-                action: goToMySolutions,
-              }
-            : {
-                text: 'На ревью',
-                action: goToSolutionsForReview,
-              },
+          ...(role === 'student'
+            ? [
+                {
+                  text: 'Мои решения',
+                  action: goToMySolutions,
+                },
+              ]
+            : []),
+          ...(role === 'reviewer'
+            ? [
+                {
+                  text: 'На проверку',
+                  action: goToSolutionsForReview,
+                },
+              ]
+            : []),
+          ...(role === 'teacher'
+            ? [
+                {
+                  text: 'Все решения',
+                  action: goToAllSolutions,
+                },
+              ]
+            : []),
           {
             text: `${selectedReview?.reviewId}`,
             action: () => {},

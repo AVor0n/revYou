@@ -1,0 +1,15 @@
+.page {
+  display: grid;
+  grid-auto-flow: column;
+  block-size: 100%;
+  overflow: auto;
+}
+
+.column {
+  transition: flex-grow ease-out 0.3s;
+}
+
+.skeleton {
+  inline-size: 100%;
+  block-size: 300px;
+}

@@ -1,11 +1,46 @@
 import { HttpResponse, delay, http } from 'msw';
 import { initialReviews, initialThreads } from './initial';
-import type { Review, ThreadWrapper, Comment, ThreadPost, CommentsThread, CommentPostDto } from '@domains';
+import type {
+  Review,
+  ThreadWrapper,
+  Comment,
+  ThreadPost,
+  CommentsThread,
+  CommentPostDto,
+  ReviewInfoWrapper,
+} from '@domains';
 
 const reviews = new Map(initialReviews.map(review => [review.reviewId, review]));
 const threads = new Map(initialThreads.map(thread => [thread.threadId, thread]));
 
 export const reviewHandlers = [
+  http.get<{ id: string }, Record<string, never>, ReviewInfoWrapper>(
+    '/api/homeworks/:id/reviews/reviews-info',
+    async () => {
+      await delay(300);
+
+      return HttpResponse.json({
+        data: Array.from(reviews.values()).map((review, idx) => ({
+          ...review,
+          reviewAttempts: review.reviewAttempts ?? [],
+          student: {
+            userId: idx,
+            username: 'username',
+          },
+
+          reviewer: {
+            userId: idx,
+            username: 'username',
+          },
+          duration: {
+            hours: Math.floor(Math.random() * 100),
+            minutes: Math.floor(Math.random() * 100),
+          },
+        })),
+        sourceCommitId: 'main',
+      });
+    },
+  ),
   http.get<{ homeworkId: string }, Record<string, never>, { data: Review[] }>(
     '/api/homeworks/:homeworkId/reviews/my-reviews',
     async () => {

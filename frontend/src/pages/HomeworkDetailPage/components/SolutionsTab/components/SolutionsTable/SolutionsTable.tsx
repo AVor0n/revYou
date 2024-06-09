@@ -26,11 +26,11 @@ export const SolutionsTable = ({ data, onRowClick }: SolutionsTableProps) => {
       columns={getSolutionsColumns(+homeworkId)}
       data={data}
       getRowDescriptor={({ status }) => ({
-        classNames: [clsx(styles.row, status && !nonInteractiveStatuses.includes(status) && styles.interactive)],
+        classNames: [clsx(styles.row, !nonInteractiveStatuses.includes(status) && styles.interactive)],
       })}
       emptyMessage="Нет данных"
       onRowClick={item => {
-        if (!item.status || nonInteractiveStatuses.includes(item.status)) return;
+        if (nonInteractiveStatuses.includes(item.status)) return;
         onRowClick?.(item);
       }}
     />

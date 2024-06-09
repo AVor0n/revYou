@@ -3,6 +3,7 @@ import { useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import {
+  getAuthData,
   getMySolutions,
   getSelectedHomework,
   getSolutionsForReview,
@@ -11,7 +12,7 @@ import {
   selectHomeworkForView,
   useAppDispatch,
 } from 'app';
-import { DescriptionTab, Header, MySolutionsTab, SolutionTab } from './components';
+import { AllSolutionsTab, DescriptionTab, Header, MySolutionsTab, SolutionTab } from './components';
 import styles from './HomeworkDetailPage.module.scss';
 
 export const HomeworkDetailPage = () => {
@@ -21,6 +22,7 @@ export const HomeworkDetailPage = () => {
   const homeworkInfo = useSelector(getSelectedHomework);
   const mySolutions = useSelector(getMySolutions);
   const solutionsForReview = useSelector(getSolutionsForReview);
+  const userInfo = useSelector(getAuthData);
   const activeTab = tab ?? 'about';
 
   useEffect(() => {
@@ -37,6 +39,14 @@ export const HomeworkDetailPage = () => {
         title: 'Описание',
         content: <DescriptionTab homeworkInfo={homeworkInfo} />,
       },
+      ...(userInfo?.role === 'TEACHER'
+        ? {
+            'all-solutions': {
+              title: 'Все решения',
+              content: <AllSolutionsTab homeworkInfo={homeworkInfo} />,
+            },
+          }
+        : {}),
       ...(mySolutions?.length
         ? {
             'my-solution': {
@@ -54,7 +64,7 @@ export const HomeworkDetailPage = () => {
           }
         : {}),
     }),
-    [homeworkInfo, mySolutions, solutionsForReview],
+    [homeworkInfo, mySolutions, solutionsForReview, userInfo],
   );
 
   return (
@@ -63,6 +73,7 @@ export const HomeworkDetailPage = () => {
 
       <div className={styles.pageContent}>
         <Tabs
+          className={styles.tabs}
           onSelectTab={tabId => navigate(`/homeworks/${homeworkId}/${tabId}`)}
           activeTab={activeTab}
           items={Object.entries(tabs).map(([id, { title }]) => ({ id, title }))}
