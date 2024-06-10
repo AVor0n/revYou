@@ -1,0 +1,91 @@
+.container {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  inline-size: 100%;
+  padding-block: 50px;
+  padding-inline: 64px;
+}
+
+.line {
+  inline-size: 100%;
+  block-size: 4px;
+  border: 1px solid var(--g-color-line-generic);
+  background-color: var(--g-color-base-background);
+
+  &.done {
+    background-color: var(--g-color-base-positive-heavy);
+  }
+
+  &.next {
+    background: linear-gradient(
+      90deg,
+      var(--g-color-base-positive-heavy) 20%,
+      var(--g-color-base-warning-heavy) 40%,
+      var(--g-color-base-warning-medium) 85%,
+      var(--g-color-base-warning-light) 100%
+    );
+
+    &:hover {
+      background-color: var(--g-color-base-warning-heavy-hover);
+    }
+  }
+}
+
+.stagesContainer {
+  position: absolute;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  inline-size: 100%;
+  padding-inline: 60px;
+}
+
+.stage {
+  display: flex;
+  inline-size: 16px;
+  block-size: 16px;
+  border: 1px solid var(--g-color-line-generic);
+  border-radius: 50%;
+  background-color: var(--g-color-base-background);
+  cursor: pointer;
+
+  &:hover {
+    border-color: var(--g-color-line-generic-active);
+  }
+
+  &.done {
+    background-color: var(--g-color-base-positive-heavy);
+
+    &:hover {
+      background-color: var(--g-color-base-positive-heavy-hover);
+    }
+  }
+
+  &.current {
+    transform: scale(1.5);
+  }
+
+  &.next {
+    border-color: var(--g-color-base-warning-heavy);
+
+    &:hover {
+      background-color: var(--g-color-base-warning-heavy-hover);
+    }
+  }
+}
+
+.label {
+  position: absolute;
+  white-space: nowrap;
+  transform: translate(-50%);
+
+  &.top {
+    inset-block-start: 32px;
+  }
+
+  &.bottom {
+    inset-block-end: 32px;
+  }
+}

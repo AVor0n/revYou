@@ -5,6 +5,7 @@ export * from './IntervalRerender';
 export * from './Link';
 export * from './ModalWithQuestion';
 export * from './MonacoEditor';
+export * from './ProgressBar';
 export * from './ResizeContentObserver';
 export * from './ReviewStatus';
 export * from './Tree';

@@ -16,6 +16,7 @@ export const initialHomeworks: MockHomework[] = [
     topic: 'git',
     departments: ['frontend', 'backend'],
     startDate: '2024-03-03T10:29:28.265Z',
+    status: undefined,
     completionDeadline: '2024-03-25T10:29:28.265Z',
     repositoryLink: 'https://github.com/gooverdian/hh-school-git-crash-course',
     reviewDuration: 48,
@@ -32,6 +33,7 @@ export const initialHomeworks: MockHomework[] = [
     completionDeadline: '2024-03-26T10:29:28.265Z',
     repositoryLink: 'https://github.com/AVor0n/hh-react-hw',
     reviewDuration: 48,
+    status: 'REVIEW_STAGE',
   },
 ];
 

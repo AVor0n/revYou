@@ -1,8 +1,15 @@
 import { Card } from '@gravity-ui/uikit';
 import { useSelector } from 'react-redux';
 import { type Homework } from '@domains';
-import { getMySolutions, getUserRole } from 'app';
-import { AuthorAndDeadlines, DescriptionHeader, Desctiption, GitLabLink, SendSolutionForm } from './components';
+import { getUserRole } from 'app';
+import {
+  AuthorAndDeadlines,
+  DescriptionHeader,
+  Desctiption,
+  GitLabLink,
+  HomeworkProgress,
+  SendSolutionForm,
+} from './components';
 import styles from './DescriptionTab.module.scss';
 
 interface DescriptionTabProps {
@@ -11,7 +18,7 @@ interface DescriptionTabProps {
 
 export const DescriptionTab = ({ homeworkInfo }: DescriptionTabProps) => {
   const role = useSelector(getUserRole);
-  const solutionSent = !!useSelector(getMySolutions)?.length;
+  const solutionSent = !!homeworkInfo?.status;
 
   if (!homeworkInfo) {
     return null;
@@ -30,16 +37,24 @@ export const DescriptionTab = ({ homeworkInfo }: DescriptionTabProps) => {
   };
 
   return (
-    <Card view="raised" style={{ padding: 20 }} className={styles.DescriptionTab}>
-      <DescriptionHeader homeworkInfo={homeworkInfo} />
+    <div className={styles.DescriptionTab}>
+      {role === 'STUDENT' && (
+        <Card view="raised" className={styles.progressCard}>
+          <HomeworkProgress status={homeworkInfo.status} />
+        </Card>
+      )}
 
-      <AuthorAndDeadlines homeworkInfo={homeworkInfo} />
+      <Card view="raised" className={styles.homeworkCard}>
+        <DescriptionHeader homeworkInfo={homeworkInfo} />
 
-      <Desctiption homeworkInfo={homeworkInfo} />
+        <AuthorAndDeadlines homeworkInfo={homeworkInfo} />
 
-      <GitLabLink repositoryLink={homeworkInfo.repositoryLink} />
+        <Desctiption homeworkInfo={homeworkInfo} />
 
-      {renderFooter()}
-    </Card>
+        <GitLabLink repositoryLink={homeworkInfo.repositoryLink} />
+
+        {renderFooter()}
+      </Card>
+    </div>
   );
 };

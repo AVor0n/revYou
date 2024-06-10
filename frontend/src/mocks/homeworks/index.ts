@@ -1,5 +1,5 @@
 import { HttpResponse, delay, http } from 'msw';
-import { type HomeworkPatch, type Homework, type HomeworkPost } from '@domains';
+import { type HomeworkPatch, type Homework, type HomeworkPost, type SolutionPost } from '@domains';
 import { type MockHomework, initialAuthors, initialHomeworks, initialLectures } from './initial';
 
 const lectures = new Map(initialLectures.map(lecture => [lecture.id, lecture]));
@@ -18,6 +18,7 @@ const homeworkConverter = (homework: MockHomework): Homework => ({
   reviewDuration: homework.reviewDuration,
   startDate: homework.startDate,
   topic: homework.topic,
+  status: homework.status,
   departments: homework.departments,
   // @ts-expect-error все норм
   author: authors.get(homework.authorId),
@@ -86,6 +87,39 @@ export const homeworksHandlers = [
     }
 
     homeworks.delete(+id);
+
+    return HttpResponse.json(id);
+  }),
+  http.post<{ id: string }, SolutionPost>('/api/homeworks/:id/solutions', ({ params }) => {
+    const { id } = params;
+    if (!id) {
+      return HttpResponse.json({ error: 'no id ' }, { status: 400 });
+    }
+
+    const homework = homeworks.get(+id);
+
+    if (!homework) {
+      return HttpResponse.json(id, { status: 400 });
+    }
+
+    homeworks.set(+id, { ...homework, status: 'IN_PROGRESS' });
+
+    return HttpResponse.json(id);
+  }),
+  http.post<{ id: string }>('/api/homeworks/:id/reviews/request-review', async ({ params }) => {
+    const { id } = params;
+    if (!id) {
+      return HttpResponse.json({ error: 'no id ' }, { status: 400 });
+    }
+
+    const homework = homeworks.get(+id);
+
+    if (!homework) {
+      return HttpResponse.json(id, { status: 400 });
+    }
+
+    homeworks.set(+id, { ...homework, status: 'REVIEW_STAGE' });
+    await delay(300);
 
     return HttpResponse.json(id);
   }),

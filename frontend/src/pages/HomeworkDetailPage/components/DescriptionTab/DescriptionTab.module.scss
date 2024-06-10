@@ -1,10 +1,17 @@
 .DescriptionTab {
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  align-items: flex-start;
-}
+  gap: 16px;
 
-.sendTryButton {
-  align-self: flex-end;
+  & .homeworkCard {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: flex-start;
+    padding: 20px;
+  }
+
+  & .progressCard {
+    padding: 20px;
+  }
 }

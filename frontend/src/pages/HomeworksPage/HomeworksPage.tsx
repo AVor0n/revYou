@@ -9,6 +9,8 @@ import {
   loadHomeworks,
   useAppDispatch,
   selectHomeworkForEdit,
+  solutionActions,
+  reviewActions,
 } from 'app';
 import { CreateHomeworkWindow, EditHomeworkWindow, HomeworksTable, HomeworksToolbar } from './components';
 import styles from './HomeworksPage.module.scss';
@@ -33,6 +35,9 @@ export const HomeworksPage = () => {
   }, [dispatch, showEditWindow?.params.id]);
 
   useEffect(() => {
+    dispatch(homeworkActions.setSelectedHomework(null));
+    dispatch(solutionActions.clear());
+    dispatch(reviewActions.clear());
     dispatch(loadHomeworks());
   }, [dispatch]);
 
