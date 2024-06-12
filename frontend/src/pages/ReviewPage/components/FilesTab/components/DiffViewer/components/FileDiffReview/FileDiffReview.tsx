@@ -1,7 +1,7 @@
 import { Loader } from '@gravity-ui/uikit';
 import { MonacoDiffEditor } from 'react-monaco-editor';
-import { defaultDiffEditorOptions, useResizableDiffEditor } from '@components/MonacoEditor';
-import { type Review } from '@domains';
+import { type Review } from '@api';
+import { defaultDiffEditorOptions, useResizableDiffEditor } from '@ui';
 import { Theme, useTheme, type FileNode } from 'app';
 import { useFileDiffContent } from '../../../../../../hooks';
 import { useFileDiffComments } from '../../hooks';

@@ -2,13 +2,11 @@ import { Select, Text } from '@gravity-ui/uikit';
 import { useEffect, useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
-import { EmptyPlug } from '@components/EmptyPlug';
-import { Link } from '@components/Link';
-import { findInTree } from '@components/Tree';
+import { EmptyPlug, Link, findInTree } from '@ui';
 import { isFile, loadThreads, type FileNode } from 'app';
 import { useAppSelector } from 'app/hooks';
 import { CommentsThreadWithDiff } from './components';
-import type { CommentsThread, Review } from '@domains';
+import type { CommentsThread, Review } from '@api';
 import styles from './CommentsThreadsList.module.scss';
 
 interface CommentsThreadsListProps {

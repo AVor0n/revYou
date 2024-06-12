@@ -1,4 +1,4 @@
-import { type Homework, type HomeworkAuthor, type HomeworkLecture } from '@domains';
+import { type Homework, type HomeworkAuthor, type HomeworkLecture } from '@api';
 
 export type MockHomework = Omit<Homework, 'author' | 'lecture'> & {
   authorId: number;

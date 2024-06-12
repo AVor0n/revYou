@@ -1,7 +1,7 @@
 import { Table, withTableSorting } from '@gravity-ui/uikit';
 import clsx from 'clsx';
 import { useParams } from 'react-router-dom';
-import { type Review } from '@domains';
+import { type Review } from '@api';
 import { getSolutionsColumns } from './SolutionsColumns';
 import styles from './SolutionsTable.module.scss';
 

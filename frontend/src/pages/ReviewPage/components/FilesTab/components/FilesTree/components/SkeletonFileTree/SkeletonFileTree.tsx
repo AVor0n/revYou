@@ -1,5 +1,5 @@
 import { Skeleton } from '@gravity-ui/uikit';
-import { Tree, getAllIds } from '@components/Tree';
+import { Tree, getAllIds } from '@ui';
 import { skeletonTreeData } from './constants';
 import styles from './SkeletonFileTree.module.scss';
 

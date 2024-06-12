@@ -3,7 +3,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { Controller, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
-import { Input } from '@components/Input';
+import { Input } from '@ui';
 import { createSolution, loadMySolutions, useAppDispatch } from 'app';
 import { useAppSelector } from 'app/hooks';
 import styles from './SendSolutionForm.module.scss';

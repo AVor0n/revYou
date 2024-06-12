@@ -1,6 +1,6 @@
-import { ReviewStatus } from '@components/ReviewStatus';
+import { ReviewStatus } from '@ui';
 import { ReviewCard } from './components';
-import type { ReviewStatus as TReviewStatus } from '@domains';
+import type { ReviewStatus as TReviewStatus } from '@api';
 import type { FullReviewInfo } from 'app';
 import styles from './StateColumn.module.scss';
 

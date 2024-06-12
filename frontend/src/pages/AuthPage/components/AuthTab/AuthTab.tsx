@@ -1,9 +1,9 @@
 import { Card } from '@gravity-ui/uikit';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { type SignInRequest, type SignUpRequest } from '@domains';
+import { type SignInRequest, type SignUpRequest } from '@api';
 import { useAppDispatch, useAuth } from 'app';
-import { signInUser, signUpUser } from 'app/entities';
+import { signInUser, signUpUser } from 'entities';
 import { SignInForm, SignUpForm } from './components';
 import styles from './AuthTab.module.scss';
 

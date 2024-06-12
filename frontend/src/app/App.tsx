@@ -1,7 +1,7 @@
 import { settings } from '@gravity-ui/date-utils';
 import { ToasterComponent, ToasterProvider } from '@gravity-ui/uikit';
 import { useEffect } from 'react';
-import { type FullUserInfo, userActions } from './entities';
+import { type FullUserInfo, userActions } from '../entities';
 import { useAppDispatch } from './hooks';
 import { RouterProvider, ThemeProvider } from './providers';
 

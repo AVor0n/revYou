@@ -1,6 +1,6 @@
 import * as yup from 'yup';
-import { type CreateHomework } from '@pages/HomeworksPage/constants';
-import type { HomeworkPatchReviewDurationEnum, HomeworkPost } from '@domains';
+import { type CreateHomework } from '../../constants';
+import type { HomeworkPatchReviewDurationEnum, HomeworkPost } from '@api';
 
 export const createHomeworkSchema: yup.ObjectSchema<CreateHomework> = yup.object({
   name: yup.string().required(),

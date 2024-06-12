@@ -1,7 +1,7 @@
 import { TextArea, Button } from '@gravity-ui/uikit';
 import clsx from 'clsx';
 import { useState } from 'react';
-import { type CommentsThreadStatus } from '@domains';
+import { type CommentsThreadStatus } from '@api';
 import { addComment, changeThreadStatus, useAppDispatch } from 'app';
 import styles from './ThreadActions.module.scss';
 

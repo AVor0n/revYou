@@ -1,6 +1,6 @@
 import { Card } from '@gravity-ui/uikit';
 import { useSelector } from 'react-redux';
-import { type Homework } from '@domains';
+import { type Homework } from '@api';
 import { getUserRole } from 'app';
 import {
   AuthorAndDeadlines,

@@ -1,9 +1,9 @@
 import { Select } from '@gravity-ui/uikit';
 import { useEffect, useMemo, useState } from 'react';
-import { ModalWithQuestion } from '@components/ModalWithQuestion';
+import { ModalWithQuestion } from '@ui';
 import { changeReviewer, loadAvailableReviewers } from 'app';
 import { useAppDispatch, useAppSelector } from 'app/hooks';
-import type { Student } from '@domains';
+import type { Student } from '@api';
 import styles from './ReviewerSelect.module.scss';
 
 interface ReviewerSelectProps {

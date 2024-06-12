@@ -2,7 +2,7 @@ import { TriangleExclamation } from '@gravity-ui/icons';
 import { Button, Icon, Text } from '@gravity-ui/uikit';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ModalWithQuestion } from '@components/ModalWithQuestion';
+import { ModalWithQuestion } from '@ui';
 import { requestRepeatReview, useAppDispatch } from 'app';
 import { useAppSelector } from 'app/hooks';
 import styles from './RequestReviewButton.module.scss';

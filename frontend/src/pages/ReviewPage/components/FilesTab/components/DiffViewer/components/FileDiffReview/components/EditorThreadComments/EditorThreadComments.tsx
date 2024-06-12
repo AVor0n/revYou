@@ -1,7 +1,7 @@
 import { type editor as IEditor } from 'monaco-editor';
-import { EditorSelection, ResizableViewZone } from '@components/MonacoEditor';
-import { CommentsThread } from '@pages/ReviewPage/components/CommentsThread';
-import type { CommentsThread as ICommentsThread } from '@domains';
+import { EditorSelection, ResizableViewZone } from '@ui';
+import { CommentsThread } from '../../../../../../../CommentsThread';
+import type { CommentsThread as ICommentsThread } from '@api';
 import styles from './EditorThreadComments.module.scss';
 
 interface EditorThreadCommentsProps {

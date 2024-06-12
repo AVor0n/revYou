@@ -4,7 +4,7 @@ import { type FC } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { deleteHomework, getUserRole, loadHomeworks, useAppDispatch } from 'app';
-import type { Homework } from '@domains';
+import type { Homework } from '@api';
 
 export const HomeworksRowActions: FC<RenderRowActionsProps<Homework>> = ({ item }) => {
   const dispatch = useAppDispatch();

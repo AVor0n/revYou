@@ -1,6 +1,6 @@
 import { Card } from '@gravity-ui/uikit';
 import { type ReactNode } from 'react';
-import { type CommentsThread as ICommentsThread } from '@domains';
+import { type CommentsThread as ICommentsThread } from '@api';
 import { ThreadActions, Comment } from './components';
 import styles from './CommentsThread.module.scss';
 

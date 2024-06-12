@@ -1,5 +1,5 @@
 import { Label, Text } from '@gravity-ui/uikit';
-import { type Homework } from '@domains';
+import { type Homework } from '@api';
 import styles from './DescriptionHeader.module.scss';
 
 interface DescriptionHeaderProps {

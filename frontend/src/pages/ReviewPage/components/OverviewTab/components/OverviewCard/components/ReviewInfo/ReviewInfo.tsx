@@ -1,9 +1,9 @@
 import { useMemo } from 'react';
 import { Navigate, useParams } from 'react-router-dom';
-import { ReviewStatus } from '@components/ReviewStatus';
+import { ReviewStatus } from '@ui';
 import { CompleteReviewButton, RequestReviewButton } from './components';
 import { ReviewerSelect } from './components/ReviewerSelect/ReviewerSelect';
-import type { Student, ReviewStatus as TReviewStatus } from '@domains';
+import type { Student, ReviewStatus as TReviewStatus } from '@api';
 import styles from './ReviewInfo.module.scss';
 
 interface ReviewInfoProps {

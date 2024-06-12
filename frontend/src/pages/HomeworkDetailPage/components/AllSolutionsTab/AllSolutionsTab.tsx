@@ -1,11 +1,11 @@
 import { Skeleton } from '@gravity-ui/uikit';
 import { useEffect, useMemo, useRef } from 'react';
 import { Panel, PanelGroup, type ImperativePanelGroupHandle } from 'react-resizable-panels';
-import { EmptyPlug } from '@components/EmptyPlug';
+import { EmptyPlug } from '@ui';
 import { loadAllSolutions, type FullReviewInfo } from 'app';
 import { useAppDispatch, useAppSelector } from 'app/hooks';
 import { StateColumn } from './components';
-import type { Homework, ReviewStatus } from '@domains';
+import type { Homework, ReviewStatus } from '@api';
 import styles from './AllSolutionsTab.module.scss';
 
 interface AllSolutionsTabProps {

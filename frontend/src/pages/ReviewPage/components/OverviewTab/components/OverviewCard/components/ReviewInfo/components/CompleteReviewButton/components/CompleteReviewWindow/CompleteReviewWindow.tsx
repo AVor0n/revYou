@@ -1,7 +1,7 @@
 import { Button, TextArea } from '@gravity-ui/uikit';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FormWindow } from '@components/FormWindow';
+import { FormWindow } from '@ui';
 import { completeReview, loadSolutionsForReview, reviewActions, useAppDispatch } from 'app';
 import { useAppSelector } from 'app/hooks';
 import styles from './CompleteReviewWindow.module.scss';

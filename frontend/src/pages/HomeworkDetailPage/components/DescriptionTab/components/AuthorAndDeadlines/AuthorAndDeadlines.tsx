@@ -1,7 +1,7 @@
 import { dateTimeParse } from '@gravity-ui/date-utils';
 import { GraduationCap } from '@gravity-ui/icons';
 import { Label, Text, Tooltip, UserLabel } from '@gravity-ui/uikit';
-import { type Homework } from '@domains';
+import { type Homework } from '@api';
 import styles from './AuthorAndDeadlines.module.scss';
 
 interface AuthorAndDeadlinesProps {

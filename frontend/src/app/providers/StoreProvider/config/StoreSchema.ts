@@ -1,6 +1,6 @@
-import { type Api } from '@domains';
-import { type UserSchema, type HomeworkSchema, type ReviewSchema, type LectureSchema } from 'app/entities';
-import { type SolutionSchema } from 'app/entities/Solution/types';
+import { type Api } from '@api';
+import { type UserSchema, type HomeworkSchema, type ReviewSchema, type LectureSchema } from 'entities';
+import { type SolutionSchema } from 'entities/Solution/types';
 
 export interface StoreSchema {
   user: UserSchema;

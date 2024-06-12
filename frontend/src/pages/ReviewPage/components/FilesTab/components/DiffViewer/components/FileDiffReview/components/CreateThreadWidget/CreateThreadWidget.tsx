@@ -3,7 +3,7 @@ import { type editor as IEditor, type Selection } from 'monaco-editor';
 import { useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useSelector } from 'react-redux';
-import { EditorSelection, ResizableViewZone } from '@components/MonacoEditor';
+import { EditorSelection, ResizableViewZone } from '@ui';
 import { createThread, getRequestInProgress, useAppDispatch } from 'app';
 import { CreateThreadCard } from './components';
 import { useEditorSelection } from './hooks';

@@ -1,4 +1,4 @@
-import { type TreeNode } from '@components/Tree';
+import { type TreeNode } from '@ui';
 
 export const skeletonTreeData: TreeNode[] = [
   {

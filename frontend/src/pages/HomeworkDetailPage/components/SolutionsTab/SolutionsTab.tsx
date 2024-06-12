@@ -2,7 +2,7 @@ import { Skeleton } from '@gravity-ui/uikit';
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { type Homework, type Review } from '@domains';
+import { type Homework, type Review } from '@api';
 import { getSolutionsForReview, loadSolutionsForReview, reviewActions, useAppDispatch } from 'app';
 import { SolutionsTable } from './components';
 import styles from './SolutionsTab.module.scss';

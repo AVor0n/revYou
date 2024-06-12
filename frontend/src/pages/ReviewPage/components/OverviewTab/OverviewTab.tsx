@@ -1,6 +1,6 @@
 import { CommentsThreadsList, OverviewCard } from './components';
 import { ReviewInfo } from './components/OverviewCard/components';
-import type { Review } from '@domains';
+import type { Review } from '@api';
 import type { FullReviewInfo } from 'app';
 import styles from './OverviewTab.module.scss';
 

@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { type CommentsThread } from '@domains';
+import { type CommentsThread } from '@api';
 import { useAppSelector } from 'app/hooks';
 import { useActiveFile } from '../../../hooks';
 

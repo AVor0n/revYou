@@ -1,5 +1,5 @@
-import { ProgressBar } from '@components/ProgressBar';
-import { type SolutionStatus } from '@domains';
+import { type SolutionStatus } from '@api';
+import { ProgressBar } from '@ui';
 
 interface HomeworkProgressProps {
   status?: SolutionStatus;

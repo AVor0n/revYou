@@ -1,5 +1,5 @@
 import { dateTimeParse } from '@gravity-ui/date-utils';
-import { type HomeworkPost } from '@domains';
+import { type HomeworkPost } from '@api';
 
 export type CreateHomework = Omit<HomeworkPost, 'lectureId'> & { lectureId: number | null };
 

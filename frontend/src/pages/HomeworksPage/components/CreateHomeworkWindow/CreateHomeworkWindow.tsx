@@ -6,10 +6,8 @@ import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { FormWindow } from '@components/FormWindow';
-import { Input } from '@components/Input';
-import { type Lecture } from '@domains';
-import { defaultHomework, type CreateHomework } from '@pages/HomeworksPage/constants';
+import { type Lecture } from '@api';
+import { FormWindow, Input } from '@ui';
 import {
   createHomework,
   getAllLectures,
@@ -19,6 +17,7 @@ import {
   loadLectures,
   useAppDispatch,
 } from 'app';
+import { defaultHomework, type CreateHomework } from '../../constants';
 import { createHomeworkSchema } from './createHomeworkSchema';
 import styles from './CreateHomeworkWindow.module.scss';
 

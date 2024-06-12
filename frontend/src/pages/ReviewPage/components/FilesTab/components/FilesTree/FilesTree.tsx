@@ -2,7 +2,7 @@ import { Comment } from '@gravity-ui/icons';
 import { ArrowToggle, Icon, Tooltip } from '@gravity-ui/uikit';
 import { clsx } from 'clsx';
 import { useMemo } from 'react';
-import { Tree } from '@components/Tree';
+import { Tree } from '@ui';
 import { isFolder, type FileNode, type FolderNode } from 'app';
 import { useAppSelector } from 'app/hooks';
 import { useActiveFile } from '../../hooks';

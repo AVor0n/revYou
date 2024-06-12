@@ -1,6 +1,6 @@
 import { Card, Text } from '@gravity-ui/uikit';
 import { useParams } from 'react-router-dom';
-import type { Review } from '@domains';
+import type { Review } from '@api';
 import type { FullReviewInfo } from 'app';
 import styles from './OverviewCard.module.scss';
 

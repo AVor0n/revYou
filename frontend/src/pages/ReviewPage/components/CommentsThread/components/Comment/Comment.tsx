@@ -4,10 +4,10 @@ import { Avatar, Tooltip, Text } from '@gravity-ui/uikit';
 import clsx from 'clsx';
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
-import { IntervalRerender } from '@components/IntervalRerender';
-import { type CommentsThreadStatus, type Comment as IComment } from '@domains';
+import { type CommentsThreadStatus, type Comment as IComment } from '@api';
+import { dateRelativeNow } from '@shared/utils';
+import { IntervalRerender } from '@ui';
 import { getAuthData } from 'app';
-import { dateRelativeNow } from 'utils';
 import styles from './Comment.module.scss';
 
 interface CommentProps {

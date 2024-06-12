@@ -5,11 +5,10 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
-import { FormWindow } from '@components/FormWindow';
-import { Input } from '@components/Input';
-import { type HomeworkPatch, type Homework } from '@domains';
-import { defaultHomework } from '@pages/HomeworksPage/constants';
+import { type HomeworkPatch, type Homework } from '@api';
+import { FormWindow, Input } from '@ui';
 import { editHomework, homeworkActions, loadHomeworks, useAppDispatch } from 'app';
+import { defaultHomework } from '../../constants';
 import { editHomeworkSchema } from './editHomeworkSchema';
 import styles from './EditHomeworkWindow.module.scss';
 

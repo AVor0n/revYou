@@ -1,6 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { type AxiosError } from 'axios';
-import { type RefreshAccessTokenRequestDto, type SignInResponse } from '@domains';
+import { type RefreshAccessTokenRequestDto, type SignInResponse } from '@api';
 import { type ThunkConfig } from 'app/providers';
 
 export const refreshAuthToken = createAsyncThunk<SignInResponse, RefreshAccessTokenRequestDto, ThunkConfig<string>>(

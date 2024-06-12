@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { findInTree } from '@components/Tree';
+import { findInTree } from '@ui';
 import { isFile, type FilesTreeItem } from 'app';
 import { useAppSelector } from 'app/hooks';
 

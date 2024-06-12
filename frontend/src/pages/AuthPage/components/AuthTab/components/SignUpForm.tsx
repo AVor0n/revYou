@@ -2,8 +2,8 @@ import { Button } from '@gravity-ui/uikit';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Controller, useForm } from 'react-hook-form';
 import * as yup from 'yup';
-import { Input } from '@components/index';
-import { type SignUpRequest } from '@domains';
+import { type SignUpRequest } from '@api';
+import { Input } from '@ui';
 import styles from './Form.module.scss';
 
 interface SignUpFormProps {

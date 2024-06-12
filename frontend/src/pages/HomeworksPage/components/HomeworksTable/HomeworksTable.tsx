@@ -1,5 +1,5 @@
 import { Table, withTableSorting, withTableActions } from '@gravity-ui/uikit';
-import { type Homework } from '@domains';
+import { type Homework } from '@api';
 import { HomeworksRowActions } from './HomeworksRowActions';
 import { useHomeworksColumns } from './useHomeworksColumns';
 import styles from './HomeworksTable.module.scss';

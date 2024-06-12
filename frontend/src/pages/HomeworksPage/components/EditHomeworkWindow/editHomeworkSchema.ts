@@ -1,5 +1,5 @@
 import * as yup from 'yup';
-import type { HomeworkPatch, HomeworkPatchReviewDurationEnum } from '@domains';
+import type { HomeworkPatch, HomeworkPatchReviewDurationEnum } from '@api';
 
 export const editHomeworkSchema: yup.ObjectSchema<HomeworkPatch> = yup.object({
   name: yup.string().required(),
