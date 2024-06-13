@@ -14,7 +14,7 @@
     "format:fix": "prettier --write . --ignore-unknown",
     "lint": "tsc --noEmit && eslint . --ext=.ts,.tsx --quiet && stylelint ./src/**/*.scss --quiet",
     "lint:fix": "eslint . --ext=.ts,.tsx --fix && stylelint ./src/**/*.scss --fix",
-    "api-types": "node ./scripts/generateApiFromSwaggerSpec.js",
+    "generate-api": "npx @rtk-query/codegen-openapi ./scripts/openapi-config.cjs",
     "prepare": "cd .. && husky frontend/.husky || true"
   },
   "dependencies": {
@@ -27,7 +27,6 @@
     "@reduxjs/toolkit": "^2.2.2",
     "@types/lodash-es": "^4.17.12",
     "@vscode/codicons": "^0.0.35",
-    "axios": "^1.6.8",
     "clsx": "^2.1.0",
     "lodash-es": "^4.17.21",
     "monaco-editor": "^0.47.0",
@@ -42,6 +41,7 @@
     "yup": "^1.4.0"
   },
   "devDependencies": {
+    "@rtk-query/codegen-openapi": "^1.2.0",
     "@types/react": "^18.2.66",
     "@types/react-dom": "^18.2.22",
     "@typescript-eslint/eslint-plugin": "^7.1.1",
