@@ -1,4 +1,4 @@
-export * from './User';
+export * from './User.slice';
 export * from './Homework';
 export * from './Review';
 export * from './Solution';
