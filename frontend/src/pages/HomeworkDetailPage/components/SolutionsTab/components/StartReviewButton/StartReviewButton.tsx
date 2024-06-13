@@ -1,6 +1,5 @@
 import { Button } from '@gravity-ui/uikit';
-import { loadSolutionsForReview, startReview, useAppDispatch } from 'app';
-import { useAppSelector } from 'app/hooks';
+import { useStartReviewMutation } from '@shared/api';
 
 interface StartReviewButtonProps {
   reviewId: number;
@@ -8,16 +7,12 @@ interface StartReviewButtonProps {
 }
 
 export const StartReviewButton = ({ reviewId, homeworkId }: StartReviewButtonProps) => {
-  const dispatch = useAppDispatch();
-  const requestInProgress = useAppSelector(state => state.review.requestInProgress);
+  const [startReview, { isLoading }] = useStartReviewMutation();
 
-  const onClick = async () => {
-    await dispatch(startReview({ reviewId, homeworkId }));
-    dispatch(loadSolutionsForReview(homeworkId));
-  };
+  const onClick = () => startReview({ reviewId, homeworkId });
 
   return (
-    <Button view="outlined-action" size="xs" onClick={onClick} loading={requestInProgress.startReview}>
+    <Button view="outlined-action" size="xs" onClick={onClick} loading={isLoading}>
       Начать ревью
     </Button>
   );

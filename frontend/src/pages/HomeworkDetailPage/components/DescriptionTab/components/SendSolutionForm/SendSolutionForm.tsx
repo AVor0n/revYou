@@ -3,9 +3,8 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { Controller, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
+import { useCreateSolutionMutation } from '@shared/api';
 import { Input } from '@ui';
-import { createSolution, loadMySolutions, useAppDispatch } from 'app';
-import { useAppSelector } from 'app/hooks';
 import styles from './SendSolutionForm.module.scss';
 
 const sendSolution = yup
@@ -20,7 +19,8 @@ interface SendSolutionFormProps {
 
 export const SendSolutionForm = ({ homeworkId }: SendSolutionFormProps) => {
   const navigate = useNavigate();
-  const requestInProgress = useAppSelector(state => state.solution.requestInProgress);
+  const [createSolution, { isLoading }] = useCreateSolutionMutation();
+
   const {
     control,
     handleSubmit,
@@ -28,14 +28,11 @@ export const SendSolutionForm = ({ homeworkId }: SendSolutionFormProps) => {
   } = useForm({
     resolver: yupResolver(sendSolution),
     defaultValues: { branchLink: '' },
-    disabled: requestInProgress.sendSolution,
+    disabled: isLoading,
   });
 
-  const dispatch = useAppDispatch();
-
-  const onSendSolution = handleSubmit(async data => {
-    await dispatch(createSolution({ homeworkId, branchLink: data.branchLink })).unwrap();
-    await dispatch(loadMySolutions(homeworkId)).unwrap();
+  const onSendSolution = handleSubmit(data => {
+    createSolution({ homeworkId, solutionPost: data });
     navigate(`/homeworks/${homeworkId}/my-solution`);
   });
 
@@ -53,7 +50,7 @@ export const SendSolutionForm = ({ homeworkId }: SendSolutionFormProps) => {
           />
         )}
       />
-      <Button type="submit" view="action" size="m" loading={requestInProgress.sendSolution}>
+      <Button type="submit" view="action" size="m" loading={isLoading}>
         Отправить решение
       </Button>
     </form>

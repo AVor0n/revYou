@@ -1,16 +1,11 @@
 import { Skeleton } from '@gravity-ui/uikit';
 import { useEffect, useMemo, useRef } from 'react';
 import { Panel, PanelGroup, type ImperativePanelGroupHandle } from 'react-resizable-panels';
+import { useParams } from 'react-router-dom';
+import { useLazyGetReviewsInfoQuery, type ReviewStatus, type ReviewInfo } from '@api';
 import { EmptyPlug } from '@ui';
-import { loadAllSolutions, type FullReviewInfo } from 'app';
-import { useAppDispatch, useAppSelector } from 'app/hooks';
 import { StateColumn } from './components';
-import type { Homework, ReviewStatus } from '@api';
 import styles from './AllSolutionsTab.module.scss';
-
-interface AllSolutionsTabProps {
-  homeworkInfo: Homework | null;
-}
 
 const reviewStatuses: ReviewStatus[] = [
   'REVIEWER_SEARCH',
@@ -21,31 +16,32 @@ const reviewStatuses: ReviewStatus[] = [
   'APPROVED',
 ];
 
-export const AllSolutionsTab = ({ homeworkInfo }: AllSolutionsTabProps) => {
-  const dispatch = useAppDispatch();
-  const { allSolutions } = useAppSelector(state => state.solution);
+export const AllSolutionsTab = () => {
+  const { homeworkId } = useParams<{ homeworkId: string }>();
+  const [loadAllSolutions, { data: allSolutions }] = useLazyGetReviewsInfoQuery();
   const ref = useRef<ImperativePanelGroupHandle>(null);
 
+  useEffect(() => {
+    if (homeworkId) {
+      loadAllSolutions({ homeworkId: +homeworkId });
+    }
+  }, [homeworkId, loadAllSolutions]);
+
   const solutionsByStatus = useMemo(() => {
-    const initSolutionsByStatus = Object.fromEntries(reviewStatuses.map(status => [status, [] as FullReviewInfo[]]));
+    const initSolutionsByStatus = Object.fromEntries(reviewStatuses.map(status => [status, [] as ReviewInfo[]]));
     if (!allSolutions) return initSolutionsByStatus;
 
-    return allSolutions.reduce((acc, review) => {
+    return allSolutions.data.reduce((acc, review) => {
       acc[review.status]?.push(review);
       return acc;
     }, initSolutionsByStatus);
   }, [allSolutions]);
 
-  useEffect(() => {
-    if (!homeworkInfo) return;
-    dispatch(loadAllSolutions(homeworkInfo.id));
-  }, [dispatch, homeworkInfo]);
-
   if (!allSolutions) {
     return <Skeleton className={styles.skeleton} />;
   }
 
-  if (allSolutions.length === 0) {
+  if (allSolutions.data.length === 0) {
     return <EmptyPlug primaryText="Решений ещё нет" secondaryText="Нужно немного подождать..." />;
   }
 

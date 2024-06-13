@@ -1,21 +1,28 @@
 import { Card } from '@gravity-ui/uikit';
-import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
-import { getSelectedHomework, reviewActions, useAppDispatch, type FullReviewInfo } from 'app';
+import { useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useLazyGetHomeworkQuery, type ReviewInfo } from '@shared/api';
 import styles from './ReviewCard.module.scss';
 
 interface ReviewCardProps {
-  review: FullReviewInfo;
+  review: ReviewInfo;
 }
 
 export const ReviewCard = ({ review }: ReviewCardProps) => {
+  const { homeworkId } = useParams<{ homeworkId: string }>();
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
-  const homework = useSelector(getSelectedHomework);
+  const [loadHomework, { data: homework }] = useLazyGetHomeworkQuery();
+
+  useEffect(() => {
+    if (homeworkId === undefined) {
+      navigate('/homeworks');
+    } else {
+      loadHomework({ homeworkId: +homeworkId });
+    }
+  }, [homeworkId, loadHomework, navigate]);
 
   const onClick = () => {
     if (!homework) return;
-    dispatch(reviewActions.setReviewInfo(review));
     navigate(`/homeworks/${homework.id}/review/${review.reviewId}/teacher`);
   };
 
