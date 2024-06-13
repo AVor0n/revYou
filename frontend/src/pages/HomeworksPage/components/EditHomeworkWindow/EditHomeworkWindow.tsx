@@ -2,24 +2,22 @@ import { DatePicker } from '@gravity-ui/date-components';
 import { dateTimeParse } from '@gravity-ui/date-utils';
 import { RadioButton, Text } from '@gravity-ui/uikit';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useState } from 'react';
+import { useCallback, useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
-import { type HomeworkPatch, type Homework } from '@api';
+import { type HomeworkPatch, type Homework, useUpdateHomeworkMutation } from '@api';
 import { FormWindow, Input } from '@ui';
-import { editHomework, homeworkActions, loadHomeworks, useAppDispatch } from 'app';
 import { defaultHomework } from '../../constants';
 import { editHomeworkSchema } from './editHomeworkSchema';
 import styles from './EditHomeworkWindow.module.scss';
 
 interface EditHomeworkWindowProps {
-  record: Partial<Homework> | null;
+  record?: Partial<Homework>;
   open: boolean;
 }
 
 export const EditHomeworkWindow = ({ record, open }: EditHomeworkWindowProps) => {
-  const dispatch = useAppDispatch();
-  const [loading, setLoading] = useState(false);
+  const [updateHomework, { isLoading, isSuccess }] = useUpdateHomeworkMutation();
   const navigate = useNavigate();
   const {
     reset,
@@ -30,7 +28,7 @@ export const EditHomeworkWindow = ({ record, open }: EditHomeworkWindowProps) =>
     resolver: yupResolver(editHomeworkSchema),
     mode: 'all',
     defaultValues: defaultHomework,
-    disabled: loading,
+    disabled: isLoading,
     values: {
       name: record?.name ?? defaultHomework.name,
       topic: record?.topic ?? defaultHomework.topic,
@@ -41,25 +39,19 @@ export const EditHomeworkWindow = ({ record, open }: EditHomeworkWindowProps) =>
     },
   });
 
-  const closeWindow = () => {
-    reset();
-    dispatch(homeworkActions.setHomeworkForEdit(null));
-    navigate('/homeworks');
-  };
-
   const saveHomework = handleSubmit(data => {
     if (!record?.id) return;
-    setLoading(true);
-    dispatch(editHomework([record.id, data]))
-      .unwrap()
-      .then(() => {
-        closeWindow();
-        dispatch(loadHomeworks());
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+    updateHomework({ homeworkId: record.id, homeworkPatch: data });
   });
+
+  const closeWindow = useCallback(() => {
+    reset();
+    navigate('/homeworks');
+  }, [navigate, reset]);
+
+  useEffect(() => {
+    if (isSuccess) closeWindow();
+  }, [closeWindow, isSuccess]);
 
   return (
     <FormWindow
@@ -68,8 +60,8 @@ export const EditHomeworkWindow = ({ record, open }: EditHomeworkWindowProps) =>
       onClose={closeWindow}
       onSubmit={saveHomework}
       saveDisabled={!isValid}
-      saveLoading={loading}
-      cancelDisabled={loading}
+      saveLoading={isLoading}
+      cancelDisabled={isLoading}
     >
       <div className={styles.content}>
         <Controller

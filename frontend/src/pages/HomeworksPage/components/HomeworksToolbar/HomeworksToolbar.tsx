@@ -1,7 +1,6 @@
 import { Magnifier, Plus } from '@gravity-ui/icons';
 import { Button, Icon, TextInput } from '@gravity-ui/uikit';
-import { useSelector } from 'react-redux';
-import { getUserRole } from 'app';
+import { useAppSelector } from 'app/hooks';
 import styles from './HomeworksToolbar.module.scss';
 
 interface HomeworksToolbarProps {
@@ -12,7 +11,7 @@ interface HomeworksToolbarProps {
 }
 
 export const HomeworksToolbar = ({ search, onSearch, onCreate, disabled }: HomeworksToolbarProps) => {
-  const role = useSelector(getUserRole);
+  const role = useAppSelector(state => state.user.authData?.role);
 
   return (
     <div className={styles.toolbar}>
