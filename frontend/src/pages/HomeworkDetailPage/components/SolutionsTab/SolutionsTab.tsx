@@ -2,12 +2,14 @@ import { Skeleton } from '@gravity-ui/uikit';
 import { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useLazyGetReviewsToDoQuery, type Review } from '@api';
+import { reviewActions, useAppDispatch } from '@app';
 import { SolutionsTable } from './components';
 import styles from './SolutionsTab.module.scss';
 
 export const SolutionTab = () => {
-  const { homeworkId } = useParams<{ homeworkId: string }>();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const { homeworkId } = useParams<{ homeworkId: string }>();
   const [loadSolutionsForReview, { data: solutionsForReview }] = useLazyGetReviewsToDoQuery();
 
   useEffect(() => {
@@ -19,6 +21,7 @@ export const SolutionTab = () => {
   }, [homeworkId, loadSolutionsForReview, navigate]);
 
   const onRowClick = (review: Review) => {
+    dispatch(reviewActions.setReviewInfo(review));
     navigate(`/homeworks/${homeworkId}/review/${review.reviewId}/reviewer`);
   };
 

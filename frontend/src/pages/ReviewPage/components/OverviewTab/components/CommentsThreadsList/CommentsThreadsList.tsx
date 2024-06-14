@@ -1,12 +1,11 @@
 import { Select, Text } from '@gravity-ui/uikit';
-import { useEffect, useMemo, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { useGetAllThreadsQuery, type CommentsThread, type Review } from '@api';
+import { isFile, type FileNode } from '@shared/types';
 import { EmptyPlug, Link, findInTree } from '@ui';
-import { isFile, loadThreads, type FileNode } from 'app';
 import { useAppSelector } from 'app/hooks';
 import { CommentsThreadWithDiff } from './components';
-import type { CommentsThread, Review } from '@api';
 import styles from './CommentsThreadsList.module.scss';
 
 interface CommentsThreadsListProps {
@@ -14,16 +13,16 @@ interface CommentsThreadsListProps {
 }
 
 export const CommentsThreadsList = ({ review }: CommentsThreadsListProps) => {
-  const dispatch = useDispatch();
   const [filterValue, setFilterValue] = useState(['all']);
   const [sortValue, setSortValue] = useState(['ASC']);
   const { homeworkId, reviewId, role } = useParams<Record<'homeworkId' | 'reviewId' | 'role', string>>();
-  const { threads, filesTree } = useAppSelector(state => state.review);
+  const { data: threads } = useGetAllThreadsQuery({ reviewId: review.reviewId });
+  const { filesTree } = useAppSelector(state => state.review);
 
   const threadsWithFileInfo = useMemo(() => {
     if (!threads || !filesTree) return [];
 
-    return threads.reduce((acc: { thread: CommentsThread; fileInfo: FileNode }[], thread) => {
+    return threads.data.reduce((acc: { thread: CommentsThread; fileInfo: FileNode }[], thread) => {
       const treeItem = findInTree(filesTree, item => {
         if (!isFile(item)) return false;
         return thread.filePath === item.oldPath || thread.filePath === item.path;
@@ -47,10 +46,6 @@ export const CommentsThreadsList = ({ review }: CommentsThreadsListProps) => {
       (a, b) => b.thread.comments[0]!.createdAt.localeCompare(a.thread.comments[0]!.createdAt) * sortDirection,
     );
   }, [filteredThreads, sortValue]);
-
-  useEffect(() => {
-    dispatch(loadThreads(review.reviewId));
-  }, [dispatch, review]);
 
   return (
     <>
@@ -99,7 +94,7 @@ export const CommentsThreadsList = ({ review }: CommentsThreadsListProps) => {
           </div>
         )}
 
-        {threads?.length === 0 && (
+        {threads?.data.length === 0 && (
           <EmptyPlug
             primaryText="Комментариев не найдено"
             secondaryText={

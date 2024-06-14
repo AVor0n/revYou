@@ -1,7 +1,7 @@
 import { SquareLetterP, SquareMinus, SquarePlus, SquareXmark } from '@gravity-ui/icons';
 import { Icon, type IconProps, Tooltip } from '@gravity-ui/uikit';
 import clsx from 'clsx';
-import type { FileStatus } from 'app';
+import type { FileStatus } from '@shared/types';
 import styles from './FileChangeIcon.module.scss';
 
 interface FileChangesIconProps {

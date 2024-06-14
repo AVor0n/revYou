@@ -1,13 +1,6 @@
-import type { CommentsThread, Review } from '@api';
+import type { ReviewInfo } from '@shared/api';
 
-export interface ReviewSchema {
-  filesCache: Record<string, Record<string, string | null>>;
-  reviewInfo: Review | null;
-  filesTree: FilesTree | null;
-  threads: CommentsThread[] | null;
-  requestInProgress: Record<string, boolean>;
-  error: string;
-}
+export type FullReviewInfo = ReviewInfo & { sourceCommitId: string };
 
 export type FilesTree = FilesTreeItem[];
 

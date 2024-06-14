@@ -11,7 +11,7 @@ export const addTagTypes = [
   'Solutions',
   'Users',
 ] as const;
-const injectedRtkApi = api
+export const injectedRtkApi = api
   .enhanceEndpoints({
     addTagTypes,
   })

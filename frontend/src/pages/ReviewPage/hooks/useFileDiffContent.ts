@@ -1,6 +1,7 @@
-import { useCallback, useEffect } from 'react';
-import { loadFile, reviewActions, useAppDispatch, type FileNode } from 'app';
+import { useEffect } from 'react';
+import { useLazyGetRawFileQuery, injectedRtkApi } from '@shared/api';
 import { useAppSelector } from 'app/hooks';
+import type { FileNode } from '@shared/types';
 
 export interface UseFileDiffContent {
   sourceSha: string;
@@ -9,36 +10,29 @@ export interface UseFileDiffContent {
 }
 
 export const useFileDiffContent = ({ file, sourceSha, targetSha }: UseFileDiffContent) => {
-  const dispatch = useAppDispatch();
-  const { filesCache } = useAppSelector(state => state.review);
+  const projectId = useAppSelector(state => state.review.reviewInfo?.projectId);
 
-  const sourceFile = filesCache[file.oldPath]?.[sourceSha];
-  const targetFile = filesCache[file.path]?.[targetSha];
-
-  const loadFileByRef = useCallback(
-    (filePath: string, ref: string) => {
-      dispatch(loadFile({ filePath, ref }));
-      dispatch(reviewActions.addRequestInProgress(`loadFile/${filePath}/${ref}`));
-    },
-    [dispatch],
-  );
+  const [loadSourceFile, { data: sourceFile = '', isLoading: sourceIsLoading }] = useLazyGetRawFileQuery();
+  const [loadTargetFile, { data: targetFile = '', isLoading: targetIsLoading }] = useLazyGetRawFileQuery();
 
   useEffect(() => {
+    if (projectId === undefined) throw new Error('not provided projectId');
+
     if (file.status === 'deleted') {
-      dispatch(reviewActions.addFileContent({ path: file.path, ref: targetSha, content: null }));
+      injectedRtkApi.util.upsertQueryData('getRawFile', { projectId, filePath: file.path, ref: sourceSha }, '');
     } else {
-      loadFileByRef(file.path, targetSha);
+      loadTargetFile({ projectId, filePath: file.path, ref: targetSha });
     }
 
     if (file.status === 'added') {
-      dispatch(reviewActions.addFileContent({ path: file.oldPath, ref: sourceSha, content: null }));
+      injectedRtkApi.util.upsertQueryData('getRawFile', { projectId, filePath: file.oldPath, ref: sourceSha }, '');
     } else {
-      loadFileByRef(file.oldPath, sourceSha);
+      loadSourceFile({ projectId, filePath: file.oldPath, ref: sourceSha });
     }
-  }, [dispatch, file, loadFileByRef, sourceSha, targetSha]);
+  }, [file, loadSourceFile, loadTargetFile, projectId, sourceSha, targetSha]);
 
   return {
-    sourceFile,
-    targetFile,
+    sourceFile: sourceIsLoading ? undefined : sourceFile,
+    targetFile: targetIsLoading ? undefined : targetFile,
   };
 };

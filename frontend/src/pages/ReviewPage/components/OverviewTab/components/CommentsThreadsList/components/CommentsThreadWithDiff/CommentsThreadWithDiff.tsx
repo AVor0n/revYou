@@ -1,13 +1,15 @@
 import { Skeleton, Switch } from '@gravity-ui/uikit';
 import { useEffect, useState } from 'react';
 import { MonacoDiffEditor } from 'react-monaco-editor';
-import { useParams } from 'react-router-dom';
-import { type CommentsThread as ICommentsThread } from '@api';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useLazyGetRawFileQuery, type CommentsThread as ICommentsThread } from '@api';
 import { Link, EditorSelection, defaultDiffEditorOptions, useResizableDiffEditor } from '@ui';
-import { Theme, useTheme, type FileNode } from 'app';
-import { useFile, useFileDiffContent } from '../../../../../../hooks';
+import { Theme, useTheme } from 'app';
+import { useAppSelector } from 'app/hooks';
+import { useFileDiffContent } from '../../../../../../hooks';
 import { CommentsThread } from '../../../../../CommentsThread';
 import { useRangeEditorHeight } from './hooks';
+import type { FileNode } from '@shared/types';
 import styles from './CommentsThreadWithDiff.module.scss';
 
 interface CommentsThreadWithDiffProps {
@@ -19,11 +21,21 @@ interface CommentsThreadWithDiffProps {
 
 export const CommentsThreadWithDiff = ({ thread, sourceSha, targetSha, file }: CommentsThreadWithDiffProps) => {
   const { theme } = useTheme();
+  const navigate = useNavigate();
   const { homeworkId, reviewId, role } = useParams<Record<'homeworkId' | 'reviewId' | 'role', string>>();
   const [showOriginalDiff, setShowOriginalDiff] = useState(false);
+  const projectId = useAppSelector(state => state.review.reviewInfo?.projectId);
   const { diffEditor, editorDidMount } = useResizableDiffEditor();
   const { sourceFile, targetFile: latestFile } = useFileDiffContent({ file, sourceSha, targetSha });
-  const commentedFile = useFile({ ref: thread.commitSha, filePath: thread.filePath });
+  const [loadCommentedFile, { data: commentedFile }] = useLazyGetRawFileQuery();
+
+  useEffect(() => {
+    if (projectId === undefined) {
+      navigate(`/homeworks/${homeworkId}`);
+    } else {
+      loadCommentedFile({ projectId, filePath: thread.filePath, ref: thread.commitSha });
+    }
+  }, [homeworkId, loadCommentedFile, navigate, projectId, thread.commitSha, thread.filePath]);
 
   const editorHeight = useRangeEditorHeight({
     diffEditor,
@@ -67,8 +79,8 @@ export const CommentsThreadWithDiff = ({ thread, sourceSha, targetSha, file }: C
           height={editorHeight}
           // TODO: сделать автоопределение языка на основе расширения файла
           language="typescript"
-          original={sourceFile ?? ''}
-          value={showOriginalDiff ? commentedFile ?? '' : latestFile ?? ''}
+          original={sourceFile}
+          value={showOriginalDiff ? commentedFile : latestFile}
           options={defaultDiffEditorOptions}
           editorDidMount={editorDidMount}
         />

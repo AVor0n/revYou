@@ -1,5 +1,5 @@
-import type { FileNode, FolderNode, FilesTree, FileStatus } from '../types';
 import type { Diff } from '@api';
+import type { FileNode, FileStatus, FilesTree, FolderNode } from '@shared/types';
 
 const getFileStatusFromDiff = (file: Diff): FileStatus => {
   if (file.deleted_file) return 'deleted';

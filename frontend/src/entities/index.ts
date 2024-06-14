@@ -1,2 +1,2 @@
 export * from './User.slice';
-export * from './Review';
+export * from './Review.slice';
