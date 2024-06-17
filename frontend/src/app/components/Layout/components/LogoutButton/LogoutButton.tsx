@@ -1,9 +1,11 @@
 import { ArrowRightFromSquare } from '@gravity-ui/icons';
 import { Button, DropdownMenu, Icon } from '@gravity-ui/uikit';
 import { useNavigate } from 'react-router-dom';
-import { useAppSelector } from 'app/hooks';
+import { userActions } from '@entities';
+import { useAppDispatch, useAppSelector } from 'app/hooks';
 
 export const LogoutButton = () => {
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const userData = useAppSelector(state => state.user.authData);
 
@@ -11,6 +13,8 @@ export const LogoutButton = () => {
     localStorage.removeItem('accessToken');
     localStorage.removeItem('refreshToken');
     localStorage.removeItem('userInfo');
+    dispatch(userActions.clear());
+
     navigate('/auth');
   };
 

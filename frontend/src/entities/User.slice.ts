@@ -4,12 +4,22 @@ import type { SignInResponse } from '@shared/api';
 export type FullUserInfo = Omit<SignInResponse, 'accessToken' | 'refreshToken'>;
 
 export interface UserSchema {
-  authData: FullUserInfo | null;
+  authData: SignInResponse | null;
   error: string;
 }
 
+const getInitialAuthInfo = () => {
+  const userInfoRaw = localStorage.getItem('userInfo');
+  if (!userInfoRaw) return null;
+  try {
+    return JSON.parse(userInfoRaw) as SignInResponse;
+  } catch {
+    return null;
+  }
+};
+
 const initialState: UserSchema = {
-  authData: null,
+  authData: getInitialAuthInfo(),
   error: '',
 };
 
