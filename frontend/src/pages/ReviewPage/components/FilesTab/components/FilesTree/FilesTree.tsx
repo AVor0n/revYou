@@ -5,6 +5,7 @@ import { useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLazyGetAllThreadsQuery } from '@shared/api';
 import { isFolder, type FilesTreeItem } from '@shared/types';
+import { useApiError } from '@shared/utils';
 import { Tree } from '@ui';
 import { useAppSelector } from 'app/hooks';
 import { useActiveFile } from '../../hooks';
@@ -15,7 +16,8 @@ export const FilesTree = () => {
   const navigate = useNavigate();
   const { filesTree, reviewInfo } = useAppSelector(state => state.review);
   const { activeFile, setActiveFile } = useActiveFile();
-  const [loadThreads, { data: threads }] = useLazyGetAllThreadsQuery();
+  const [loadThreads, { data: threads, error }] = useLazyGetAllThreadsQuery();
+  useApiError(error, { name: 'loadThreads', title: 'Не удалось загрузить список комментариев' });
 
   useEffect(() => {
     if (reviewInfo?.reviewId === undefined) {

@@ -3,6 +3,7 @@ import { useEffect, useMemo, useRef } from 'react';
 import { Panel, PanelGroup, type ImperativePanelGroupHandle } from 'react-resizable-panels';
 import { useParams } from 'react-router-dom';
 import { useLazyGetReviewsInfoQuery, type ReviewStatus, type ReviewInfo } from '@api';
+import { useApiError } from '@shared/utils';
 import { EmptyPlug } from '@ui';
 import { StateColumn } from './components';
 import styles from './AllSolutionsTab.module.scss';
@@ -18,7 +19,8 @@ const reviewStatuses: ReviewStatus[] = [
 
 export const AllSolutionsTab = () => {
   const { homeworkId } = useParams<{ homeworkId: string }>();
-  const [loadAllSolutions, { data: allSolutions }] = useLazyGetReviewsInfoQuery();
+  const [loadAllSolutions, { data: allSolutions, error }] = useLazyGetReviewsInfoQuery();
+  useApiError(error, { name: 'loadAllSolutions', title: 'Не удалось загрузить список решений' });
   const ref = useRef<ImperativePanelGroupHandle>(null);
 
   useEffect(() => {

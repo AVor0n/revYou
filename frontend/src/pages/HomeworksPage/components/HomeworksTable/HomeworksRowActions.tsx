@@ -3,11 +3,13 @@ import { DropdownMenu, Icon, type RenderRowActionsProps } from '@gravity-ui/uiki
 import { type FC } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDeleteHomeworkMutation, type Homework } from '@api';
+import { useApiError } from '@shared/utils';
 import { useAppSelector } from 'app/hooks';
 
 export const HomeworksRowActions: FC<RenderRowActionsProps<Homework>> = ({ item }) => {
   const navigate = useNavigate();
-  const [deleteHomework] = useDeleteHomeworkMutation();
+  const [deleteHomework, { error }] = useDeleteHomeworkMutation();
+  useApiError(error, { name: 'deleteHomework', title: 'Не удалось удалить домашнее задание' });
   const role = useAppSelector(state => state.user.authData?.role);
 
   if (role === 'STUDENT') return null;

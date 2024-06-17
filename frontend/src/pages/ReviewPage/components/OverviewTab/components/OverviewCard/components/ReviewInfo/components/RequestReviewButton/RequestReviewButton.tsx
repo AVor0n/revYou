@@ -3,6 +3,7 @@ import { Button, Icon, Text } from '@gravity-ui/uikit';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useGetAllThreadsQuery, useUploadCorrectionsMutation } from '@shared/api';
+import { useApiError } from '@shared/utils';
 import { ModalWithQuestion } from '@ui';
 import styles from './RequestReviewButton.module.scss';
 
@@ -14,8 +15,12 @@ interface RequestReviewButtonProps {
 export const RequestReviewButton = ({ reviewId, homeworkId }: RequestReviewButtonProps) => {
   const navigate = useNavigate();
   const [isOpenReviewWindow, setIsOpenReviewWindow] = useState(false);
-  const { data: threads } = useGetAllThreadsQuery({ reviewId });
-  const [requestRepeatReview, { isLoading }] = useUploadCorrectionsMutation();
+
+  const { data: threads, error: threadsError } = useGetAllThreadsQuery({ reviewId });
+  useApiError(threadsError, { name: 'loadThreads', title: 'Не удалось загрузить список комментариев' });
+
+  const [requestRepeatReview, { isLoading, error: uploadCorrectionsError }] = useUploadCorrectionsMutation();
+  useApiError(uploadCorrectionsError, { name: 'uploadCorrections', title: 'Ошибка при запросе ревью' });
 
   const hasActiveThreads = threads?.data.some(thread => thread.status === 'ACTIVE');
 

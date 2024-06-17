@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { reviewActions, useAppDispatch } from '@app';
 import { useLazyGetHomeworkQuery, type ReviewInfo } from '@shared/api';
+import { useApiError } from '@shared/utils';
 import styles from './ReviewCard.module.scss';
 
 interface ReviewCardProps {
@@ -13,7 +14,8 @@ export const ReviewCard = ({ review }: ReviewCardProps) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { homeworkId } = useParams<{ homeworkId: string }>();
-  const [loadHomework, { data: homework }] = useLazyGetHomeworkQuery();
+  const [loadHomework, { data: homework, error }] = useLazyGetHomeworkQuery();
+  useApiError(error, { name: 'loadHomework', title: 'Не удалось загрузить домашнее задание' });
 
   useEffect(() => {
     if (homeworkId === undefined) {

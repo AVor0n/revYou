@@ -2,6 +2,7 @@ import { Card, Skeleton } from '@gravity-ui/uikit';
 import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useLazyGetHomeworkQuery } from '@api';
+import { useApiError } from '@shared/utils';
 import { useAppSelector } from 'app/hooks';
 import {
   AuthorAndDeadlines,
@@ -16,7 +17,9 @@ import styles from './DescriptionTab.module.scss';
 export const DescriptionTab = () => {
   const { homeworkId } = useParams<{ homeworkId: string }>();
   const role = useAppSelector(state => state.user.authData?.role);
-  const [loadHomework, { data: homeworkInfo }] = useLazyGetHomeworkQuery();
+  const [loadHomework, { data: homeworkInfo, error }] = useLazyGetHomeworkQuery();
+  useApiError(error, { name: 'loadHomework', title: 'Не удалось загрузить домашнее задание' });
+
   const solutionSent = !!homeworkInfo?.status;
 
   useEffect(() => {

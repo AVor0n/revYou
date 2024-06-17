@@ -5,6 +5,7 @@ import { reviewActions } from '@entities';
 import { useLazyGetDiffsQuery } from '@shared/api';
 import { isFile } from '@shared/types';
 import { sortTree } from '@shared/ui';
+import { useApiError } from '@shared/utils';
 import { useAppDispatch, useAppSelector } from 'app/hooks';
 import { buildFileTree } from 'entities/Review/services/buildFileTree';
 import { Header, FilesTab, OverviewTab } from './components';
@@ -21,7 +22,9 @@ export const ReviewPage = () => {
   }>();
   const activeTab = tab ?? 'about';
   const review = useAppSelector(state => state.review.reviewInfo);
-  const [getDiff, { data: filesDiff }] = useLazyGetDiffsQuery();
+
+  const [getDiff, { data: filesDiff, error }] = useLazyGetDiffsQuery();
+  useApiError(error, { name: 'loadDiffs', title: 'Ошибка при загрузке изменений' });
 
   useEffect(() => {
     if (review) {

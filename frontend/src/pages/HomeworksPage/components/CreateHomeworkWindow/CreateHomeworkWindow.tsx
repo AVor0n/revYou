@@ -6,6 +6,7 @@ import { useCallback, useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { useCreateHomeworkMutation, useGetAllLecturesQuery, type Lecture } from '@api';
+import { useApiError } from '@shared/utils';
 import { FormWindow, Input } from '@ui';
 import { useAppSelector } from 'app/hooks';
 import { defaultHomework, type CreateHomework } from '../../constants';
@@ -25,9 +26,14 @@ const getLecturesOptions = (userId: number | undefined, lectures: Lecture[]) =>
 
 export const CreateHomeworkWindow = ({ open }: CreateHomeworkWindowProps) => {
   const navigate = useNavigate();
-  const [createHomework, { isLoading, isSuccess }] = useCreateHomeworkMutation();
   const userInfo = useAppSelector(state => state.user.authData);
-  const { data: allLectures } = useGetAllLecturesQuery();
+
+  const [createHomework, { isLoading, isSuccess, error: createHomeworkError }] = useCreateHomeworkMutation();
+  useApiError(createHomeworkError, { name: 'createHomework', title: 'Не удалось создать домашнее задание' });
+
+  const { data: allLectures, error: allLecturesError } = useGetAllLecturesQuery();
+  useApiError(allLecturesError, { name: 'loadAllLectures', title: 'Ошибка при загрузке списка лекций' });
+
   const lecturesOptions = getLecturesOptions(userInfo?.userId, allLectures?.data ?? []);
 
   const {

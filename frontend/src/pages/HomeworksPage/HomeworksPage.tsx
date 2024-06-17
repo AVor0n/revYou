@@ -2,6 +2,7 @@ import { Skeleton } from '@gravity-ui/uikit';
 import { useEffect, useState } from 'react';
 import { useMatch, useNavigate } from 'react-router-dom';
 import { useGetHomeworksQuery, useLazyGetHomeworkQuery } from '@shared/api';
+import { useApiError } from '@shared/utils';
 import { CreateHomeworkWindow, EditHomeworkWindow, HomeworksTable, HomeworksToolbar } from './components';
 import styles from './HomeworksPage.module.scss';
 
@@ -11,8 +12,11 @@ export const HomeworksPage = () => {
   const showEditWindow = useMatch('/homeworks/:id/edit');
 
   const [search, setSearch] = useState('');
-  const { data: homeworks } = useGetHomeworksQuery();
-  const [loadHomeworkForEdit, { data: homeworkForEdit }] = useLazyGetHomeworkQuery();
+  const { data: homeworks, error: homeworksError } = useGetHomeworksQuery();
+  useApiError(homeworksError, { name: 'loadHomeworks', title: 'Не удалось загрузить список домашних работ' });
+
+  const [loadHomeworkForEdit, { data: homeworkForEdit, error: homeworkError }] = useLazyGetHomeworkQuery();
+  useApiError(homeworkError, { name: 'loadHomework', title: 'Ошибка загрузки домашней работы' });
 
   const filteredHomeworks = homeworks?.data.filter(homework => homework.name.includes(search));
 

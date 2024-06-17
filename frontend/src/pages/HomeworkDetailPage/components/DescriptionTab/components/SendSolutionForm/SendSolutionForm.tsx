@@ -4,6 +4,7 @@ import { Controller, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
 import { useCreateSolutionMutation } from '@shared/api';
+import { useApiError } from '@shared/utils';
 import { Input } from '@ui';
 import styles from './SendSolutionForm.module.scss';
 
@@ -19,7 +20,9 @@ interface SendSolutionFormProps {
 
 export const SendSolutionForm = ({ homeworkId }: SendSolutionFormProps) => {
   const navigate = useNavigate();
-  const [createSolution, { isLoading }] = useCreateSolutionMutation();
+  const [createSolution, { isLoading, error }] = useCreateSolutionMutation();
+
+  useApiError(error, { name: 'createSolution', title: 'Не удалось отправить решение' });
 
   const {
     control,

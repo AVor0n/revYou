@@ -3,6 +3,7 @@ import { useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useGetAllThreadsQuery, type CommentsThread, type Review } from '@api';
 import { isFile, type FileNode } from '@shared/types';
+import { useApiError } from '@shared/utils';
 import { EmptyPlug, Link, findInTree } from '@ui';
 import { useAppSelector } from 'app/hooks';
 import { CommentsThreadWithDiff } from './components';
@@ -16,7 +17,10 @@ export const CommentsThreadsList = ({ review }: CommentsThreadsListProps) => {
   const [filterValue, setFilterValue] = useState(['all']);
   const [sortValue, setSortValue] = useState(['ASC']);
   const { homeworkId, reviewId, role } = useParams<Record<'homeworkId' | 'reviewId' | 'role', string>>();
-  const { data: threads } = useGetAllThreadsQuery({ reviewId: review.reviewId });
+
+  const { data: threads, error } = useGetAllThreadsQuery({ reviewId: review.reviewId });
+  useApiError(error, { name: 'loadAllThreads', title: 'Ошибка при загрузке списка комментариев' });
+
   const { filesTree } = useAppSelector(state => state.review);
 
   const threadsWithFileInfo = useMemo(() => {

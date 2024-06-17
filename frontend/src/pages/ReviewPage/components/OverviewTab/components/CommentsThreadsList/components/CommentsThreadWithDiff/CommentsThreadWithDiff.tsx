@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { MonacoDiffEditor } from 'react-monaco-editor';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useLazyGetRawFileQuery, type CommentsThread as ICommentsThread } from '@api';
+import { useApiError } from '@shared/utils';
 import { Link, EditorSelection, defaultDiffEditorOptions, useResizableDiffEditor } from '@ui';
 import { Theme, useTheme } from 'app';
 import { useAppSelector } from 'app/hooks';
@@ -27,7 +28,8 @@ export const CommentsThreadWithDiff = ({ thread, sourceSha, targetSha, file }: C
   const projectId = useAppSelector(state => state.review.reviewInfo?.projectId);
   const { diffEditor, editorDidMount } = useResizableDiffEditor();
   const { sourceFile, targetFile: latestFile } = useFileDiffContent({ file, sourceSha, targetSha });
-  const [loadCommentedFile, { data: commentedFile }] = useLazyGetRawFileQuery();
+  const [loadCommentedFile, { data: commentedFile, error }] = useLazyGetRawFileQuery();
+  useApiError(error, { name: 'loadCommentedFile', title: 'Ошибка при загрузке файла с комментарием' });
 
   useEffect(() => {
     if (projectId === undefined) {

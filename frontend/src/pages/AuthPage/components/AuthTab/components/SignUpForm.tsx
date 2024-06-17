@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
 import { useSignInMutation, useSignUpMutation, type SignUpRequest } from '@api';
 import { useAppDispatch, useAuth, userActions } from '@app';
+import { useApiError } from '@shared/utils';
 import { Input } from '@ui';
 import styles from './Form.module.scss';
 
@@ -30,8 +31,11 @@ export const SignUpForm = ({ onChangeAuthType }: SignUpFormProps) => {
   const signUpRequestData = useRef<SignUpRequest>();
   const nav = useNavigate();
   const { setAccessToken, setRefreshToken } = useAuth();
-  const [signIn, { data: signInData, isLoading: signInLoading }] = useSignInMutation();
-  const [signUp, { data: signUpData, isLoading: signUpLoading }] = useSignUpMutation();
+  const [signIn, { data: signInData, isLoading: signInLoading, error: signInError }] = useSignInMutation();
+  const [signUp, { data: signUpData, isLoading: signUpLoading, error: signUpError }] = useSignUpMutation();
+
+  useApiError(signInError, { name: 'signIn', title: 'Ошибка входа' });
+  useApiError(signUpError, { name: 'signUp', title: 'Ошибка регистрации' });
 
   useEffect(() => {
     if (!signInData) return;

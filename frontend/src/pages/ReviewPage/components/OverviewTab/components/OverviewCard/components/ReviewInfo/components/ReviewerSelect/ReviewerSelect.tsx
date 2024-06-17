@@ -1,6 +1,7 @@
 import { Select } from '@gravity-ui/uikit';
 import { useMemo, useState } from 'react';
 import { useGetAvailableReviewersQuery, useReplaceReviewerMutation, type Student } from '@api';
+import { useApiError } from '@shared/utils';
 import { ModalWithQuestion } from '@ui';
 import styles from './ReviewerSelect.module.scss';
 
@@ -12,9 +13,16 @@ interface ReviewerSelectProps {
 
 export const ReviewerSelect = ({ homeworkId, reviewId, reviewer }: ReviewerSelectProps) => {
   const [reviewerId, setReviewerId] = useState(reviewer?.userId ? [reviewer.userId.toString()] : undefined);
-  const [changeReviewer] = useReplaceReviewerMutation();
   const [reviewerCandidate, setReviewerCandidate] = useState<Student | null>(null);
-  const { data: availableReviewers } = useGetAvailableReviewersQuery({ homeworkId });
+
+  const [changeReviewer, { error: replaceReviewerError }] = useReplaceReviewerMutation();
+  useApiError(replaceReviewerError, { name: 'replaceReviewer', title: 'Не удалось изменить ревьюера' });
+
+  const { data: availableReviewers, error: availableReviewersError } = useGetAvailableReviewersQuery({ homeworkId });
+  useApiError(availableReviewersError, {
+    name: 'loadAvailableReviewers',
+    title: 'Не удалось получить список ревьюеров',
+  });
 
   const listOptions = useMemo(
     () => availableReviewers?.data.map(user => ({ value: user.userId.toString(), content: user.username })) ?? [],

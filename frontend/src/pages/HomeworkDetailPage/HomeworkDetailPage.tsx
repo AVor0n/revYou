@@ -2,6 +2,7 @@ import { Skeleton, Tabs } from '@gravity-ui/uikit';
 import { useEffect, useMemo } from 'react';
 import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import { useLazyGetHomeworkQuery, useLazyGetMyReviewsQuery, useLazyGetReviewsToDoQuery } from '@shared/api';
+import { useApiError } from '@shared/utils';
 import { useAppSelector } from 'app/hooks';
 import { AllSolutionsTab, DescriptionTab, Header, MySolutionsTab, SolutionTab } from './components';
 import styles from './HomeworkDetailPage.module.scss';
@@ -10,9 +11,19 @@ export const HomeworkDetailPage = () => {
   const { homeworkId, tab } = useParams<{ homeworkId: string; tab: keyof typeof tabs }>();
   const navigate = useNavigate();
   const userInfo = useAppSelector(state => state.user.authData);
-  const [loadHomework, { data: homeworkInfo }] = useLazyGetHomeworkQuery();
-  const [loadMySolutions, { data: mySolutions }] = useLazyGetMyReviewsQuery();
-  const [loadSolutionsForReview, { data: solutionsForReview }] = useLazyGetReviewsToDoQuery();
+  const [loadHomework, { data: homeworkInfo, error: homeworkError }] = useLazyGetHomeworkQuery();
+  useApiError(homeworkError, { name: 'loadHomework', title: 'Не удалось загрузить домашнее задание' });
+
+  const [loadMySolutions, { data: mySolutions, error: mySolutionsError }] = useLazyGetMyReviewsQuery();
+  useApiError(mySolutionsError, { name: 'loadMySolutions', title: 'Не удалось загрузить список отправленных решений' });
+
+  const [loadSolutionsForReview, { data: solutionsForReview, error: solutionsForReviewError }] =
+    useLazyGetReviewsToDoQuery();
+  useApiError(solutionsForReviewError, {
+    name: 'loadSolutionsForReview',
+    title: 'Не удалось загрузить список решений на проверку',
+  });
+
   const activeTab = tab ?? 'about';
 
   useEffect(() => {

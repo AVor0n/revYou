@@ -3,6 +3,7 @@ import { type editor as IEditor, type Selection } from 'monaco-editor';
 import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useStartThreadMutation } from '@shared/api';
+import { useApiError } from '@shared/utils';
 import { EditorSelection, ResizableViewZone } from '@ui';
 import { CreateThreadCard } from './components';
 import { useEditorSelection } from './hooks';
@@ -18,7 +19,8 @@ interface CreateThreadWidgetProps {
 export const CreateThreadWidget = ({ editor, reviewId, commitSha, filePath }: CreateThreadWidgetProps) => {
   const [selection, setSelection] = useState<Selection | null>(null);
   const { tooltipNode } = useEditorSelection({ editor, onSelection: setSelection });
-  const [createThread, { isSuccess, isLoading }] = useStartThreadMutation();
+  const [createThread, { isSuccess, isLoading, error }] = useStartThreadMutation();
+  useApiError(error, { name: 'startThread', title: 'Не удалось оставить комментарий' });
 
   const onCreateThread = (content: string) => {
     if (!selection) {

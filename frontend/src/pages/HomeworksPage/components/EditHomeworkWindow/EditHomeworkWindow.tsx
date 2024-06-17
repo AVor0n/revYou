@@ -6,6 +6,7 @@ import { useCallback, useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { type HomeworkPatch, type Homework, useUpdateHomeworkMutation } from '@api';
+import { useApiError } from '@shared/utils';
 import { FormWindow, Input } from '@ui';
 import { defaultHomework } from '../../constants';
 import { editHomeworkSchema } from './editHomeworkSchema';
@@ -17,7 +18,8 @@ interface EditHomeworkWindowProps {
 }
 
 export const EditHomeworkWindow = ({ record, open }: EditHomeworkWindowProps) => {
-  const [updateHomework, { isLoading, isSuccess }] = useUpdateHomeworkMutation();
+  const [updateHomework, { isLoading, isSuccess, error }] = useUpdateHomeworkMutation();
+  useApiError(error, { name: 'editHomework', title: 'Не удалось изменить домашнее задание' });
   const navigate = useNavigate();
   const {
     reset,

@@ -2,6 +2,7 @@ import { Breadcrumbs, FirstDisplayedItemsCount, LastDisplayedItemsCount, Skeleto
 import { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useLazyGetHomeworkQuery } from '@shared/api';
+import { useApiError } from '@shared/utils';
 import { useAppSelector } from 'app/hooks';
 import styles from './Header.module.scss';
 
@@ -9,7 +10,9 @@ export const Header = () => {
   const { homeworkId } = useParams<{ homeworkId: string }>();
   const navigate = useNavigate();
   const { role } = useParams<{ role: 'student' | 'reviewer' | 'teacher' }>();
-  const [loadHomework, { data: selectedHomework }] = useLazyGetHomeworkQuery();
+  const [loadHomework, { data: selectedHomework, error }] = useLazyGetHomeworkQuery();
+  useApiError(error, { name: 'loadHomework', title: 'Ошибка при загрузке домашнего задания' });
+
   const selectedReview = useAppSelector(state => state.review.reviewInfo);
 
   useEffect(() => {

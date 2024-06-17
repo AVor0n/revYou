@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useLazyGetMyReviewsQuery, type Review } from '@api';
 import { reviewActions, useAppDispatch } from '@app';
+import { useApiError } from '@shared/utils';
 import { MySolutionsTable } from './components';
 import styles from './MySolutionsTab.module.scss';
 
@@ -10,7 +11,8 @@ export const MySolutionsTab = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { homeworkId } = useParams<{ homeworkId: string }>();
-  const [loadMySolutions, { data: mySolutions }] = useLazyGetMyReviewsQuery();
+  const [loadMySolutions, { data: mySolutions, error }] = useLazyGetMyReviewsQuery();
+  useApiError(error, { name: 'loadMySolutions', title: 'Не удалось загрузить список отправленных решений' });
 
   useEffect(() => {
     if (homeworkId === undefined) {

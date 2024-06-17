@@ -1,12 +1,14 @@
 import { useEffect, useMemo } from 'react';
 import { useLazyGetAllThreadsQuery, type CommentsThread } from '@api';
+import { useApiError } from '@shared/utils';
 import { useAppSelector } from 'app/hooks';
 import { useActiveFile } from '../../../hooks';
 
 export const useFileDiffComments = () => {
   const { activeFile } = useActiveFile();
   const { reviewInfo } = useAppSelector(state => state.review);
-  const [loadThreads, { data: threads }] = useLazyGetAllThreadsQuery();
+  const [loadThreads, { data: threads, error }] = useLazyGetAllThreadsQuery();
+  useApiError(error, { name: 'loadThreads', title: 'Не удалось загрузить список комментариев' });
 
   useEffect(() => {
     if (reviewInfo?.reviewId === undefined) throw new Error('not provided reviewId');

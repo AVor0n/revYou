@@ -2,6 +2,7 @@ import { Button, TextArea } from '@gravity-ui/uikit';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAddReviewResolutionMutation } from '@shared/api';
+import { useApiError } from '@shared/utils';
 import { FormWindow } from '@ui';
 import styles from './CompleteReviewWindow.module.scss';
 
@@ -15,7 +16,8 @@ interface CompleteReviewWindowProps {
 export const CompleteReviewWindow = ({ isOpen, homeworkId, reviewId, ...props }: CompleteReviewWindowProps) => {
   const navigate = useNavigate();
   const [resolution, setResolution] = useState<'APPROVED' | 'CORRECTIONS_REQUIRED' | null>(null);
-  const [completeReview, { isLoading, isSuccess }] = useAddReviewResolutionMutation();
+  const [completeReview, { isLoading, isSuccess, error }] = useAddReviewResolutionMutation();
+  useApiError(error, { name: 'addReviewResolution', title: 'Не удалось завершить ревью' });
   const [touched, setTouched] = useState(false);
   const [comment, setComment] = useState('');
   const approveLoading = isLoading && resolution === 'APPROVED';

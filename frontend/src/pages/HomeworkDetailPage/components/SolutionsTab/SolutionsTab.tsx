@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useLazyGetReviewsToDoQuery, type Review } from '@api';
 import { reviewActions, useAppDispatch } from '@app';
+import { useApiError } from '@shared/utils';
 import { SolutionsTable } from './components';
 import styles from './SolutionsTab.module.scss';
 
@@ -10,7 +11,8 @@ export const SolutionTab = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { homeworkId } = useParams<{ homeworkId: string }>();
-  const [loadSolutionsForReview, { data: solutionsForReview }] = useLazyGetReviewsToDoQuery();
+  const [loadSolutionsForReview, { data: solutionsForReview, error }] = useLazyGetReviewsToDoQuery();
+  useApiError(error, { name: 'loadSolutionsForReview', title: 'Не удалось загрузить список решений на проверку' });
 
   useEffect(() => {
     if (!homeworkId) {

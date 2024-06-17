@@ -2,6 +2,7 @@ import { TextArea, Button } from '@gravity-ui/uikit';
 import clsx from 'clsx';
 import { useState } from 'react';
 import { useAddCommentMutation, useResolveCommentsThreadMutation, type CommentsThreadStatus } from '@api';
+import { useApiError } from '@shared/utils';
 import styles from './ThreadActions.module.scss';
 
 interface ThreadActionsProps {
@@ -10,8 +11,13 @@ interface ThreadActionsProps {
 }
 
 export const ThreadActions = ({ threadId, threadStatus }: ThreadActionsProps) => {
-  const [addComment, { isLoading: addCommentLoading }] = useAddCommentMutation();
-  const [changeThreadStatus, { isLoading: changeThreadLoading }] = useResolveCommentsThreadMutation();
+  const [addComment, { isLoading: addCommentLoading, error: addCommentError }] = useAddCommentMutation();
+  const [changeThreadStatus, { isLoading: changeThreadLoading, error: changeThreadError }] =
+    useResolveCommentsThreadMutation();
+
+  useApiError(addCommentError, { name: 'addComment', title: 'Не удалось создать комментарий' });
+  useApiError(changeThreadError, { name: 'changeThread', title: 'Не удалось изменить состояние' });
+
   const [newComment, setNewComment] = useState('');
 
   const onReply = () => {
