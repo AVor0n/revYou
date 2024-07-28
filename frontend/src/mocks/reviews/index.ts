@@ -8,7 +8,7 @@ import type {
   CommentsThread,
   CommentPostDto,
   ReviewInfoWrapper,
-} from '@domains';
+} from '@api';
 
 const reviews = new Map(initialReviews.map(review => [review.reviewId, review]));
 const threads = new Map(initialThreads.map(thread => [thread.threadId, thread]));

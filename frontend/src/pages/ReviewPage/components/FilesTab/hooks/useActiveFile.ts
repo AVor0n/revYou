@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { findInTree } from '@components/Tree';
-import { isFile, type FilesTreeItem } from 'app';
+import { isFile, type FilesTreeItem } from '@shared/types';
+import { findInTree } from '@ui';
 import { useAppSelector } from 'app/hooks';
 
 export const useActiveFile = () => {

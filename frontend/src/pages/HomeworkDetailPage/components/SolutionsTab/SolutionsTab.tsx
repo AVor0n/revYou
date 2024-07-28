@@ -1,35 +1,36 @@
 import { Skeleton } from '@gravity-ui/uikit';
 import { useEffect } from 'react';
-import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
-import { type Homework, type Review } from '@domains';
-import { getSolutionsForReview, loadSolutionsForReview, reviewActions, useAppDispatch } from 'app';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useLazyGetReviewsToDoQuery, type Review } from '@api';
+import { reviewActions, useAppDispatch } from '@app';
+import { useApiError } from '@shared/utils';
 import { SolutionsTable } from './components';
 import styles from './SolutionsTab.module.scss';
 
-interface SolutionTabProps {
-  homeworkInfo: Homework | null;
-}
-
-export const SolutionTab = ({ homeworkInfo }: SolutionTabProps) => {
+export const SolutionTab = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const solutionsForReview = useSelector(getSolutionsForReview);
+  const { homeworkId } = useParams<{ homeworkId: string }>();
+  const [loadSolutionsForReview, { data: solutionsForReview, error }] = useLazyGetReviewsToDoQuery();
+  useApiError(error, { name: 'loadSolutionsForReview', title: 'Не удалось загрузить список решений на проверку' });
 
   useEffect(() => {
-    if (!homeworkInfo?.id) return;
-    dispatch(loadSolutionsForReview(homeworkInfo.id));
-  }, [dispatch, homeworkInfo]);
+    if (!homeworkId) {
+      navigate('/homeworks');
+    } else {
+      loadSolutionsForReview({ homeworkId: +homeworkId });
+    }
+  }, [homeworkId, loadSolutionsForReview, navigate]);
 
   const onRowClick = (review: Review) => {
     dispatch(reviewActions.setReviewInfo(review));
-    navigate(`/homeworks/${homeworkInfo?.id}/review/${review.reviewId}/reviewer`);
+    navigate(`/homeworks/${homeworkId}/review/${review.reviewId}/reviewer`);
   };
 
   return (
     <div className={styles.page}>
       {solutionsForReview ? (
-        <SolutionsTable data={solutionsForReview} onRowClick={onRowClick} />
+        <SolutionsTable data={solutionsForReview.data} onRowClick={onRowClick} />
       ) : (
         <Skeleton className={styles.skeleton} />
       )}

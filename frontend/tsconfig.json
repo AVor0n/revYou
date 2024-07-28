@@ -16,10 +16,12 @@
     "jsx": "react-jsx",
     "baseUrl": "./src",
     "paths": {
-      "@components/*": ["./components/*"],
-      "@pages/*": ["./pages/*"],
-      "@types/*": ["./types/*"],
-      "@domains": ["./domains"]
+      "@app": ["app"],
+      "@entities": ["entities"],
+      "@pages": ["pages"],
+      "@shared/*": ["shared/*"],
+      "@ui": ["shared/ui"],
+      "@api": ["shared/api"]
     },
 
     /* Linting */

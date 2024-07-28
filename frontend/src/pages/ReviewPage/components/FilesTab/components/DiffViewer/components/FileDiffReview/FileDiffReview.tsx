@@ -1,12 +1,13 @@
 import { Loader } from '@gravity-ui/uikit';
 import { MonacoDiffEditor } from 'react-monaco-editor';
-import { defaultDiffEditorOptions, useResizableDiffEditor } from '@components/MonacoEditor';
-import { type Review } from '@domains';
-import { Theme, useTheme, type FileNode } from 'app';
+import { type Review } from '@api';
+import { defaultDiffEditorOptions, useResizableDiffEditor } from '@ui';
+import { Theme, useTheme } from 'app';
 import { useFileDiffContent } from '../../../../../../hooks';
 import { useFileDiffComments } from '../../hooks';
 import { CreateThreadWidget, EditorThreadComments } from './components';
 import { useScrollToChangeOrComment } from './hooks';
+import type { FileNode } from '@shared/types';
 import styles from './FileDiffReview.module.scss';
 
 interface FileDiffReviewProps {
@@ -41,8 +42,8 @@ export const FileDiffReview = ({ review, activeFile }: FileDiffReviewProps) => {
         theme={theme === Theme.LIGHT ? 'vs' : 'vs-dark'}
         // TODO: сделать автоопределение языка на основе расширения файла
         language="typescript"
-        original={sourceFile ?? ''}
-        value={targetFile ?? ''}
+        original={sourceFile}
+        value={targetFile}
         options={defaultDiffEditorOptions}
         editorDidMount={editorDidMount}
       />

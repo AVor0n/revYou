@@ -1,5 +1,5 @@
 import { HttpResponse, delay, http } from 'msw';
-import { type LecturePost, type Lecture } from '@domains';
+import { type LecturePost, type Lecture } from '@api';
 import { initialLectures } from './initial';
 
 let lecturesIdCounter = initialLectures.length + 1;

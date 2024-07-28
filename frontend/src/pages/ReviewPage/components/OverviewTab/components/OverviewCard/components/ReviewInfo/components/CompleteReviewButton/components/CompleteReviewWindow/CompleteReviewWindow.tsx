@@ -1,9 +1,9 @@
 import { Button, TextArea } from '@gravity-ui/uikit';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FormWindow } from '@components/FormWindow';
-import { completeReview, loadSolutionsForReview, reviewActions, useAppDispatch } from 'app';
-import { useAppSelector } from 'app/hooks';
+import { useAddReviewResolutionMutation } from '@shared/api';
+import { useApiError } from '@shared/utils';
+import { FormWindow } from '@ui';
 import styles from './CompleteReviewWindow.module.scss';
 
 interface CompleteReviewWindowProps {
@@ -15,19 +15,25 @@ interface CompleteReviewWindowProps {
 
 export const CompleteReviewWindow = ({ isOpen, homeworkId, reviewId, ...props }: CompleteReviewWindowProps) => {
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
+  const [resolution, setResolution] = useState<'APPROVED' | 'CORRECTIONS_REQUIRED' | null>(null);
+  const [completeReview, { isLoading, isSuccess, error }] = useAddReviewResolutionMutation();
+  useApiError(error, { name: 'addReviewResolution', title: 'Не удалось завершить ревью' });
   const [touched, setTouched] = useState(false);
   const [comment, setComment] = useState('');
-  const requestInProgress = useAppSelector(state => state.review.requestInProgress);
-  const rejectLoading = requestInProgress.rejectSolution;
-  const approveLoading = requestInProgress.approveSolution;
-  const loading = rejectLoading || approveLoading;
+  const approveLoading = isLoading && resolution === 'APPROVED';
+  const rejectLoading = isLoading && resolution === 'CORRECTIONS_REQUIRED';
 
-  const onSubmit = async (status: 'APPROVED' | 'CORRECTIONS_REQUIRED') => {
-    dispatch(reviewActions.addRequestInProgress(status === 'APPROVED' ? 'approveSolution' : 'rejectSolution'));
-    await dispatch(completeReview({ homeworkId, reviewId, comment, status }));
-    await dispatch(loadSolutionsForReview(homeworkId));
-    navigate(`/homeworks/${homeworkId}/for-review`);
+  useEffect(() => {
+    if (isSuccess) navigate(`/homeworks/${homeworkId}/for-review`);
+  }, [homeworkId, isSuccess, navigate]);
+
+  useEffect(() => {
+    if (!isLoading) setResolution(null);
+  }, [isLoading]);
+
+  const onSubmit = (status: 'APPROVED' | 'CORRECTIONS_REQUIRED') => {
+    completeReview({ homeworkId, reviewId, reviewResolution: { status, resolution: comment } });
+    setResolution(status);
   };
 
   const onClose = () => {
@@ -43,7 +49,7 @@ export const CompleteReviewWindow = ({ isOpen, homeworkId, reviewId, ...props }:
       onSubmit={() => {}}
       footer={
         <div className={styles.footer}>
-          <Button view="normal" onClick={onClose} disabled={loading} width="max">
+          <Button view="normal" onClick={onClose} disabled={isLoading} width="max">
             Отмена
           </Button>
 
@@ -74,7 +80,7 @@ export const CompleteReviewWindow = ({ isOpen, homeworkId, reviewId, ...props }:
         placeholder="Оставьте комментарий..."
         minRows={10}
         value={comment}
-        disabled={loading}
+        disabled={isLoading}
         onBlur={() => setTouched(true)}
         onChange={event => setComment(event.target.value)}
         error={touched && !comment}

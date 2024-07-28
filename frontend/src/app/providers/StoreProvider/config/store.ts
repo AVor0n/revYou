@@ -1,31 +1,18 @@
-import { configureStore, combineReducers } from '@reduxjs/toolkit';
-import { GetApi } from 'app/api';
-import { userReducer, homeworkReducer, reviewReducer, solutionReducer, lectureReducer } from 'app/entities';
-import { type ThunkExtraArg, type StoreSchema } from './StoreSchema';
+import { configureStore } from '@reduxjs/toolkit';
+import { setupListeners } from '@reduxjs/toolkit/query';
+import { reviewSlice, userSlice } from '@entities';
+import { api } from 'shared/api';
 
-export function createReduxStore(initialState?: StoreSchema) {
-  const rootReducers = {
-    user: userReducer,
-    homework: homeworkReducer,
-    review: reviewReducer,
-    lecture: lectureReducer,
-    solution: solutionReducer,
-  };
+export const store = configureStore({
+  reducer: {
+    user: userSlice.reducer,
+    review: reviewSlice.reducer,
+    [api.reducerPath]: api.reducer,
+  },
+  middleware: getDefaultMiddleware => getDefaultMiddleware().concat(api.middleware),
+});
 
-  const extraArg: ThunkExtraArg = {
-    api: GetApi(),
-  };
+export type AppDispatch = typeof store.dispatch;
+export type StoreSchema = ReturnType<typeof store.getState>;
 
-  return configureStore({
-    reducer: combineReducers(rootReducers),
-    preloadedState: initialState,
-    middleware: getDefaultMiddleware =>
-      getDefaultMiddleware({
-        thunk: {
-          extraArgument: extraArg,
-        },
-      }),
-  });
-}
-
-export type AppDispatch = ReturnType<typeof createReduxStore>['dispatch'];
+setupListeners(store.dispatch);

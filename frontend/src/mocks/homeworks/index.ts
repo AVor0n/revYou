@@ -1,5 +1,5 @@
 import { HttpResponse, delay, http } from 'msw';
-import { type HomeworkPatch, type Homework, type HomeworkPost, type SolutionPost } from '@domains';
+import { type HomeworkPatch, type Homework, type HomeworkPost, type SolutionPost } from '@api';
 import { type MockHomework, initialAuthors, initialHomeworks, initialLectures } from './initial';
 
 const lectures = new Map(initialLectures.map(lecture => [lecture.id, lecture]));

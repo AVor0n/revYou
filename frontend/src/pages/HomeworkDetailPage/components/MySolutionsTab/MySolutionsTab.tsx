@@ -1,35 +1,36 @@
 import { Skeleton } from '@gravity-ui/uikit';
 import { useEffect } from 'react';
-import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
-import { type Homework, type Review } from '@domains';
-import { getMySolutions, loadMySolutions, reviewActions, useAppDispatch } from 'app';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useLazyGetMyReviewsQuery, type Review } from '@api';
+import { reviewActions, useAppDispatch } from '@app';
+import { useApiError } from '@shared/utils';
 import { MySolutionsTable } from './components';
 import styles from './MySolutionsTab.module.scss';
 
-interface MySolutionsTabProps {
-  homeworkInfo: Homework | null;
-}
-
-export const MySolutionsTab = ({ homeworkInfo }: MySolutionsTabProps) => {
-  const dispatch = useAppDispatch();
+export const MySolutionsTab = () => {
   const navigate = useNavigate();
-  const mySolutions = useSelector(getMySolutions);
+  const dispatch = useAppDispatch();
+  const { homeworkId } = useParams<{ homeworkId: string }>();
+  const [loadMySolutions, { data: mySolutions, error }] = useLazyGetMyReviewsQuery();
+  useApiError(error, { name: 'loadMySolutions', title: 'Не удалось загрузить список отправленных решений' });
 
   useEffect(() => {
-    if (!homeworkInfo?.id) throw new Error('homework info is null');
-    dispatch(loadMySolutions(homeworkInfo.id));
-  }, [dispatch, homeworkInfo]);
+    if (homeworkId === undefined) {
+      navigate('/homeworks');
+    } else {
+      loadMySolutions({ homeworkId: +homeworkId });
+    }
+  }, [homeworkId, loadMySolutions, navigate]);
 
   const onRowClick = (review: Review) => {
     dispatch(reviewActions.setReviewInfo(review));
-    navigate(`/homeworks/${homeworkInfo?.id}/review/${review.reviewId}/student`);
+    navigate(`/homeworks/${homeworkId}/review/${review.reviewId}/student`);
   };
 
   return (
     <div className={styles.page}>
       {mySolutions ? (
-        <MySolutionsTable data={mySolutions} onRowClick={onRowClick} />
+        <MySolutionsTable data={mySolutions.data} onRowClick={onRowClick} />
       ) : (
         <Skeleton className={styles.skeleton} />
       )}

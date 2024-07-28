@@ -1,19 +1,30 @@
-import { Breadcrumbs, FirstDisplayedItemsCount, LastDisplayedItemsCount } from '@gravity-ui/uikit';
-import { useSelector } from 'react-redux';
+import { Breadcrumbs, FirstDisplayedItemsCount, LastDisplayedItemsCount, Skeleton } from '@gravity-ui/uikit';
+import { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { getReviewInfo, getSelectedHomework, homeworkActions, useAppDispatch } from 'app';
+import { useLazyGetHomeworkQuery } from '@shared/api';
+import { useApiError } from '@shared/utils';
+import { useAppSelector } from 'app/hooks';
 import styles from './Header.module.scss';
 
 export const Header = () => {
-  const dispatch = useAppDispatch();
+  const { homeworkId } = useParams<{ homeworkId: string }>();
   const navigate = useNavigate();
   const { role } = useParams<{ role: 'student' | 'reviewer' | 'teacher' }>();
-  const selectedHomework = useSelector(getSelectedHomework);
-  const selectedReview = useSelector(getReviewInfo);
+  const [loadHomework, { data: selectedHomework, error }] = useLazyGetHomeworkQuery();
+  useApiError(error, { name: 'loadHomework', title: 'Ошибка при загрузке домашнего задания' });
+
+  const selectedReview = useAppSelector(state => state.review.reviewInfo);
+
+  useEffect(() => {
+    if (homeworkId === undefined) {
+      navigate('/homeworks');
+    } else {
+      loadHomework({ homeworkId: +homeworkId });
+    }
+  }, [homeworkId, loadHomework, navigate]);
 
   const goToHomeworks = () => {
     navigate('/homeworks');
-    dispatch(homeworkActions.setSelectedHomework(null));
   };
 
   const goToHomework = () => {
@@ -40,6 +51,10 @@ export const Header = () => {
     }
   };
 
+  if (!selectedHomework) {
+    return <Skeleton className={styles.skeleton} />;
+  }
+
   return (
     <div className={styles.header}>
       <Breadcrumbs
@@ -49,7 +64,7 @@ export const Header = () => {
             action: goToHomeworks,
           },
           {
-            text: selectedHomework?.name ?? 'unknown homework',
+            text: selectedHomework.name,
             action: goToHomework,
           },
           ...(role === 'student'

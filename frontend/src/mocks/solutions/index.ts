@@ -1,6 +1,6 @@
 import { HttpResponse, bypass, delay, http } from 'msw';
 import { initialSolutions } from './initial';
-import type { DiffsWrapper, Review, Solution } from '@domains';
+import type { DiffsWrapper, Review, Solution } from '@api';
 
 const solutions = new Map(initialSolutions.map(solution => [solution.studentId, solution]));
 

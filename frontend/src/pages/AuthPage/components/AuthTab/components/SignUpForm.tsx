@@ -1,14 +1,17 @@
 import { Button } from '@gravity-ui/uikit';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { useEffect, useRef } from 'react';
 import { Controller, useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
-import { Input } from '@components/index';
-import { type SignUpRequest } from '@domains';
+import { useSignInMutation, useSignUpMutation, type SignUpRequest } from '@api';
+import { useAppDispatch, useAuth, userActions } from '@app';
+import { useApiError } from '@shared/utils';
+import { Input } from '@ui';
 import styles from './Form.module.scss';
 
 interface SignUpFormProps {
   onChangeAuthType: () => void;
-  onSubmit: (data: SignUpRequest) => void;
 }
 
 const schemaSignUp = yup
@@ -23,18 +26,46 @@ const schemaSignUp = yup
   })
   .required();
 
-export const SignUpForm = ({ onChangeAuthType, onSubmit }: SignUpFormProps) => {
+export const SignUpForm = ({ onChangeAuthType }: SignUpFormProps) => {
+  const dispatch = useAppDispatch();
+  const signUpRequestData = useRef<SignUpRequest>();
+  const nav = useNavigate();
+  const { setAccessToken, setRefreshToken } = useAuth();
+  const [signIn, { data: signInData, isLoading: signInLoading, error: signInError }] = useSignInMutation();
+  const [signUp, { data: signUpData, isLoading: signUpLoading, error: signUpError }] = useSignUpMutation();
+
+  useApiError(signInError, { name: 'signIn', title: 'Ошибка входа' });
+  useApiError(signUpError, { name: 'signUp', title: 'Ошибка регистрации' });
+
+  useEffect(() => {
+    if (!signInData) return;
+
+    localStorage.setItem('userInfo', JSON.stringify(signInData));
+    dispatch(userActions.setUserInfo(signInData));
+    setRefreshToken(signInData.refreshToken);
+    setAccessToken(signInData.accessToken);
+    nav('/homeworks');
+  }, [dispatch, nav, setAccessToken, setRefreshToken, signInData]);
+
+  useEffect(() => {
+    if (!signUpData || !signUpRequestData.current) return;
+
+    signIn({ signInRequest: signUpRequestData.current });
+  }, [signIn, signUpData]);
+
   const {
     control,
     handleSubmit,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(schemaSignUp),
+    disabled: signInLoading || signUpLoading,
     defaultValues: { username: '', password: '', confirmPassword: '', email: '' },
   });
 
   const onSubmitUp = handleSubmit(data => {
-    onSubmit(data);
+    signUpRequestData.current = data;
+    signUp({ signUpRequest: data });
   });
 
   return (
@@ -87,7 +118,7 @@ export const SignUpForm = ({ onChangeAuthType, onSubmit }: SignUpFormProps) => {
         />
       </div>
       <div className={styles.buttonsWrapper}>
-        <Button type="submit" view="action" size="l">
+        <Button type="submit" view="action" size="l" loading={signInLoading || signUpLoading}>
           Зарегистрироваться
         </Button>
         <Button onClick={onChangeAuthType} view="flat-info" size="xs">

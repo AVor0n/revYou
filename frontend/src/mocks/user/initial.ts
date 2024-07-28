@@ -1,4 +1,4 @@
-import type { SignInResponse } from '@domains';
+import type { SignInResponse } from '@api';
 
 export interface MockUser extends SignInResponse {
   password: string;

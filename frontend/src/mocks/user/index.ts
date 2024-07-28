@@ -1,6 +1,6 @@
 import { HttpResponse, delay, http } from 'msw';
 import { type MockUser, initialUsers } from './initial';
-import type { SignInRequest, SignInResponse, SignUpRequest, User } from '@domains';
+import type { SignInRequest, SignInResponse, SignUpRequest, User } from '@api';
 
 let userIdCounter = initialUsers.length + 1;
 const users = new Map(initialUsers.map(user => [user.username, user]));

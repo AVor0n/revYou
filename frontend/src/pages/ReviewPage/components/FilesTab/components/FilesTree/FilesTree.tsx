@@ -1,21 +1,35 @@
 import { Comment } from '@gravity-ui/icons';
 import { ArrowToggle, Icon, Tooltip } from '@gravity-ui/uikit';
 import { clsx } from 'clsx';
-import { useMemo } from 'react';
-import { Tree } from '@components/Tree';
-import { isFolder, type FileNode, type FolderNode } from 'app';
+import { useEffect, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useLazyGetAllThreadsQuery } from '@shared/api';
+import { isFolder, type FilesTreeItem } from '@shared/types';
+import { useApiError } from '@shared/utils';
+import { Tree } from '@ui';
 import { useAppSelector } from 'app/hooks';
 import { useActiveFile } from '../../hooks';
 import { FileChangesIcon, SkeletonFileTree } from './components';
 import styles from './FilesTree.module.scss';
 
 export const FilesTree = () => {
-  const { filesTree, threads } = useAppSelector(state => state.review);
+  const navigate = useNavigate();
+  const { filesTree, reviewInfo } = useAppSelector(state => state.review);
   const { activeFile, setActiveFile } = useActiveFile();
+  const [loadThreads, { data: threads, error }] = useLazyGetAllThreadsQuery();
+  useApiError(error, { name: 'loadThreads', title: 'Не удалось загрузить список комментариев' });
+
+  useEffect(() => {
+    if (reviewInfo?.reviewId === undefined) {
+      navigate('/homeworks');
+    } else {
+      loadThreads({ reviewId: reviewInfo.reviewId });
+    }
+  }, [loadThreads, navigate, reviewInfo?.reviewId]);
 
   const filesWithComments = useMemo(() => {
     const pathSet = new Set();
-    threads?.forEach(thread => {
+    threads?.data.forEach(thread => {
       const segments = thread.filePath.split('/');
       segments.forEach((_segment, idx) => pathSet.add(segments.slice(0, idx + 1).join('/')));
     });
@@ -24,7 +38,7 @@ export const FilesTree = () => {
 
   if (!filesTree) return <SkeletonFileTree />;
 
-  const onClickTreeItem = (treeItem: FolderNode | FileNode) => {
+  const onClickTreeItem = (treeItem: FilesTreeItem) => {
     if (isFolder(treeItem)) return;
 
     setActiveFile(activeFile?.id === treeItem.id ? null : treeItem);

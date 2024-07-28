@@ -2,23 +2,14 @@ import { DatePicker } from '@gravity-ui/date-components';
 import { dateTimeParse } from '@gravity-ui/date-utils';
 import { RadioButton, Select, Text } from '@gravity-ui/uikit';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { FormWindow } from '@components/FormWindow';
-import { Input } from '@components/Input';
-import { type Lecture } from '@domains';
-import { defaultHomework, type CreateHomework } from '@pages/HomeworksPage/constants';
-import {
-  createHomework,
-  getAllLectures,
-  getAuthData,
-  homeworkActions,
-  loadHomeworks,
-  loadLectures,
-  useAppDispatch,
-} from 'app';
+import { useCreateHomeworkMutation, useGetAllLecturesQuery, type Lecture } from '@api';
+import { useApiError } from '@shared/utils';
+import { FormWindow, Input } from '@ui';
+import { useAppSelector } from 'app/hooks';
+import { defaultHomework, type CreateHomework } from '../../constants';
 import { createHomeworkSchema } from './createHomeworkSchema';
 import styles from './CreateHomeworkWindow.module.scss';
 
@@ -34,12 +25,16 @@ const getLecturesOptions = (userId: number | undefined, lectures: Lecture[]) =>
     : [];
 
 export const CreateHomeworkWindow = ({ open }: CreateHomeworkWindowProps) => {
-  const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
-  const userInfo = useSelector(getAuthData);
-  const allLectures = useSelector(getAllLectures);
-  const lecturesOptions = getLecturesOptions(userInfo?.userId, allLectures);
+  const userInfo = useAppSelector(state => state.user.authData);
+
+  const [createHomework, { isLoading, isSuccess, error: createHomeworkError }] = useCreateHomeworkMutation();
+  useApiError(createHomeworkError, { name: 'createHomework', title: 'Не удалось создать домашнее задание' });
+
+  const { data: allLectures, error: allLecturesError } = useGetAllLecturesQuery();
+  useApiError(allLecturesError, { name: 'loadAllLectures', title: 'Ошибка при загрузке списка лекций' });
+
+  const lecturesOptions = getLecturesOptions(userInfo?.userId, allLectures?.data ?? []);
 
   const {
     reset,
@@ -50,7 +45,7 @@ export const CreateHomeworkWindow = ({ open }: CreateHomeworkWindowProps) => {
     resolver: yupResolver(createHomeworkSchema),
     mode: 'all',
     defaultValues: defaultHomework,
-    disabled: loading,
+    disabled: isLoading,
     values: {
       name: defaultHomework.name,
       topic: defaultHomework.topic,
@@ -63,28 +58,18 @@ export const CreateHomeworkWindow = ({ open }: CreateHomeworkWindowProps) => {
     },
   });
 
-  useEffect(() => {
-    dispatch(loadLectures());
-  }, [dispatch]);
-
-  const closeWindow = () => {
-    reset();
-    dispatch(homeworkActions.setHomeworkForEdit(null));
-    navigate('/homeworks');
-  };
-
-  const saveHomework = handleSubmit(async data => {
-    setLoading(true);
-    return dispatch(createHomework({ ...data, lectureId: Number(data.lectureId) }))
-      .unwrap()
-      .then(() => {
-        closeWindow();
-        dispatch(loadHomeworks());
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+  const saveHomework = handleSubmit(data => {
+    createHomework({ homeworkPost: { ...data, lectureId: Number(data.lectureId) } });
   });
+
+  const closeWindow = useCallback(() => {
+    reset();
+    navigate('/homeworks');
+  }, [navigate, reset]);
+
+  useEffect(() => {
+    if (isSuccess) closeWindow();
+  }, [closeWindow, isSuccess]);
 
   return (
     <FormWindow
@@ -94,8 +79,8 @@ export const CreateHomeworkWindow = ({ open }: CreateHomeworkWindowProps) => {
       onClose={closeWindow}
       onSubmit={saveHomework}
       saveDisabled={!isValid}
-      saveLoading={loading}
-      cancelDisabled={loading}
+      saveLoading={isLoading}
+      cancelDisabled={isLoading}
     >
       <div className={styles.content}>
         <Controller

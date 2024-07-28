@@ -1,10 +1,10 @@
 import { Button, Card } from '@gravity-ui/uikit';
 import { type editor as IEditor, type Selection } from 'monaco-editor';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { useSelector } from 'react-redux';
-import { EditorSelection, ResizableViewZone } from '@components/MonacoEditor';
-import { createThread, getRequestInProgress, useAppDispatch } from 'app';
+import { useStartThreadMutation } from '@shared/api';
+import { useApiError } from '@shared/utils';
+import { EditorSelection, ResizableViewZone } from '@ui';
 import { CreateThreadCard } from './components';
 import { useEditorSelection } from './hooks';
 import styles from './CreateThreadWidget.module.scss';
@@ -17,18 +17,18 @@ interface CreateThreadWidgetProps {
 }
 
 export const CreateThreadWidget = ({ editor, reviewId, commitSha, filePath }: CreateThreadWidgetProps) => {
-  const dispatch = useAppDispatch();
-  const requestInProgress = useSelector(getRequestInProgress);
   const [selection, setSelection] = useState<Selection | null>(null);
   const { tooltipNode } = useEditorSelection({ editor, onSelection: setSelection });
+  const [createThread, { isSuccess, isLoading, error }] = useStartThreadMutation();
+  useApiError(error, { name: 'startThread', title: 'Не удалось оставить комментарий' });
 
   const onCreateThread = (content: string) => {
     if (!selection) {
       throw new Error('Not selection');
     }
 
-    dispatch(
-      createThread({
+    createThread({
+      threadPost: {
         commitSha,
         content,
         filePath,
@@ -37,11 +37,13 @@ export const CreateThreadWidget = ({ editor, reviewId, commitSha, filePath }: Cr
         startSymbol: selection.startColumn,
         endLine: selection.endLineNumber,
         endSymbol: selection.endColumn,
-      }),
-    ).then(() => {
-      setSelection(null);
+      },
     });
   };
+
+  useEffect(() => {
+    if (isSuccess) setSelection(null);
+  }, [isSuccess]);
 
   return (
     <>
@@ -64,11 +66,7 @@ export const CreateThreadWidget = ({ editor, reviewId, commitSha, filePath }: Cr
               endLineNumber={selection.endLineNumber}
               endColumn={selection.endColumn}
             />
-            <CreateThreadCard
-              onCreate={onCreateThread}
-              onCancel={() => setSelection(null)}
-              isLoading={requestInProgress.createThread}
-            />
+            <CreateThreadCard onCreate={onCreateThread} onCancel={() => setSelection(null)} isLoading={isLoading} />
           </div>
         </ResizableViewZone>
       )}

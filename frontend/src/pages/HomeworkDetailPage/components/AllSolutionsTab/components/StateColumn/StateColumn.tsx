@@ -1,12 +1,11 @@
-import { ReviewStatus } from '@components/ReviewStatus';
+import { ReviewStatus } from '@ui';
 import { ReviewCard } from './components';
-import type { ReviewStatus as TReviewStatus } from '@domains';
-import type { FullReviewInfo } from 'app';
+import type { ReviewInfo, ReviewStatus as TReviewStatus } from '@api';
 import styles from './StateColumn.module.scss';
 
 interface StateColumnProps {
   status: TReviewStatus;
-  reviewList: FullReviewInfo[];
+  reviewList: ReviewInfo[];
 }
 
 export const StateColumn = ({ status, reviewList }: StateColumnProps) => (

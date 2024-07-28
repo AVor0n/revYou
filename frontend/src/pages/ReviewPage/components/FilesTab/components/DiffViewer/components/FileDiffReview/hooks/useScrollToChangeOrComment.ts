@@ -1,6 +1,6 @@
 import { type editor } from 'monaco-editor';
 import { useEffect, useMemo } from 'react';
-import type { CommentsThread } from '@domains';
+import type { CommentsThread } from '@api';
 
 export interface UseScrollToChangeOrComment {
   editor?: editor.IDiffEditor;

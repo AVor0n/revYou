@@ -1,6 +1,5 @@
 import { Route, Routes } from 'react-router-dom';
-import { HomeworkDetailPage } from '@pages/HomeworkDetailPage';
-import { AuthPage, HomeworksPage, NotFoundPage, ReviewPage } from 'pages';
+import { HomeworkDetailPage, AuthPage, HomeworksPage, NotFoundPage, ReviewPage } from '@pages';
 import { Layout } from '../../../components';
 import { AuthRequire } from './AuthRequire';
 

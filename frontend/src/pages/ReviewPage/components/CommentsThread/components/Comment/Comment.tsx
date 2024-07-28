@@ -3,11 +3,10 @@ import { FaceAlien, GraduationCap } from '@gravity-ui/icons';
 import { Avatar, Tooltip, Text } from '@gravity-ui/uikit';
 import clsx from 'clsx';
 import { useCallback } from 'react';
-import { useSelector } from 'react-redux';
-import { IntervalRerender } from '@components/IntervalRerender';
-import { type CommentsThreadStatus, type Comment as IComment } from '@domains';
-import { getAuthData } from 'app';
-import { dateRelativeNow } from 'utils';
+import { type CommentsThreadStatus, type Comment as IComment } from '@api';
+import { dateRelativeNow } from '@shared/utils';
+import { IntervalRerender } from '@ui';
+import { useAppSelector } from 'app/hooks';
 import styles from './Comment.module.scss';
 
 interface CommentProps {
@@ -16,7 +15,7 @@ interface CommentProps {
 }
 
 export const Comment = ({ comment, threadStatus }: CommentProps) => {
-  const authInfo = useSelector(getAuthData);
+  const authInfo = useAppSelector(state => state.user.authData);
   const isMyComment = authInfo?.userId === comment.authorId;
 
   const commentContainerClasses = clsx(

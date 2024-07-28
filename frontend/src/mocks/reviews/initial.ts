@@ -1,4 +1,4 @@
-import { type CommentsThread, type Review } from '@domains';
+import { type CommentsThread, type Review } from '@api';
 
 export const initialReviews: Review[] = [
   {

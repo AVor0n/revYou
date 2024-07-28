@@ -1,4 +1,4 @@
-import { ReviewStatus } from '@components/ReviewStatus';
+import { ReviewStatus } from '@ui';
 import { StartReviewButton } from '../StartReviewButton/StartReviewButton';
 import { type SolutionTableColumn } from './types';
 

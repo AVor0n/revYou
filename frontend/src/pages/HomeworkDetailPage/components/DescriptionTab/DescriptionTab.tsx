@@ -1,7 +1,9 @@
-import { Card } from '@gravity-ui/uikit';
-import { useSelector } from 'react-redux';
-import { type Homework } from '@domains';
-import { getUserRole } from 'app';
+import { Card, Skeleton } from '@gravity-ui/uikit';
+import { useEffect } from 'react';
+import { useParams } from 'react-router-dom';
+import { useLazyGetHomeworkQuery } from '@api';
+import { useApiError } from '@shared/utils';
+import { useAppSelector } from 'app/hooks';
 import {
   AuthorAndDeadlines,
   DescriptionHeader,
@@ -12,16 +14,22 @@ import {
 } from './components';
 import styles from './DescriptionTab.module.scss';
 
-interface DescriptionTabProps {
-  homeworkInfo: Homework | null;
-}
+export const DescriptionTab = () => {
+  const { homeworkId } = useParams<{ homeworkId: string }>();
+  const role = useAppSelector(state => state.user.authData?.role);
+  const [loadHomework, { data: homeworkInfo, error }] = useLazyGetHomeworkQuery();
+  useApiError(error, { name: 'loadHomework', title: 'Не удалось загрузить домашнее задание' });
 
-export const DescriptionTab = ({ homeworkInfo }: DescriptionTabProps) => {
-  const role = useSelector(getUserRole);
   const solutionSent = !!homeworkInfo?.status;
 
+  useEffect(() => {
+    if (homeworkId) {
+      loadHomework({ homeworkId: +homeworkId });
+    }
+  }, [homeworkId, loadHomework]);
+
   if (!homeworkInfo) {
-    return null;
+    return <Skeleton className={styles.skeleton} />;
   }
 
   const renderFooter = () => {

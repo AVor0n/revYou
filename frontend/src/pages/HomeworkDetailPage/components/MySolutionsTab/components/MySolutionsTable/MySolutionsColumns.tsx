@@ -1,4 +1,4 @@
-import { ReviewStatus } from '@components/ReviewStatus';
+import { ReviewStatus } from '@ui';
 import { type SolutionTableColumn } from './types';
 
 export const solutionsColumns: SolutionTableColumn[] = [
@@ -12,7 +12,7 @@ export const solutionsColumns: SolutionTableColumn[] = [
   {
     id: 'status',
     name: () => <span>Статус</span>,
-    template: ({ status }) => <ReviewStatus status={status ?? ''} />,
+    template: ({ status }) => <ReviewStatus status={status} />,
     width: 200,
     meta: { sort: true },
   },

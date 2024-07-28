@@ -1,70 +1,70 @@
 import { Skeleton, Tabs } from '@gravity-ui/uikit';
 import { useEffect, useMemo } from 'react';
-import { useSelector } from 'react-redux';
 import { Navigate, useNavigate, useParams } from 'react-router-dom';
-import {
-  getAuthData,
-  getMySolutions,
-  getSelectedHomework,
-  getSolutionsForReview,
-  loadMySolutions,
-  loadSolutionsForReview,
-  selectHomeworkForView,
-  useAppDispatch,
-} from 'app';
+import { useLazyGetHomeworkQuery, useLazyGetMyReviewsQuery, useLazyGetReviewsToDoQuery } from '@shared/api';
+import { useApiError } from '@shared/utils';
+import { useAppSelector } from 'app/hooks';
 import { AllSolutionsTab, DescriptionTab, Header, MySolutionsTab, SolutionTab } from './components';
 import styles from './HomeworkDetailPage.module.scss';
 
 export const HomeworkDetailPage = () => {
   const { homeworkId, tab } = useParams<{ homeworkId: string; tab: keyof typeof tabs }>();
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
-  const homeworkInfo = useSelector(getSelectedHomework);
-  const mySolutions = useSelector(getMySolutions);
-  const solutionsForReview = useSelector(getSolutionsForReview);
-  const userInfo = useSelector(getAuthData);
+  const userInfo = useAppSelector(state => state.user.authData);
+  const [loadHomework, { data: homeworkInfo, error: homeworkError }] = useLazyGetHomeworkQuery();
+  useApiError(homeworkError, { name: 'loadHomework', title: 'Не удалось загрузить домашнее задание' });
+
+  const [loadMySolutions, { data: mySolutions, error: mySolutionsError }] = useLazyGetMyReviewsQuery();
+  useApiError(mySolutionsError, { name: 'loadMySolutions', title: 'Не удалось загрузить список отправленных решений' });
+
+  const [loadSolutionsForReview, { data: solutionsForReview, error: solutionsForReviewError }] =
+    useLazyGetReviewsToDoQuery();
+  useApiError(solutionsForReviewError, {
+    name: 'loadSolutionsForReview',
+    title: 'Не удалось загрузить список решений на проверку',
+  });
+
   const activeTab = tab ?? 'about';
 
   useEffect(() => {
-    if (homeworkId !== undefined) {
-      dispatch(selectHomeworkForView(+homeworkId));
-      dispatch(loadMySolutions(+homeworkId));
-      dispatch(loadSolutionsForReview(+homeworkId));
-    }
-  }, [dispatch, activeTab, homeworkId]);
+    if (homeworkId === undefined) return;
+    loadHomework({ homeworkId: +homeworkId });
+    loadMySolutions({ homeworkId: +homeworkId });
+    loadSolutionsForReview({ homeworkId: +homeworkId });
+  }, [homeworkId, loadHomework, loadMySolutions, loadSolutionsForReview]);
 
   const tabs = useMemo(
     () => ({
       about: {
         title: 'Описание',
-        content: <DescriptionTab homeworkInfo={homeworkInfo} />,
+        content: <DescriptionTab />,
       },
       ...(userInfo?.role === 'TEACHER'
         ? {
             'all-solutions': {
               title: 'Все решения',
-              content: <AllSolutionsTab homeworkInfo={homeworkInfo} />,
+              content: <AllSolutionsTab />,
             },
           }
         : {}),
-      ...(mySolutions?.length
+      ...(mySolutions?.data.length
         ? {
             'my-solution': {
               title: 'Мои решения',
-              content: <MySolutionsTab homeworkInfo={homeworkInfo} />,
+              content: <MySolutionsTab />,
             },
           }
         : {}),
-      ...(solutionsForReview?.length
+      ...(solutionsForReview?.data.length
         ? {
             'for-review': {
               title: 'На проверку',
-              content: <SolutionTab homeworkInfo={homeworkInfo} />,
+              content: <SolutionTab />,
             },
           }
         : {}),
     }),
-    [homeworkInfo, mySolutions, solutionsForReview, userInfo],
+    [mySolutions, solutionsForReview, userInfo],
   );
 
   return (

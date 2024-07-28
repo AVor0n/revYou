@@ -1,1 +1,0 @@
-export { GetApi } from './GetApi';

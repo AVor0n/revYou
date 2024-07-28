@@ -15,7 +15,7 @@
     "eslint-config-prettier",
   ],
   "plugins": ["@typescript-eslint", "import", "react-refresh", "jsx-expressions"],
-  "ignorePatterns": ["dist", "scripts", ".eslintrc.cjs", "stylelint.config.cjs", "vite.config.ts"],
+  "ignorePatterns": ["dist", "scripts", ".eslintrc.cjs", "stylelint.config.cjs", "vite.config.ts", "__generated__.ts"],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "ecmaVersion": "latest",

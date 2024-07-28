@@ -1,12 +1,11 @@
 import { dateTimeParse } from '@gravity-ui/date-utils';
 import { Link } from '@gravity-ui/uikit';
-import { useSelector } from 'react-redux';
-import { getUserRole } from 'app';
+import { useAppSelector } from 'app/hooks';
 import { StatusCircle } from '../StatusCircle';
 import { type HomeworkTableColumn } from './types';
 
 export const useHomeworksColumns = (): HomeworkTableColumn[] => {
-  const role = useSelector(getUserRole);
+  const role = useAppSelector(state => state.user.authData?.role);
 
   return [
     {

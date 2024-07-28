@@ -1,6 +1,6 @@
 import { Table, withTableSorting } from '@gravity-ui/uikit';
 import clsx from 'clsx';
-import { type Review } from '@domains';
+import { type Review } from '@api';
 import { solutionsColumns } from './MySolutionsColumns';
 import styles from './MySolutionsTable.module.scss';
 
@@ -20,11 +20,11 @@ export const MySolutionsTable = ({ data, onRowClick }: MySolutionsTableProps) =>
       columns={solutionsColumns}
       data={data}
       getRowDescriptor={({ status }) => ({
-        classNames: [clsx(styles.row, status && interactiveStatuses.includes(status) && styles.interactive)],
+        classNames: [clsx(styles.row, interactiveStatuses.includes(status) && styles.interactive)],
       })}
       emptyMessage="Нет данных"
       onRowClick={item => {
-        if (!item.status || !interactiveStatuses.includes(item.status)) return;
+        if (!interactiveStatuses.includes(item.status)) return;
         onRowClick?.(item);
       }}
     />

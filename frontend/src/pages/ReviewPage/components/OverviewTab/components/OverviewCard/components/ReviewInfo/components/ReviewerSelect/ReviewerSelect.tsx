@@ -1,9 +1,8 @@
 import { Select } from '@gravity-ui/uikit';
-import { useEffect, useMemo, useState } from 'react';
-import { ModalWithQuestion } from '@components/ModalWithQuestion';
-import { changeReviewer, loadAvailableReviewers } from 'app';
-import { useAppDispatch, useAppSelector } from 'app/hooks';
-import type { Student } from '@domains';
+import { useMemo, useState } from 'react';
+import { useGetAvailableReviewersQuery, useReplaceReviewerMutation, type Student } from '@api';
+import { useApiError } from '@shared/utils';
+import { ModalWithQuestion } from '@ui';
 import styles from './ReviewerSelect.module.scss';
 
 interface ReviewerSelectProps {
@@ -13,22 +12,25 @@ interface ReviewerSelectProps {
 }
 
 export const ReviewerSelect = ({ homeworkId, reviewId, reviewer }: ReviewerSelectProps) => {
-  const dispatch = useAppDispatch();
   const [reviewerId, setReviewerId] = useState(reviewer?.userId ? [reviewer.userId.toString()] : undefined);
   const [reviewerCandidate, setReviewerCandidate] = useState<Student | null>(null);
-  const availableReviewers = useAppSelector(state => state.solution.availableReviewers);
+
+  const [changeReviewer, { error: replaceReviewerError }] = useReplaceReviewerMutation();
+  useApiError(replaceReviewerError, { name: 'replaceReviewer', title: 'Не удалось изменить ревьюера' });
+
+  const { data: availableReviewers, error: availableReviewersError } = useGetAvailableReviewersQuery({ homeworkId });
+  useApiError(availableReviewersError, {
+    name: 'loadAvailableReviewers',
+    title: 'Не удалось получить список ревьюеров',
+  });
+
   const listOptions = useMemo(
-    () => availableReviewers?.map(user => ({ value: user.userId.toString(), content: user.username })) ?? [],
+    () => availableReviewers?.data.map(user => ({ value: user.userId.toString(), content: user.username })) ?? [],
     [availableReviewers],
   );
 
-  useEffect(() => {
-    if (availableReviewers) return;
-    dispatch(loadAvailableReviewers(+homeworkId));
-  }, [availableReviewers, dispatch, homeworkId]);
-
   const onChangeReviewer = (newReviewerId: string[]) => {
-    const newReviewer = availableReviewers?.find(({ userId }) => userId.toString() === newReviewerId[0]);
+    const newReviewer = availableReviewers?.data.find(({ userId }) => userId.toString() === newReviewerId[0]);
     if (!newReviewer) return;
     setReviewerCandidate({ userId: newReviewer.userId, username: newReviewer.username });
   };
@@ -39,7 +41,7 @@ export const ReviewerSelect = ({ homeworkId, reviewId, reviewer }: ReviewerSelec
 
   const onApproveChangeReviewer = () => {
     if (!reviewerCandidate) return;
-    dispatch(changeReviewer({ homeworkId, reviewer: { reviewerId: reviewerCandidate.userId, reviewId } }));
+    changeReviewer({ homeworkId, reviewerChange: { reviewerId: reviewerCandidate.userId, reviewId } });
     setReviewerId([reviewerCandidate.userId.toString()]);
     setReviewerCandidate(null);
   };

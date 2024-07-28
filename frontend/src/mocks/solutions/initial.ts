@@ -1,4 +1,4 @@
-import { type Solution } from '@domains';
+import { type Solution } from '@api';
 
 export const initialSolutions: Solution[] = [
   {

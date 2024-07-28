@@ -1,5 +1,5 @@
 import { Label, Tooltip } from '@gravity-ui/uikit';
-import { type SolutionStatus } from '@domains';
+import { type SolutionStatus } from '@api';
 import styles from './StatusCircle.module.scss';
 
 type LabelTheme = 'danger' | 'warning' | 'info' | 'utility' | 'success';

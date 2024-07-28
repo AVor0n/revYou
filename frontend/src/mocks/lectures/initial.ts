@@ -1,4 +1,4 @@
-import { type Lecture } from '@domains';
+import { type Lecture } from '@api';
 
 export const initialLectures: Lecture[] = [
   {

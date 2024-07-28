@@ -1,8 +1,13 @@
-import { Skeleton, Tabs } from '@gravity-ui/uikit';
+import { Tabs } from '@gravity-ui/uikit';
 import { useEffect, useMemo, type ReactNode } from 'react';
-import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
-import { getReviewInfo, loadReview, loadThreads, useAppDispatch } from 'app';
+import { reviewActions } from '@entities';
+import { useLazyGetDiffsQuery } from '@shared/api';
+import { isFile } from '@shared/types';
+import { sortTree } from '@shared/ui';
+import { useApiError } from '@shared/utils';
+import { useAppDispatch, useAppSelector } from 'app/hooks';
+import { buildFileTree } from 'entities/Review/services/buildFileTree';
 import { Header, FilesTab, OverviewTab } from './components';
 import styles from './ReviewPage.module.scss';
 
@@ -15,36 +20,56 @@ export const ReviewPage = () => {
     role: 'student' | 'reviewer';
     tab: keyof typeof tabs;
   }>();
-  const reviewInfo = useSelector(getReviewInfo);
   const activeTab = tab ?? 'about';
+  const review = useAppSelector(state => state.review.reviewInfo);
+
+  const [getDiff, { data: filesDiff, error }] = useLazyGetDiffsQuery();
+  useApiError(error, { name: 'loadDiffs', title: 'Ошибка при загрузке изменений' });
 
   useEffect(() => {
-    if (reviewInfo?.reviewId) {
-      dispatch(loadReview(reviewInfo));
-      dispatch(loadThreads(reviewInfo.reviewId));
+    if (review) {
+      getDiff({ projectId: review.projectId, from: review.sourceCommitId, to: review.commitId });
     } else {
-      navigate(`/homeworks/${homeworkId}`);
+      navigate('/homeworks');
     }
-  }, [dispatch, homeworkId, navigate, reviewInfo]);
+  }, [getDiff, navigate, review]);
+
+  useEffect(() => {
+    if (!filesDiff) return;
+
+    const filesTree = buildFileTree(filesDiff.diffs);
+    const sortedTree = sortTree(filesTree, (itemA, itemB) => {
+      if (isFile(itemA) && !isFile(itemB)) {
+        return 1;
+      }
+      if (!isFile(itemA) && isFile(itemB)) {
+        return -1;
+      }
+
+      return itemA.name.localeCompare(itemB.name);
+    });
+
+    dispatch(reviewActions.setFilesTree(sortedTree));
+  }, [dispatch, filesDiff]);
 
   const tabs = useMemo(
     () =>
       ({
         about: {
           title: 'Обзор',
-          content: reviewInfo && <OverviewTab review={reviewInfo} />,
+          content: <OverviewTab />,
         },
         files: {
           title: 'Файлы',
           content: <FilesTab />,
         },
       }) satisfies Record<string, { title: string; content: ReactNode }>,
-    [reviewInfo],
+    [],
   );
 
   return (
     <div className={styles.page}>
-      {reviewInfo ? <Header /> : <Skeleton className={styles.headerSkeleton} />}
+      <Header />
 
       <div className={styles.pageContent}>
         <Tabs
@@ -53,9 +78,7 @@ export const ReviewPage = () => {
           items={Object.entries(tabs).map(([id, { title }]) => ({ id, title }))}
         />
 
-        <div className={styles.tabContent}>
-          {reviewInfo ? tabs[activeTab].content : <Skeleton className={styles.contentSkeleton} />}
-        </div>
+        <div className={styles.tabContent}>{tabs[activeTab].content}</div>
       </div>
     </div>
   );
