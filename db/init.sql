@@ -172,7 +172,7 @@ VALUES (1, '2023-09-01', '2024-06-30', 'https://mattermost.com/frontend1', 'FRON
 INSERT INTO user_account (username, name, surname, email, password, gitlab_username, mm_username, status, role,
                           cohort_id)
 VALUES ('student_1', 'Иван', 'Иванов', 'ivanov@example.com',
-        '$2a$04$Fx/SX9.BAvtPlMyIIqqFx.hLY2Xp8nnhpzvEEVINvVpwIPbA3v/.i',
+        '$2a$04$Fx/SX9.BAvtPlMyIIqqFx.hLY2Xp8nnhpzvEEVINvVpwIPbA3v/.i', -- пароль: 100
         'student_1', 'ivanov',
         'ACTIVE', 'STUDENT', 1),
        ('student_2', 'Мария', 'Петрова', 'petrova@example.com',
@@ -220,22 +220,22 @@ VALUES (1, 1),
        (4, 1),
        (4, 2);
 
--- Вставка данных в таблицу homework
-INSERT INTO homework (repository_link, name, topic, description, source_commit_id, start_date, completion_deadline,
-                      review_duration, lecture_id, author_id)
-VALUES ('https://158.160.88.104/gitlab/teacher_1/test_homewrok', 'Домашка по гиту', 'Git',
-        'Создайте пул реквест в свой репозиторий и сделайте необходимые мерджи',
-        'e814adb5c6f82e32c8ff40b945d9ee7273e9b810', '2023-10-05 23:59:59',
-        '2023-10-12 23:59:59', 24, 2, 8),
-       ('https://158.160.88.104/gitlab/teacher_2/test_homework_2', 'Домашка по реакту', 'React',
-        'Напишите компоненты, сделайте лендинг', '9e927be85edaa82a166f91584ed4793a77232622', '2023-10-10 23:59:59',
-        '2023-10-17 23:59:59', 48, 1, 7),
-       ('https://158.160.88.104/gitlab/teacher_3/test_homework_3', 'Домашка по кафке', 'Kafka',
-        'Напишите реализацию AtLeastOnce', 'ff3ed0210655c0593b5060fb07cf8c712a14cce5', '2023-10-10 23:59:59',
-        '2023-10-17 23:59:59', 48, 3, 8),
-        ('https://158.160.88.104/gitlab/hh_teacher/hh-school-2023-python-core', 'Домашка по Python', 'Python',
-        'Решите задачу', '89d364f1b80bf49ed6eefd7abbfa8c3e740cd131', '2023-10-10 23:59:59',
-        '2023-10-17 23:59:59', 48, 4, 8);
+-- -- Вставка данных в таблицу homework
+-- INSERT INTO homework (repository_link, name, topic, description, source_commit_id, start_date, completion_deadline,
+--                       review_duration, lecture_id, author_id)
+-- VALUES ('https://158.160.88.104/gitlab/teacher_1/test_homewrok', 'Домашка по гиту', 'Git',
+--         'Создайте пул реквест в свой репозиторий и сделайте необходимые мерджи',
+--         'e814adb5c6f82e32c8ff40b945d9ee7273e9b810', '2023-10-05 23:59:59',
+--         '2023-10-12 23:59:59', 24, 2, 8),
+--        ('https://158.160.88.104/gitlab/teacher_2/test_homework_2', 'Домашка по реакту', 'React',
+--         'Напишите компоненты, сделайте лендинг', '9e927be85edaa82a166f91584ed4793a77232622', '2023-10-10 23:59:59',
+--         '2023-10-17 23:59:59', 48, 1, 7),
+--        ('https://158.160.88.104/gitlab/teacher_3/test_homework_3', 'Домашка по кафке', 'Kafka',
+--         'Напишите реализацию AtLeastOnce', 'ff3ed0210655c0593b5060fb07cf8c712a14cce5', '2023-10-10 23:59:59',
+--         '2023-10-17 23:59:59', 48, 3, 8),
+--         ('https://158.160.88.104/gitlab/hh_teacher/hh-school-2023-python-core', 'Домашка по Python', 'Python',
+--         'Решите задачу', '89d364f1b80bf49ed6eefd7abbfa8c3e740cd131', '2023-10-10 23:59:59',
+--         '2023-10-17 23:59:59', 48, 4, 8);
 
 -- Вставка данных в таблицу solution
 -- INSERT INTO solution (status, approve_score, review_score, project_id, branch, source_commit_id, homework_id,

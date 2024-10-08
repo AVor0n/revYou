@@ -1,4 +1,6 @@
 .env
+.gitlab/*
+!.gitlab/.gitkeep
 .vscode/*
 logs/*
 data/*

@@ -2,16 +2,21 @@ version: "3.8"
 
 services:
   frontend:
-    image: semashkevichea/cross_review_front:latest
+    build: ./frontend
     container_name: frontend
     ports:
       - "${FRONT_PORT:-3000}:80"
 
   backend:
-    image: semashkevichea/cross_review_back:latest
+    build: ./backend
     container_name: backend
     environment:
-      SPRING_DATASOURCE_URL: "jdbc:postgresql://db:${POSTGRES_PORT:-5432}/${POSTGRES_DB:-cross_review}"
+      HOST: "${HOST}"
+      GITLAB_TOKEN}: "${GITLAB_TOKEN}}"
+      POSTGRES_DB: "${POSTGRES_DB}"
+      POSTGRES_USER: "${POSTGRES_USER}"
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
+      SPRING_DATASOURCE_URL: "jdbc:postgresql://db:${POSTGRES_PORT}/${POSTGRES_DB}"
     ports:
       - "${BACK_PORT:-8080}:8080"
     depends_on:
@@ -20,15 +25,15 @@ services:
   db:
     image: postgres:16.2-alpine3.19
     environment:
-      POSTGRES_DB: "${POSTGRES_DB:-cross_review}"
-      POSTGRES_USER: "${POSTGRES_USER:-postgres}"
-      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD:-postgres_pass}"
-      PGDATA: "${PGDATA:-/var/lib/postgresql/data/pgdata}"
+      POSTGRES_DB: "${POSTGRES_DB}"
+      POSTGRES_USER: "${POSTGRES_USER}"
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
+      PGDATA: "${PGDATA}"
     volumes:
       - "postgres:/var/lib/postgresql/data"
       - "./db/init.sql:/docker-entrypoint-initdb.d/init.sql"
     ports:
-      - "${POSTGRES_PORT:-5432}:5432"
+      - "${POSTGRES_PORT}:5432"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 5s
@@ -38,12 +43,13 @@ services:
   gitlab:
     image: "gitlab/gitlab-ce:latest"
     restart: always
-    hostname: "${HOST:-158.160.88.104}"
+    hostname: "${HOST}"
     container_name: gitlab-ce
     environment:
       GITLAB_OMNIBUS_CONFIG: |
-        external_url "https://${HOST:-158.160.88.104}/gitlab"
+        external_url "https://${HOST}/gitlab"
         gitlab_rails['gitlab_shell_ssh_port'] = 23
+        gitlab_rails['initial_root_password'] = "${GITLAB_ROOT_PASSWORD}"
     ports:
       - "${GITLAB_PORT:-8081}:80"
       - "${GITLAB_HTTPS_PORT:-443}:443"
